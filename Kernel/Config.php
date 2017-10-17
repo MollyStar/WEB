@@ -16,11 +16,9 @@ class Config
     public static function get($key = '') {
         $key = trim($key, '.');
 
-        if ($key && -1 < strpos($key, '.')) {
+        if ($key) {
             $keys = explode('.', $key);
-
             $file = self::$path . '/' . array_shift($keys) . '.php';
-
             if (is_readable($file)) {
                 $conf_content = require($file);
 
