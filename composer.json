@@ -1,0 +1,19 @@
+{
+    "name": "shinate/pso.codante.org",
+    "authors": [
+        {
+            "name": "shinate",
+            "email": "shine.wangrs@gmail.com"
+        }
+    ],
+    "require": {
+        "joshcam/mysqli-database-class": "^2.8",
+        "gregwar/captcha": "^1.1",
+        "nikic/fast-route": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "./"
+        }
+    }
+}
