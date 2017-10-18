@@ -8,21 +8,21 @@
 
 namespace Controller;
 
+use Carlosocarvalho\SimpleInput\Input\Input;
 use Kernel\DB;
-use Kernel\View;
 use Kernel\Response;
 
 class Register
 {
     public function index() {
-        new View('pages.register');
+        return Response::view('pages.register');
     }
 
     public function save() {
-        $username = $_POST['username'] ?? '';
-        $password = $_POST['password'] ?? '';
-        $rpassword = $_POST['rpassword'] ?? '';
-        $verify_code = $_POST['verify_code'] ?? '';
+        $username = Input::post('username') ?? '';
+        $password = Input::post('password') ?? '';
+        $rpassword = Input::post('rpassword') ?? '';
+        $verify_code = Input::post('verify_code') ?? '';
 
         if ($verify_code != $_SESSION['phrase']) {
             Response::json(['code' => -1, 'msg' => '验证码错误']);
@@ -64,13 +64,14 @@ class Register
                 'email'    => $email,
                 'regtime'  => $regtime,
                 'isactive' => 1,
-            ])) {
+            ])
+            ) {
                 Response::json(['code' => 0, 'msg' => '注册成功']);
             };
         } catch (\Exception $e) {
 
         }
 
-        Response::json(['code' => -1, 'msg' => '注册失败']);
+        return Response::json(['code' => -1, 'msg' => '注册失败']);
     }
 }

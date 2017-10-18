@@ -54,7 +54,8 @@ class Http
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
                 // ... call $handler with $vars
-                call_user_func_array($handler, $vars);
+                $contents = call_user_func_array($handler, $vars);
+                exit($contents);
                 break;
         }
     }

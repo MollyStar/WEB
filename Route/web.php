@@ -10,6 +10,10 @@ $r->addRoute('GET', '/register', ['Controller\Register', 'index']);
 $r->addRoute('POST', '/register/save', ['Controller\Register', 'save']);
 $r->addRoute('GET', '/verifiation.jpg', ['Controller\Common', 'verifiation']);
 
-$r->addRoute('GET', '/drop/import', ['Controller\Server', 'import']);
-$r->addRoute('GET', '/drop/clean', ['Controller\Server', 'clean']);
 $r->addRoute('GET', '/drop', ['Controller\Server', 'drop']);
+$r->addRoute('GET', '/drop/import', ['Controller\Server', 'drop_import']);
+$r->addRoute('GET', '/drop/clean', ['Controller\Server', 'drop_clean']);
+
+$r->addRoute('GET', '/mob', ['Controller\Server', 'mob']);
+$r->addRoute('GET', '/mob/import', ['Controller\Server', 'mob_import']);
+$r->addRoute('POST', '/mob/update', ['Controller\Server', 'mob_update']);

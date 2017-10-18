@@ -1,7 +1,7 @@
 <?php Kernel\View::part('common.header', ['title' => '注册']) ?>
 <style>
     body {
-        background: #fff url(/asset/image/register_bg.jpg) no-repeat fixed 95% 10%;
+        background: #fff url(/asset/image/register_bg.jpg) no-repeat fixed 70% -10%;
     }
 
     #logo {
@@ -9,8 +9,9 @@
         width: 350px;
         position: absolute;
         background: transparent url(/asset/image/logo.png) no-repeat 0 0;
-        top: 20px;
-        left: 20px;
+        top: -15px;
+        left: 36%;
+        margin-left: -175px;
         z-index: 0;
     }
 
@@ -25,14 +26,28 @@
     }
 
     #verify_code {
-        box-sizing: content-box;
+        box-sizing: border-box;
         padding: 2px;
+        margin-top: 10px;
+        border: 1px solid #dddddd;
+        border-radius: 4px;
     }
 
     #verify_code img {
-        height: 2em;
         width: 100%;
         cursor: pointer;
+    }
+
+    @media (min-width: 576px) {
+        #verify_code {
+            box-sizing: content-box;
+            padding: 2px;
+            margin-top: 0;
+        }
+
+        #verify_code img {
+            height: 32px;
+        }
     }
 </style>
 <div id="logo"></div>
@@ -64,10 +79,10 @@
             <div class="form-group clearfix">
                 <input class="form-control required col-sm-7 pull-left" type="text" placeholder="验证码"
                        name="verify_code"/>
-                <div id="verify_code" class="form-control col-sm-4 pull-right"></div>
+                <div id="verify_code" class="col-sm-4 pull-right"></div>
             </div>
             <div class="form-group clearfix">
-                <input type="submit" class="btn btn-info col-sm-12" value="注册"/>
+                <input type="submit" class="btn btn-info col-sm-12" value="注&nbsp;&nbsp;&nbsp;&nbsp;册"/>
             </div>
         </div>
 

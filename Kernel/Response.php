@@ -10,8 +10,13 @@ namespace Kernel;
 
 class Response
 {
-    public function json($data = []) {
+    public static function json($data = []) {
         header('Content-type: application/json');
-        exit(json_encode($data));
+
+        return json_encode($data);
+    }
+
+    public static function view($name, $vars = []) {
+        return View::make($name, $vars);
     }
 }
