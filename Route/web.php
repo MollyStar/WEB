@@ -6,14 +6,21 @@
  * Time: 23:01
  */
 
-$r->addRoute('GET', '/register', ['Controller\Register', 'index']);
-$r->addRoute('POST', '/register/save', ['Controller\Register', 'save']);
-$r->addRoute('GET', '/verifiation.jpg', ['Controller\Common', 'verifiation']);
+Route('GET', '/register', 'Controller\User@register');
+Route('POST', '/register/save', 'Controller\User@register_save');
+Route('GET', '/login', 'Controller\User@login');
+Route('POST', '/login/submit', 'Controller\User@login_submit');
+Route('GET', '/verifiation.jpg', 'Controller\Common@verifiation');
 
-$r->addRoute('GET', '/drop', ['Controller\Server', 'drop']);
-$r->addRoute('GET', '/drop/import', ['Controller\Server', 'drop_import']);
-$r->addRoute('GET', '/drop/clean', ['Controller\Server', 'drop_clean']);
+RouteGroup(function () {
 
-$r->addRoute('GET', '/mob', ['Controller\Server', 'mob']);
-$r->addRoute('GET', '/mob/import', ['Controller\Server', 'mob_import']);
-$r->addRoute('POST', '/mob/update', ['Controller\Server', 'mob_update']);
+    Route('GET', '/drop', 'Controller\Server@drop');
+    Route('GET', '/drop/import', 'Controller\Server@drop_import');
+    Route('GET', '/drop/clean', 'Controller\Server@drop_clean');
+
+    Route('GET', '/mob', 'Controller\Server@mob');
+    Route('GET', '/mob/import', 'Controller\Server@mob_import');
+    Route('POST', '/mob/update', 'Controller\Server@mob_update');
+    Route('GET', '/mob/mob_sync_simple_names', 'Controller\Server@mob_sync_simple_names');
+
+}, ['middleware' => 'admin']);

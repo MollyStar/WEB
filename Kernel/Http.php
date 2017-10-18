@@ -20,9 +20,7 @@ class Http
     public $method;
 
     public function __construct() {
-        $this->dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
-            require ROOT . '/Route/web.php';
-        });
+        $this->dispatcher = FastRoute\simpleDispatcher(Route::register());
 
         // Fetch method and URI from somewhere
         $httpMethod = $_SERVER['REQUEST_METHOD'];
@@ -54,8 +52,15 @@ class Http
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
                 // ... call $handler with $vars
-                $contents = call_user_func_array($handler, $vars);
-                exit($contents);
+
+                if (isset($handler['middleware'])) {
+                    Middleware::dispatch($handler['middleware']);
+                }
+
+                if (isset($handler['controller'])) {
+                    $controller = explode('@', $handler['controller']);
+                    exit(call_user_func_array($controller, $vars));
+                }
                 break;
         }
     }

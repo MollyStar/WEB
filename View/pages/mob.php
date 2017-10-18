@@ -8,7 +8,7 @@
 </style>
 <div class="container">
     <div class="row">
-        <form id="form" class="form-horizontal" onsubmit="return false;">
+        <form id="form" class="form-horizontal" onsubmit="return false;" action="/mob/update">
             <div class="col-sm-12">
                 <section class="panel">
                     <div class="panel-heading">
@@ -26,6 +26,7 @@
                                 <th>中文名称</th>
                                 <th>区域</th>
                                 <th>排序</th>
+                                <th>BOSS?</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -43,8 +44,10 @@
                                     </td>
                                     <td>
                                         <select class="form-control" name="data[<?php echo $item['id']; ?>][area]">
+                                            <option value="">-</option>
                                             <?php foreach ($area[$item['ep']] as $ak => $a): ?>
-                                                <option<?php echo $item['area'] == $ak ? ' selected="selected"' : ''; ?>
+                                                <option<?php echo $item['area'] === $ak ? ' selected="selected"'
+                                                    : ''; ?>
                                                         value="<?php echo $ak; ?>"><?php echo $a[0][1]; ?></option>
                                             <?php endforeach; ?>
                                         </select>
@@ -52,6 +55,10 @@
                                     <td><input name="data[<?php echo $item['id']; ?>][order]"
                                                class="form-control input-sm" type="number"
                                                value="<?php echo $item['order']; ?>">
+                                    </td>
+                                    <td><input name="data[<?php echo $item['id']; ?>][boss]"
+                                               class="checkbox" type="checkbox"
+                                               value="1"<?php echo $item['boss'] == 1 ? ' checked="checked"' : ''; ?>>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -76,7 +83,7 @@
 
         var data = $(this).serializeArray();
 
-        $.post('/mob/update', data, function (ret) {
+        $.post($(this).attr('action'), data, function (ret) {
             if (ret && ret.code === 0 && ret.response > 0) {
                 window.location.reload();
             }
