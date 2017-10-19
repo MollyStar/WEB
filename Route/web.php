@@ -14,10 +14,12 @@ Route('GET', '/verifiation.jpg', 'Controller\Common@verifiation');
 
 RouteGroup(function () {
     Route('GET', '/items', 'Controller\Server@items');
+    Route('GET', '/items/import', 'Controller\Server@items_import');
 
     Route('GET', '/drop', 'Controller\Server@drop');
     Route('GET', '/drop/import', 'Controller\Server@drop_import');
     Route('GET', '/drop/clean', 'Controller\Server@drop_clean');
+    Route('GET', '/drop/export', 'Controller\Server@drop_export');
 
     Route('GET', '/mob', 'Controller\Server@mob');
     Route('GET', '/mob/import', 'Controller\Server@mob_import');

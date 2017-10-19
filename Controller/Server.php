@@ -8,6 +8,7 @@
 
 namespace Controller;
 
+use Alchemy\Zippy\Zippy;
 use Carlosocarvalho\SimpleInput\Input\Input;
 use Common\MobHelper;
 use Kernel\Config;
@@ -101,8 +102,29 @@ class Server
 
     public function drop() {
 
+        $map_items = collect(DB::connection()->get('map_items'))->keyBy('hex')->toArray();
+
+        $map_mob_drop = collect(DB::connection()->get('map_drop_mob', 5, [
+            'ep',
+            'name',
+            'name_zh',
+            'area',
+            '`order` as disp_order',
+        ]))->groupBy('ep')->map(function ($item) {
+            return $item->sortBy('area')->groupBy('area')->map(function ($item) {
+                return $item->sortBy('disp_order');
+            });
+        })->toArray();
+
         $mob_drop = collect(DB::connection()->where('type', 1)->where('name', 'Null', '!=')->get('item_drop'))
-            ->map(function ($item) {
+            ->map(function ($item) use (&$map_items) {
+                $item['item_name'] = $map_items[$item['item']]['name'];
+                $item['item_name_zh'] = $map_items[$item['item']]['name_zh']
+                                        ??
+                                        $map_items[$item['item']]['name']
+                                        ??
+                                        '？？？？';
+
                 return $item;
             })
             ->groupBy('dif')
@@ -117,18 +139,6 @@ class Server
             })
             ->toArray();
 
-        $map_mob_drop = collect(DB::connection()->get('map_drop_mob', null, [
-            'ep',
-            'name',
-            'name_zh',
-            'area',
-            '`order` as disp_order',
-        ]))->groupBy('ep')->map(function ($item) {
-            return $item->groupBy('area')->map(function ($item) {
-                return $item->sortBy('disp_order');
-            });
-        })->toArray();
-
         //        $box_drop = collect(DB::connection()->where('type', 0)->get('item_drop'));
         //
         //        $box_drop = $box_drop->groupBy('dif')->map(function ($difGroupItem) {
@@ -137,6 +147,26 @@ class Server
 
         return Response::view('pages.drop.drop', compact('mob_drop', 'map_mob_drop'));
 
+    }
+
+    public function drop_export() {
+
+        $dir = ROOT . '/__SERVER/export/drop';
+        !is_dir($dir) && mkdir($dir, '777', true);
+
+        collect(DB::connection()->where('type', 1)->get('item_drop'))->groupBy('ep')->each(function ($item, $ek) {
+            $ep = Config::get('server.ep')[$ek][0];
+
+            return $item->groupBy('dif')->each(function ($item, $dk) use ($ep) {
+                return $item->groupBy('sec')->each(function ($item, $sk) use ($ep, $dk) {
+                    $file = ROOT . '/__SERVER/export/drop/' . sprintf('ep%d_%s_%d_%d.txt', $ep, 'mob', $dk, $sk);
+                    $contents = $item->sortBy('order')->map(function ($item) {
+                            return sprintf("#\n# %s\n%s\n%s", $item['name'], $item['rate'], $item['item']);
+                        })->implode("\n") . '#';
+                    file_put_contents($file, Response::view('template.mob_drop', compact('contents')));
+                });
+            });
+        })->toArray();
     }
 
     public function drop_import() {
@@ -148,8 +178,6 @@ class Server
                 return array_combine($item->pluck('name')->toArray(), $item->pluck('area')->toArray());
             })
             ->all();
-
-        //                dd($map_mob_area);
 
         if (file_exists($path . '/imprted.lock')) {
             return '已导入，若要重新导入请先<a href="/drop/clean" target="_blank">清空</a>';
@@ -223,17 +251,25 @@ class Server
 
     public function items() {
 
-        $items = collect();
+    }
 
-        collect(['armorpmt', 'shieldpmt', 'weaponpmt'])->each(function ($name) use (&$items) {
-            $items = $items->merge(collect(file(ROOT .
-                                                '/__SERVER/item/' .
-                                                $name .
-                                                '.ini'))->mapWithKeys(function ($line) {
+    public function items_import() {
+        $itemspmt = collect();
+        collect(['armorpmt', 'shieldpmt', 'weaponpmt'])->each(function ($name) use (&$itemspmt) {
+            $itemspmt = $itemspmt->merge(collect(file(ROOT .
+                                                      '/__SERVER/item/' .
+                                                      $name .
+                                                      '.ini'))->mapWithKeys(function ($line) {
                 list($hex, $name) = explode(',', rtrim($line, "\n"));
 
                 return [substr($hex, 2) => trim($name, '"')];
             }));
+        });
+
+        $items = collect(file(ROOT . '/__SERVER/item/items.ini'))->mapWithKeys(function ($line) {
+            list($hex, $name) = explode(',', rtrim($line, "\n"));
+
+            return [(string)$hex => trim($name, '"')];
         });
 
         $items_zh = collect(file(ROOT . '/__SERVER/item/items_zh.ini'))->mapWithKeys(function ($line) {
@@ -242,16 +278,45 @@ class Server
             return [(string)$hex => trim($name, '"')];
         });
 
-        $item_drop = collect(DB::connection()
-            ->groupBy('item')
-            ->orderBy('item', 'ASC')
-            ->get('item_drop', null, ['item']))->map(function ($item) use (&$items, &$items_zh) {
-            $item['name'] = $items->get($item['item']);
-            $item['name_zh'] = $items_zh->get($item['item']);
-
-            return $item;
+        $ITEMS = collect(array_unique(call_user_func_array('array_merge', [
+            $itemspmt->keys()->toArray(),
+            $items->keys()->toArray(),
+            $items_zh->keys()->toArray(),
+        ])))->sortBy(function ($hex) {
+            return hexdec($hex);
+        })->mapWithKeys(function ($item) use (&$items, &$items_zh, &$itemspmt) {
+            return [
+                $item => [
+                    'hex'     => $item,
+                    'name'    => $itemspmt->get($item) ?? $items->get($item),
+                    'name_zh' => $items_zh->get($item),
+                ],
+            ];
         });
 
-        dd($item_drop);
+        if (!DB::connection()->getValue('map_items', 'count(hex)')) {
+            DB::connection()->insertMulti('map_items', $ITEMS->values()->toArray());
+
+            return Response::json(['code' => 0, 'msg' => '一次性全量写入成功']);
+        } else {
+
+            $ret = [
+                'I' => [],
+                'U' => [],
+            ];
+
+            $ITEMS->each(function ($item) use (&$ret) {
+                if (DB::connection()->insert('map_items', $item)) {
+                    $ret['I'][] = $item['hex'];
+                } else {
+                    $hex = $item['hex'];
+                    unset($item['hex']);
+                    DB::connection()->where('hex', $hex)->update('map_items', $item);
+                    $ret['U'][] = $hex;
+                }
+            });
+
+            return Response::json(['code' => 0, 'msg' => '更新成功', 'response' => $ret]);
+        }
     }
 }

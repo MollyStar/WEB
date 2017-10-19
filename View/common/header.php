@@ -8,6 +8,7 @@
     <link href="/asset/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/asset/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/asset/css/bootstrap-theme-simplex.min.css" rel="stylesheet" type="text/css">
+    <link href="/asset/css/common.css" rel="stylesheet" type="text/css">
     <script src="/asset/js/jquery.min.js"></script>
     <script src="/asset/js/popper.min.js"></script>
     <script src="/asset/js/bootstrap.min.js"></script>

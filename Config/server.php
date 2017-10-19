@@ -8,9 +8,9 @@
 
 return [
     'ep'   => [
-        [1, 'I'],
-        [2, 'II'],
-        [4, 'IV'],
+        [1, 'I', 'Episode: I'],
+        [2, 'II', 'Episode: II'],
+        [4, 'IV', 'Episode: IV'],
     ],
     'type' => [
         'box',
@@ -19,7 +19,7 @@ return [
     'dif'  => [
         ['Normal', '普通', 'N'],
         ['Hard', '困难', 'H'],
-        ['Very hard', '极难', 'VH'],
+        ['Very hard', '极难', 'V'],
         ['Ulimit', '极限', 'U'],
     ],
     'sec'  => [
@@ -39,8 +39,8 @@ return [
             [
                 ['Forest', '森林'],
                 [
-                    2  => 'Forest 1',
-                    3  => 'Forest 2',
+                    1  => 'Forest 1',
+                    2  => 'Forest 2',
                     11 => 'Dragon',
                 ],
             ],
