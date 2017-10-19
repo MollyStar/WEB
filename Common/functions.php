@@ -1,8 +1,11 @@
 <?php
 if (!function_exists('dd')) {
-    function dd($value = null) {
+    function dd(...$args) {
         echo '<pre>';
-        var_export($value);
+        foreach ($args as $arg) {
+            echo "\n\n";
+            var_export($arg);
+        }
         echo '</pre>';
         exit();
     }

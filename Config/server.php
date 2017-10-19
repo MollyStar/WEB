@@ -12,7 +12,10 @@ return [
         [2, 'II'],
         [4, 'IV'],
     ],
-    'type' => ['box', 'mob'],
+    'type' => [
+        'box',
+        'mob',
+    ],
     'dif'  => [
         ['Normal', '普通', 'N'],
         ['Hard', '困难', 'H'],

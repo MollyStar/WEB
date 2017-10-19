@@ -5,6 +5,12 @@
         right: 10px;
         bottom: 10px;
     }
+
+    #sync-btn {
+        position: fixed;
+        right: 10px;
+        bottom: 76px;
+    }
 </style>
 <div class="container">
     <div class="row">
@@ -17,6 +23,9 @@
                         </h3>
                     </div>
                     <div class="panel-body">
+                        <button id="sync-btn" href="/mob/sync_simple_names" class="btn btn-lg btn-warning"
+                                type="button">同步
+                        </button>
                         <button id="save-btn" class="btn btn-lg btn-info" type="submit">保存</button>
                         <table class="table table-bordered">
                             <thead>
@@ -96,6 +105,18 @@
 
     form.on('change', 'input,select', function () {
         $(this).parents('tr').find('td:eq(0) input').val(1);
-    })
+    });
+
+    form.find('#sync-btn').on('click', function () {
+
+        $.get($(this).attr('href'), function (ret) {
+            if (ret && ret.code === 0) {
+                alert(ret.msg);
+                window.location.reload();
+            }
+        });
+
+        return false;
+    });
 </script>
 <?php Kernel\View::part('common.footer') ?>
