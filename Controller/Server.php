@@ -14,6 +14,7 @@ use Common\MobHelper;
 use Kernel\Config;
 use Kernel\DB;
 use Kernel\Response;
+use PHPZip\Zip\File\Zip;
 
 class Server
 {
@@ -151,22 +152,31 @@ class Server
 
     public function drop_export() {
 
-        $dir = ROOT . '/__SERVER/export/drop';
-        !is_dir($dir) && mkdir($dir, '777', true);
+        //$dir = ROOT . '/__SERVER/export/drop';
+        //!is_dir($dir) && mkdir($dir, '777', true);
 
-        collect(DB::connection()->where('type', 1)->get('item_drop'))->groupBy('ep')->each(function ($item, $ek) {
-            $ep = Config::get('server.ep')[$ek][0];
+        $zip = new Zip();
 
-            return $item->groupBy('dif')->each(function ($item, $dk) use ($ep) {
-                return $item->groupBy('sec')->each(function ($item, $sk) use ($ep, $dk) {
-                    $file = ROOT . '/__SERVER/export/drop/' . sprintf('ep%d_%s_%d_%d.txt', $ep, 'mob', $dk, $sk);
-                    $contents = $item->sortBy('order')->map(function ($item) {
-                            return sprintf("#\n# %s\n%s\n%s", $item['name'], $item['rate'], $item['item']);
-                        })->implode("\n") . '#';
-                    file_put_contents($file, Response::view('template.mob_drop', compact('contents')));
+        collect(DB::connection()->where('type', 1)->get('item_drop'))
+            ->groupBy('ep')
+            ->each(function ($item, $ek) use (&$zip) {
+                return $item->groupBy('dif')->each(function ($item, $dk) use ($ek, &$zip) {
+                    return $item->groupBy('sec')->each(function ($item, $sk) use ($ek, $dk, &$zip) {
+                        $ep = Config::get('server.ep')[$ek][0];
+                        $ep_disp = Config::get('server.ep')[$ek][1];
+                        $dif_disp = Config::get('server.dif')[$dk][0];
+                        $sec_disp = Config::get('server.sec')[$sk][0];
+                        $contents = $item->sortBy('order')->map(function ($item) {
+                                return sprintf("#\n# %s\n%s\n%s", $item['name'], $item['rate'], $item['item']);
+                            })->implode("\n") . "\n#";
+                        $zip->addFile(Response::view('template.mob_drop', compact('contents', 'ep_disp', 'dif_disp', 'sec_disp')), sprintf('ep%d_%s_%d_%d.txt', $ep, 'mob', $dk, $sk), time());
+                    });
                 });
-            });
-        })->toArray();
+            })
+            ->toArray();
+
+        $zip->sendZip("drop.zip", "application/zip");
+
     }
 
     public function drop_import() {
