@@ -11,6 +11,7 @@ Route('POST', '/register/save', 'Controller\User@register_save');
 Route('GET', '/login', 'Controller\User@login');
 Route('POST', '/login/submit', 'Controller\User@login_submit');
 Route('GET', '/verifiation.jpg', 'Controller\Common@verifiation');
+Route('GET', '/item_drop', 'Controller\Server@drop_public');
 
 RouteGroup(function () {
     Route('GET', '/items', 'Controller\Server@items');
