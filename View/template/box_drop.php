@@ -4,7 +4,8 @@
 #
 # File layout:
 #
-# Two lines per enemy.
-# First line is rare occurance rate.  Valid values from 0 to 255.
-# Second line is hex for actual drop.  Refer to bb_items.txt for valid hex values.
+# Three lines per box.
+# First line is area the box is found in.
+# Second line is rare occurance rate.  Valid values from 0 to 255.
+# Third line is hex for actual drop.  Refer to bb_items.txt for valid hex values.
 <?php echo $contents; ?>
