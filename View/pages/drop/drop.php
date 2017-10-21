@@ -53,17 +53,6 @@ $map_area = $config['area'];
         vertical-align: middle;
     }
 
-    .table > tbody > tr:nth-child(4n-3) > td:nth-child(2):hover,
-    .table > tbody > tr:nth-child(4n-2) > td:nth-child(1):hover,
-    .table > tbody > tr:nth-child(4n-1) > td:nth-child(1):hover,
-    .table > tbody > tr:nth-child(4n) > td:nth-child(1):hover {
-        -webkit-transform: scale(2);
-        -moz-transform: scale(2);
-        -ms-transform: scale(2);
-        -o-transform: scale(2);
-        transform: scale(2);
-    }
-
     .table > tbody > tr > td, .table > thead > tr > th {
         word-break: break-all;
         word-wrap: break-word;
@@ -71,7 +60,7 @@ $map_area = $config['area'];
 
     .table .droped-item {
         position: relative;
-        padding-top: 12px !important;
+        padding-top: 14px !important;
     }
 
     .table .droped-item > i {

@@ -11,20 +11,22 @@ Route('POST', '/register/save', 'Controller\User@register_save');
 Route('GET', '/login', 'Controller\User@login');
 Route('POST', '/login/submit', 'Controller\User@login_submit');
 Route('GET', '/verifiation.jpg', 'Controller\Common@verifiation');
-Route('GET', '/item_drop', 'Controller\Server@drop_public');
+Route('GET', '/item_drop', 'Controller\Server\Drop@public');
 
 RouteGroup(function () {
-    Route('GET', '/items', 'Controller\Server@items');
-    Route('GET', '/items/import', 'Controller\Server@items_import');
 
-    Route('GET', '/drop', 'Controller\Server@drop');
-    Route('GET', '/drop/import', 'Controller\Server@drop_import');
-    Route('GET', '/drop/clean', 'Controller\Server@drop_clean');
-    Route('GET', '/drop/export', 'Controller\Server@drop_export');
+    Route('GET', '/item', 'Controller\Server\item@manage');
+    Route('GET', '/item/import', 'Controller\Server\item@import');
+    Route('POST', '/item/update', 'Controller\Server\item@update');
 
-    Route('GET', '/mob', 'Controller\Server@mob');
-    Route('GET', '/mob/import', 'Controller\Server@mob_import');
-    Route('POST', '/mob/update', 'Controller\Server@mob_update');
-    Route('GET', '/mob/sync_simple_names', 'Controller\Server@mob_sync_simple_names');
+    Route('GET', '/drop', 'Controller\Server\Drop@manage');
+    Route('GET', '/drop/import', 'Controller\Server\Drop@import');
+    Route('GET', '/drop/clean', 'Controller\Server\Drop@clean');
+    Route('GET', '/drop/export', 'Controller\Server\Drop@export');
+
+    Route('GET', '/mob', 'Controller\Server\Mob@manage');
+    Route('GET', '/mob/import', 'Controller\Server\Mob@import');
+    Route('POST', '/mob/update', 'Controller\Server\Mob@update');
+    Route('GET', '/mob/sync_simple_names', 'Controller\Server\Mob@sync_simple_names');
 
 }, ['middleware' => 'admin']);

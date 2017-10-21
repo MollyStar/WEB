@@ -1,0 +1,43 @@
+{
+  "name": "mollystar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MollyStar/WEB.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MollyStar/WEB/issues"
+  },
+  "homepage": "https://github.com/MollyStar/WEB#readme",
+  "dependencies": {
+    "execa": "^0.7.0",
+    "fs": "0.0.1-security",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-less": "^3.3.0",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.6.1",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-uglify": "^1.5.1",
+    "gulp-util": "^3.0.8",
+    "json-config-reader": "^2.0.1",
+    "map-stream": "^0.0.7",
+    "require-dir": "^0.3.1",
+    "trim": "^0.0.1",
+    "vinyl-fs": "^2.4.4",
+    "vinyl-named": "^1.1.0",
+    "webpack": "^2.2.1",
+    "webpack-stream": "^4.0.0"
+  }
+}

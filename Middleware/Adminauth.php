@@ -14,7 +14,7 @@ class Adminauth implements MiddlewareInterface
 {
     public function handle() {
         if (!UserHelper::isLoggedAdmin()) {
-            header('HTTP/1.1 403 Forbidden');
+            header('Location: /login');
             exit();
         }
     }
