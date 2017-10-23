@@ -29,7 +29,7 @@
         }
 
         var html = [
-            '<div class="ui-dialog modal fade' + (options.className ? ' ' + options.className : '') + '"' + (options.id ? ' id="' + options.id + '"' : '') + '>',
+            '<div style="display: none" class="ui-dialog modal' + (options.className ? ' ' + options.className : '') + '"' + (options.id ? ' id="' + options.id + '"' : '') + '>',
             '    <div class="modal-dialog">',
             '    <div class="modal-content">',
             !options.closeButton ? '' : '    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>',
@@ -40,9 +40,9 @@
             '    </div>',
             '    </div>',
             '    </div>'
-        ];
+        ].join('');
 
-        var node = $(html.join(''));
+        var node = $(html);
 
         if (options.buttons.length) {
             options.buttons.forEach(function (item, i) {

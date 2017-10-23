@@ -18,7 +18,7 @@ class Drop
 {
     public function manage() {
 
-        $items = collect(DB::connection()->orderBy('hex', 'asc')->get('map_items'));
+        $items = collect(DB::connection()->orderBy('hex', 'asc')->get('map_items', null, ['hex', 'name', 'name_zh']));
 
         $map_items = $items->keyBy('hex')->toArray();
 

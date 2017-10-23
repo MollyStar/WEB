@@ -184,7 +184,7 @@
             this.$input.val('');
         }
         if (this.options.additional) {
-            this.$additional.val($li.val());
+            this.$additional.val($li.attr('value'));
         }
         this.hide();
         this.utility.trigger('select', $li);

@@ -179,9 +179,9 @@
 
         function items() {
             var c = [];
-            c.push('<select class="editable-select form-control">');
+            c.push('<select name="item" class="editable-select form-control">');
             $.each(ITEMS, function (_, item) {
-                c.push('<option value="' + item['hex'] + '">' + item['hex'] + ' ' + item['name_zh'] + '</option>')
+                c.push('<option value="' + item['hex'] + '">' + item['hex'] + ',' + item['name_zh'] + '</option>')
             });
             c.push('</select>');
 
@@ -191,25 +191,54 @@
         function mobItemSelecter() {
             var dialog = $.dialog(
                 '<form class="form-horizontal">' +
+                '<div class="form-group">' +
                 '<div class="col-sm-3">物品</div>' +
                 '<div class="col-sm-7">' +
                 items() +
-                '</div>' + '<div class="col-sm-3">掉率</div>' +
-                '<div class="col-sm-7"><input type="number" max="255" min="0" step="1"></div>' +
-                '</form>'
-            );
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<div class="col-sm-3">掉率</div>' +
+                '<div class="col-sm-7"><input name="rate" class="form-control" type="number" max="255" min="0" step="1"></div>' +
+                '</div>' +
+                '</form>', {
+                    buttons: [
+                        {
+                            className: 'btn btn-info',
+                            button: '保存',
+                            callback: function (dialog) {
+                                console.log(dialog.find('form').serializeArray());
+                            }
+                        },
+                        {
+                            className: 'btn btn-secondary',
+                            button: '关闭',
+                            callback: function (dialog) {
+                                dialog.modal('hide');
+                            }
+                        }
+                    ]
+                });
 
-            dialog.find('select').editableSelect({effects: 'fade', additional: true});
+            dialog.on('hidden.bs.modal', function () {
+                dialog.remove();
+                dialog = null;
+            });
+
+            dialog.find('.editable-select').editableSelect({
+                effects: 'fade',
+                additional: true
+            });
         }
 
         function boxItemSelecter() {
-            
+
         }
 
-        form.on('click', '.mob-drop-unit', function () {
+        form.on('click', '.mob-drop-unit.droped-item', function () {
             mobItemSelecter();
         });
-        form.on('click', '.box-drop-unit', function () {
+        form.on('click', '.box-drop-unit > .droped-item', function () {
             boxItemSelecter();
         });
     })(jQuery);
