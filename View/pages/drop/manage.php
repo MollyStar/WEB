@@ -133,35 +133,34 @@
                                         <?php endforeach; ?>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
-                                <?php if ($area_box = $map_box_drop[$ek][$ak] ?? null): ?>
-                                    <?php foreach ($map_dif as $dk => $dif): ?>
-                                        <tr>
-                                            <?php if (current($map_dif) === $dif): ?>
-                                                <td rowspan="4">箱子</td>
-                                            <?php endif; ?>
-                                            <td>
-                                                <?php echo $dif[2]; ?>
-                                            </td>
-                                            <?php foreach ($map_sec as $sk => $sec): ?>
-                                                <?php $items = $box_drop[$dk][$ek][$ak][$sk] ?? []; ?>
-                                                <td data-ep="<?php echo $ek; ?>" data-area="<?php echo $ak; ?>"
-                                                    data-sec="<?php echo $sk; ?>" data-dif="<?php echo $dk; ?>"
-                                                    class="box-drop-unit">
-                                                    <?php foreach ($items as $item): ?>
+                                <?php foreach ($map_dif as $dk => $dif): ?>
+                                    <tr>
+                                        <?php if (current($map_dif) === $dif): ?>
+                                            <td rowspan="4">箱子</td>
+                                        <?php endif; ?>
+                                        <td>
+                                            <?php echo $dif[2]; ?>
+                                        </td>
+                                        <?php foreach ($map_sec as $sk => $sec): ?>
+                                            <td data-ep="<?php echo $ek; ?>" data-area="<?php echo $ak; ?>"
+                                                data-sec="<?php echo $sk; ?>" data-dif="<?php echo $dk; ?>"
+                                                class="box-drop-unit">
+                                                <?php if ($boxs = $box_drop[$dk][$ek][$ak][$sk] ?? []): ?>
+                                                    <?php foreach ($boxs as $box): ?>
                                                         <span class="droped-item">
-                                                        <span><?php echo $item['name_zh']; ?></span>
-                                                        <i><?php echo $item['rate_p']; ?></i>
-                                                            <?php echo $item['item_name_zh']; ?><br/>
-                                                            <?php echo $item['item_name']; ?>
+                                                        <span><?php echo $box['name_zh']; ?></span>
+                                                        <i><?php echo $box['rate_p']; ?></i>
+                                                            <?php echo $box['item_name_zh']; ?><br/>
+                                                            <?php echo $box['item_name']; ?>
                                                     </span>
                                                     <?php endforeach; ?>
-                                                    <button class="btn box-drop-unit-add" type="button"><i
-                                                                class="fa fa-plus"></i></button>
-                                                </td>
-                                            <?php endforeach; ?>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                                <?php endif; ?>
+                                                <button class="btn box-drop-unit-add" type="button"><i
+                                                            class="fa fa-plus"></i></button>
+                                            </td>
+                                        <?php endforeach; ?>
+                                    </tr>
+                                <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -172,13 +171,46 @@
     </form>
 </div>
 <script>
+    var ITEMS = <?php echo $items->toJson();?>
+</script>
+<script>
     (function ($) {
-        var from = $('#form');
-        form.on('click', '.mob-drop-unit', function () {
+        var form = $('#form');
 
+        function items() {
+            var c = [];
+            c.push('<select class="editable-select form-control">');
+            $.each(ITEMS, function (_, item) {
+                c.push('<option value="' + item['hex'] + '">' + item['hex'] + ' ' + item['name_zh'] + '</option>')
+            });
+            c.push('</select>');
+
+            return c.join('');
+        }
+
+        function mobItemSelecter() {
+            var dialog = $.dialog(
+                '<form class="form-horizontal">' +
+                '<div class="col-sm-3">物品</div>' +
+                '<div class="col-sm-7">' +
+                items() +
+                '</div>' + '<div class="col-sm-3">掉率</div>' +
+                '<div class="col-sm-7"><input type="number" max="255" min="0" step="1"></div>' +
+                '</form>'
+            );
+
+            dialog.find('select').editableSelect({effects: 'fade', additional: true});
+        }
+
+        function boxItemSelecter() {
+            
+        }
+
+        form.on('click', '.mob-drop-unit', function () {
+            mobItemSelecter();
         });
         form.on('click', '.box-drop-unit', function () {
-
+            boxItemSelecter();
         });
     })(jQuery);
 </script>

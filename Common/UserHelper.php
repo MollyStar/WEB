@@ -12,17 +12,24 @@ use Kernel\Config;
 
 class UserHelper
 {
+
+    private static $loggedIn = false;
+
     public static function isLoggedAdmin() {
+        if (self::$loggedIn) {
+            return true;
+        }
+
         if (isset($_COOKIE['AUTH_TOKEN'])) {
             $t = EncryptCookie::decrypt($_COOKIE['AUTH_TOKEN']);
             if ($t) {
                 list(, $S) = explode("\t", $t);
                 if ($S === Config::get('auth.securt')) {
-                    return true;
+                    return self::$loggedIn = true;
                 }
             }
         }
 
-        return false;
+        return self::$loggedIn = false;
     }
 }

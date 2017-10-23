@@ -1,70 +1,38 @@
 <?php Kernel\View::part('common.header', ['title' => '登录']) ?>
-    <style>
-        #form {
-            background: rgba(255, 255, 255, .9);
-            border-radius: 5px;
-            -webkit-border-radius: 5px;
-            max-width: 420px;
-            margin: 130px auto 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        #verify_code {
-            box-sizing: border-box;
-            padding: 2px;
-            margin-top: 10px;
-            border: 1px solid #dddddd;
-            border-radius: 4px;
-        }
-
-        #verify_code img {
-            width: 100%;
-            cursor: pointer;
-        }
-
-        @media (min-width: 576px) {
-            #verify_code {
-                box-sizing: content-box;
-                padding: 2px;
-                margin-top: 0;
-            }
-
-            #verify_code img {
-                height: 32px;
-            }
-        }
-    </style>
+    <style>@import "/asset/css/part/form-signin.min.css";</style>
     <div class="container">
-        <form id="form" onsubmit="return false;" class="form-signin" action="/login/submit">
-            <div style="padding: 20px;">
+        <div class="form-signin">
+            <form id="form" class="form-horizontal col-xs-12" onsubmit="return false;" action="/login/submit">
                 <div class="form-group">
                     <div id="tips"></div>
                 </div>
                 <div class="form-group">
-                    <div class="input-group">
-                        <i class="input-group-addon fa fa-user" style="width: 38px;"></i>
+                    <div class="input-group col-xs-12">
+                        <i class="input-group-addon fa fa-user"></i>
                         <input class="form-control required" type="text" placeholder="帐号" name="username"
                                autofocus="autofocus"/>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="input-group">
-                        <i class="input-group-addon fa fa-lock" style="width: 38px;"></i>
+                    <div class="input-group col-xs-12">
+                        <i class="input-group-addon fa fa-lock"></i>
                         <input class="form-control required" type="password" placeholder="密码" name="password"/>
                     </div>
                 </div>
-                <div class="form-group clearfix">
-                    <input class="form-control required col-sm-7 pull-left" type="text" placeholder="验证码"
-                           name="verify_code"/>
-                    <div id="verify_code" class="col-sm-4 pull-right"></div>
+                <div class="form-group">
+                    <div class="input-group col-xs-12">
+                        <input autocomplete="Off" class="form-control required" type="text" placeholder="验证码"
+                               name="verify_code"/>
+                        <div class="input-group-btn">
+                            <div id="verify_code"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group clearfix">
-                    <input type="submit" class="btn btn-info col-sm-12" value="登&nbsp;&nbsp;&nbsp;&nbsp;录"/>
+                    <input type="submit" class="btn btn-info btn-block" value="登&nbsp;&nbsp;&nbsp;&nbsp;录"/>
                 </div>
-            </div>
-
-        </form>
+            </form>
+        </div>
     </div>
     <script>
         (function ($) {

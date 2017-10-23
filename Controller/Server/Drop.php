@@ -18,7 +18,9 @@ class Drop
 {
     public function manage() {
 
-        $map_items = collect(DB::connection()->get('map_items'))->keyBy('hex')->toArray();
+        $items = collect(DB::connection()->orderBy('hex', 'asc')->get('map_items'));
+
+        $map_items = $items->keyBy('hex')->toArray();
 
         $map_mob_drop = collect(DB::connection()->get('map_drop_mob', null, [
             'ep',
@@ -101,11 +103,9 @@ class Drop
             ->map(function ($item) {
                 return $item->groupBy('ep')->map(function ($item) {
                     return $item->groupBy('area')->map(function ($item) {
-                        //return $item->groupBy('name')->map(function ($item) {
                         return $item->groupBy('sec')->map(function ($item) {
                             return $item->sortBy('order');
                         });
-                        //});
                     });
                 });
             })
@@ -113,7 +113,7 @@ class Drop
 
         $manage = 1;
 
-        return Response::view('pages.drop.drop', compact('mob_drop', 'map_mob_drop', 'box_drop', 'map_box_drop', 'manage'));
+        return Response::view('pages.drop.drop', compact('mob_drop', 'map_mob_drop', 'box_drop', 'map_box_drop', 'manage', 'items'));
 
     }
 
@@ -215,44 +215,60 @@ class Drop
 
     public function export() {
 
+        $server = Config::get('server');
+
         $zip = new Zip();
 
-        collect(DB::connection()->where('type', 0)->get('item_drop'))
+        $drop = [];
+
+        $drop['box'] = collect(DB::connection()->where('type', 0)->get('item_drop'))
             ->groupBy('ep')
-            ->each(function ($item, $ek) use (&$zip) {
-                return $item->groupBy('dif')->each(function ($item, $dk) use ($ek, &$zip) {
-                    return $item->groupBy('sec')->each(function ($item, $sk) use ($ek, $dk, &$zip) {
-                        $ep = Config::get('server.ep')[$ek][0];
-                        $ep_disp = Config::get('server.ep')[$ek][1];
-                        $dif_disp = Config::get('server.dif')[$dk][0];
-                        $sec_disp = Config::get('server.sec')[$sk][0];
-                        $contents = $item->sortBy('order')->map(function ($item) {
+            ->map(function ($item) {
+                return $item->groupBy('dif')->map(function ($item) {
+                    return $item->groupBy('sec')->map(function ($item) {
+                        return $item->sortBy('order')->map(function ($item) {
                             return sprintf("#\n%s\n%s\n%s", $item['lv'], $item['rate'], $item['item']);
                         })->implode("\n");
-                        $zip->addFile(Response::view('template.box_drop', compact('contents', 'ep_disp', 'dif_disp', 'sec_disp')), sprintf('ep%d_%s_%d_%d.txt', $ep, 'box', $dk, $sk), time());
                     });
                 });
             });
 
-        collect(DB::connection()->where('type', 1)->get('item_drop'))
+        $drop['mob'] = collect(DB::connection()->where('type', 1)->get('item_drop'))
             ->groupBy('ep')
-            ->each(function ($item, $ek) use (&$zip) {
-                return $item->groupBy('dif')->each(function ($item, $dk) use ($ek, &$zip) {
-                    return $item->groupBy('sec')->each(function ($item, $sk) use ($ek, $dk, &$zip) {
-                        $ep = Config::get('server.ep')[$ek][0];
-                        $ep_disp = Config::get('server.ep')[$ek][1];
-                        $dif_disp = Config::get('server.dif')[$dk][0];
-                        $sec_disp = Config::get('server.sec')[$sk][0];
-                        $contents = $item->sortBy('order')->map(function ($item) {
-                                return sprintf("#\n# %s\n%s\n%s", $item['name'], $item['rate'], $item['item']);
-                            })->implode("\n") . "\n#";
-                        $zip->addFile(Response::view('template.mob_drop', compact('contents', 'ep_disp', 'dif_disp', 'sec_disp')), sprintf('ep%d_%s_%d_%d.txt', $ep, 'mob', $dk, $sk), time());
+            ->map(function ($item) {
+                return $item->groupBy('dif')->map(function ($item) {
+                    return $item->groupBy('sec')->map(function ($item) {
+                        return $item->sortBy('order')->map(function ($item) {
+                            return sprintf("#\n# %s\n%s\n%s", $item['name'], $item['rate'], $item['item']);
+                        })->implode("\n");
                     });
                 });
             });
+
+        $time = time();
+
+        foreach ($server['ep'] as $ek => $ep) {
+            foreach ($server['dif'] as $dk => $dif) {
+                foreach ($server['sec'] as $sk => $sec) {
+                    foreach ($drop as $type => & $dropList) {
+                        $zip->addFile(str_replace("\n", "\r\n", Response::view('template.' . $type . '_drop', [
+                            'contents' => $dropList[$ek][$dk][$sk] ?? '',
+                            'ep_disp'  => $ep[2],
+                            'dif_disp' => $dif[0] . "\n",
+                            'sec_disp' => $sec[0],
+                        ])), sprintf('ep%d_%s_%d_%d.txt', $ep[0], $type, $dk, $sk), $time);
+                    }
+                }
+            }
+        }
 
         $zip->sendZip("drop.zip", "application/zip");
 
+    }
+
+    public function remove_all_drop() {
+        DB::connection()->where('type', 0)->delete('item_drop');
+        DB::connection()->where('type', 1)->update('item_drop', ['item' => '000000', 'rate' => '0']);
     }
 
     public function import() {

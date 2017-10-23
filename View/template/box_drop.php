@@ -1,6 +1,5 @@
 # Tethealla Server Box Drop File
 # Episode: <?php echo $ep_disp; ?>, Section ID: <?php echo $sec_disp; ?>, Difficulty: <?php echo $dif_disp; ?>
-
 #
 # File layout:
 #

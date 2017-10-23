@@ -103,10 +103,10 @@ $map_area = $config['area'];
 </style>
 <?php switch ($manage): ?>
 <?php case 1: ?>
-        <?php Kernel\View::part('pages.drop.manage', compact('map_area', 'map_dif', 'map_ep', 'map_sec')) ?>
-        <?php break; ?>
-    <?php case 0: ?>
-        <?php Kernel\View::part('pages.drop.public', compact('map_area', 'map_dif', 'map_ep', 'map_sec')) ?>
-        <?php break; ?>
-    <?php endswitch; ?>
+    <?php Kernel\View::part('pages.drop.manage', compact('map_area', 'map_dif', 'map_ep', 'map_sec')) ?>
+    <?php break; ?>
+<?php case 0: ?>
+    <?php Kernel\View::part('pages.drop.public', compact('map_area', 'map_dif', 'map_ep', 'map_sec')) ?>
+    <?php break; ?>
+<?php endswitch; ?>
 <?php Kernel\View::part('common.footer') ?>

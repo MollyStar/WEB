@@ -23,6 +23,7 @@ RouteGroup(function () {
     Route('GET', '/drop/import', 'Controller\Server\Drop@import');
     Route('GET', '/drop/clean', 'Controller\Server\Drop@clean');
     Route('GET', '/drop/export', 'Controller\Server\Drop@export');
+    Route('GET', '/drop/remove_all_drop', 'Controller\Server\Drop@remove_all_drop');
 
     Route('GET', '/mob', 'Controller\Server\Mob@manage');
     Route('GET', '/mob/import', 'Controller\Server\Mob@import');
