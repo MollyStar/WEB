@@ -20,6 +20,7 @@ RouteGroup(function () {
     Route('POST', '/item/update', 'Controller\Server\item@update');
 
     Route('GET', '/drop', 'Controller\Server\Drop@manage');
+    Route('POST', '/drop/update', 'Controller\Server\Drop@update');
     Route('GET', '/drop/import', 'Controller\Server\Drop@import');
     Route('GET', '/drop/clean', 'Controller\Server\Drop@clean');
     Route('GET', '/drop/export', 'Controller\Server\Drop@export');

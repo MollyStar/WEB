@@ -73,7 +73,7 @@ class Mob
             }
         });
 
-        return Response::json(['code' => 0, 'msg' => '更新完成', 'response' => $updated]);
+        return Response::api(0, '更新完成', $updated);
     }
 
     public function sync_simple_names() {
@@ -96,7 +96,7 @@ class Mob
             ], array_merge($g_name, $g_name_zh)));
         });
 
-        return Response::json(['code' => 0, 'msg' => '更新成功']);
+        return Response::api(0, '更新成功');
     }
 
 }

@@ -40,7 +40,7 @@ class Item
             }
         });
 
-        return Response::json(['code' => 0, 'msg' => '更新完成', 'response' => $updated]);
+        return Response::api(0, '更新完成', $updated);
     }
 
     public function import() {
@@ -87,7 +87,7 @@ class Item
         if (!DB::connection()->getValue('map_items', 'count(hex)')) {
             DB::connection()->insertMulti('map_items', $ITEMS->values()->toArray());
 
-            return Response::json(['code' => 0, 'msg' => '一次性全量写入成功']);
+            return Response::api(0, '一次性全量写入成功');
         } else {
 
             $ret = [
@@ -106,7 +106,7 @@ class Item
                 }
             });
 
-            return Response::json(['code' => 0, 'msg' => '更新成功', 'response' => $ret]);
+            return Response::api(0, '更新成功', $ret);
         }
     }
 }

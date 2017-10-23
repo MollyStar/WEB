@@ -64,6 +64,10 @@
         -moz-box-shadow: none;
         box-shadow: none;
     }
+
+    .ui-dialog.modal.mob-drop-item > .modal-dialog {
+        margin-top: 15%;
+    }
 </style>
 <div class="row m-sm-0">
     <div class="col-sm-12">
@@ -123,6 +127,8 @@
                                                     <td data-hash="<?php echo $item['hash']; ?>"
                                                         data-ep="<?php echo $ek; ?>" data-area="<?php echo $ak; ?>"
                                                         data-sec="<?php echo $sk; ?>" data-dif="<?php echo $dk; ?>"
+                                                        data-item="<?php echo $item['item_hex']; ?>"
+                                                        data-rate="<?php echo $item['rate']; ?>"
                                                         class="mob-drop-unit droped-item">
                                                         <i><?php echo $item['rate_p']; ?></i>
                                                         <?php echo $item['item_name_zh']; ?><br/>
@@ -147,7 +153,9 @@
                                                 class="box-drop-unit">
                                                 <?php if ($boxs = $box_drop[$dk][$ek][$ak][$sk] ?? []): ?>
                                                     <?php foreach ($boxs as $box): ?>
-                                                        <span class="droped-item">
+                                                        <span class="droped-item"
+                                                              data-item="<?php echo $item['item_hex']; ?>"
+                                                              data-rate="<?php echo $item['rate']; ?>">
                                                         <span><?php echo $box['name_zh']; ?></span>
                                                         <i><?php echo $box['rate_p']; ?></i>
                                                             <?php echo $box['item_name_zh']; ?><br/>
@@ -177,11 +185,12 @@
     (function ($) {
         var form = $('#form');
 
-        function items() {
+        function items(current) {
+            current = current == null || current == '000000' ? null : current;
             var c = [];
             c.push('<select name="item" class="editable-select form-control">');
             $.each(ITEMS, function (_, item) {
-                c.push('<option value="' + item['hex'] + '">' + item['hex'] + ',' + item['name_zh'] + '</option>')
+                c.push('<option' + (current == item['hex'] ? ' selected="selected"' : '') + ' value="' + item['hex'] + '">' + item['hex'] + ',' + item['name_zh'] + '</option>')
             });
             c.push('</select>');
 
@@ -189,26 +198,57 @@
         }
 
         function mobItemSelecter() {
+            var info = $(this).data();
             var dialog = $.dialog(
                 '<form class="form-horizontal">' +
                 '<div class="form-group">' +
-                '<div class="col-sm-3">物品</div>' +
-                '<div class="col-sm-7">' +
-                items() +
-                '</div>' +
+                '   <div class="control-label col-xs-2">物品</div>' +
+                '   <div class="col-xs-9">' +
+                '       ' + items(info.item) +
+                '   </div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                '<div class="col-sm-3">掉率</div>' +
-                '<div class="col-sm-7"><input name="rate" class="form-control" type="number" max="255" min="0" step="1"></div>' +
+                '   <div class="control-label col-xs-2">掉率</div>' +
+                '   <div class="col-xs-9">' +
+                '       <input name="rate" class="form-control" type="number" max="255" min="0" step="1" value="' + info.rate + '">' +
+                '   </div>' +
                 '</div>' +
                 '</form>', {
+                    className: 'mob-drop-item',
                     buttons: [
                         {
                             className: 'btn btn-info',
                             button: '保存',
                             callback: function (dialog) {
-                                console.log(dialog.find('form').serializeArray());
-                            }
+                                var el = $(this);
+                                var info = el.data();
+                                var data = dialog.find('form').serializeAssoc();
+                                if (data.rate > -1 && data.item) {
+                                    data.hash = info.hash;
+                                    data.type = 'mob';
+                                    $.post('/drop/update', data).done(function (ret) {
+                                        if (ret) {
+                                            if (ret.code === 0) {
+                                                $.topTip(ret.msg);
+                                                var rep = ret.response;
+                                                el.data('item', rep.item);
+                                                el.data('rate', rep.rate);
+                                                el.html([
+                                                    '<i>' + rep.rate_p + '</i>',
+                                                    rep.item_info.name_zh + '<br/>',
+                                                    rep.item_info.name
+                                                ].join("\n"));
+                                                dialog.modal('hide');
+                                                return;
+                                            }
+                                            $.topTip(ret.msg, 'warning');
+                                        }
+                                    }).fail(function () {
+                                        $.topTip('保存失败', 'danger');
+                                    });
+                                }
+                            },
+                            context: this
                         },
                         {
                             className: 'btn btn-secondary',
@@ -235,11 +275,11 @@
 
         }
 
-        form.on('click', '.mob-drop-unit.droped-item', function () {
-            mobItemSelecter();
+        form.on('click', '.mob-drop-unit.droped-item', function (e) {
+            mobItemSelecter.call(this, e);
         });
-        form.on('click', '.box-drop-unit > .droped-item', function () {
-            boxItemSelecter();
+        form.on('click', '.box-drop-unit > .droped-item', function (e) {
+            boxItemSelecter.call(this, e);
         });
     })(jQuery);
 </script>

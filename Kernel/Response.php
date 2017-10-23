@@ -18,6 +18,11 @@ class Response
         return json_encode($data);
     }
 
+    public static function api($code, $message, $response = null) {
+        return self::json(array_merge(['code' => $code, 'msg' => $message], $response ? ['response' => $response]
+            : []));
+    }
+
     public static function view($name, $vars = [], $cacheName = null) {
         if ($cacheName) {
             return self::saveToCache($cacheName, View::make($name, $vars));

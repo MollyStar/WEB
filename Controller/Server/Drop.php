@@ -8,6 +8,7 @@
 
 namespace Controller\Server;
 
+use Carlosocarvalho\SimpleInput\Input\Input;
 use Common\ServerHelper;
 use Kernel\Config;
 use Kernel\DB;
@@ -50,6 +51,8 @@ class Drop
         // 'item_name_zh' => '麻醉枪',
         $mob_drop = collect(DB::connection()->where('type', 1)->where('name', 'Null', '!=')->get('item_drop'))
             ->map(function ($item) use (&$map_items) {
+
+                $item['item_hex'] = $map_items[$item['item']]['hex'];
                 $item['item_name'] = $map_items[$item['item']]['name'];
                 $item['item_name_zh'] = $map_items[$item['item']]['name_zh']
                                         ??
@@ -80,6 +83,7 @@ class Drop
                 $item['name'] = $map_box_area_lv[$item['ep']][$item['area']][1][$item['lv']][0];
                 $item['name_zh'] = $map_box_area_lv[$item['ep']][$item['area']][1][$item['lv']][1];
 
+                $item['item_hex'] = $map_items[$item['item']]['hex'];
                 $item['item_name'] = $map_items[$item['item']]['name'];
                 $item['item_name_zh'] = $map_items[$item['item']]['name_zh']
                                         ??
@@ -115,6 +119,55 @@ class Drop
 
         return Response::view('pages.drop.drop', compact('mob_drop', 'map_mob_drop', 'box_drop', 'map_box_drop', 'manage', 'items'));
 
+    }
+
+    public function update() {
+
+        $type = Input::post('type');
+
+        switch ($type) {
+            case 'mob':
+                $hash = Input::post('hash');
+                $item = Input::post('item');
+                $rate = Input::post('rate') ?? 0;
+
+                if ($hash && $item && $rate > -1) {
+                    if ($rate > 255) {
+                        $rate = 255;
+                    }
+                    if ($rate < 0) {
+                        $rate = 0;
+                    }
+                    $drop_info = DB::connection()->where('hash', $hash)->getOne('item_drop');
+                    if (!$drop_info) {
+                        return Response::api(0, '无效的怪物');
+                    }
+                    $item_info = DB::connection()->where('hex', $item)->getOne('map_items');
+                    if (!$item_info) {
+                        return Response::api(0, '无效的物品');
+                    }
+                    if ($hash) {
+                        if (DB::connection()->where('hash', $drop_info['hash'])->update('item_drop', [
+                            'item' => $item_info['hex'],
+                            'rate' => $rate,
+                        ])
+                        ) {
+                            return Response::api(0, '保存成功', [
+                                'hash'      => $drop_info['hash'],
+                                'item'      => $item_info['hex'],
+                                'rate'      => $rate,
+                                'rate_p'    => sprintf('%.4f', $rate / 255),
+                                'item_info' => $item_info,
+                            ]);
+                        }
+                    }
+                }
+                break;
+            case 'box':
+                break;
+        }
+
+        return Response::api(-1, '保存失败');
     }
 
     public function public () {
