@@ -58,12 +58,34 @@ $map_area = $config['area'];
         word-wrap: break-word;
     }
 
-    .table .droped-item {
+    .box-drop-unit {
+        position: relative;
+    }
+
+    .box-drop-unit .droped-item {
+        display: inline-block;
+        width: 100%;
+        padding: 2px;
+        border: 1px solid rgba(0, 0, 0, .25);
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        margin-bottom: 2px;
+    }
+
+    .box-drop-unit .droped-item > span {
+        display: inline-block;
+        width: 100%;
+        margin-bottom: 2px;
+        border-bottom: 1px solid rgba(0, 0, 0, .25);
+    }
+
+    .droped-item {
         position: relative;
         padding-top: 14px !important;
     }
 
-    .table .droped-item > i {
+    .droped-item > i {
         /*opacity: .7;*/
         position: absolute;
         top: 1px;
@@ -103,10 +125,10 @@ $map_area = $config['area'];
 </style>
 <?php switch ($manage): ?>
 <?php case 1: ?>
-    <?php Kernel\View::part('pages.drop.manage', compact('map_area', 'map_dif', 'map_ep', 'map_sec')) ?>
-    <?php break; ?>
-<?php case 0: ?>
-    <?php Kernel\View::part('pages.drop.public', compact('map_area', 'map_dif', 'map_ep', 'map_sec')) ?>
-    <?php break; ?>
-<?php endswitch; ?>
+        <?php Kernel\View::part('pages.drop.manage', compact('map_area', 'map_dif', 'map_ep', 'map_sec')) ?>
+        <?php break; ?>
+    <?php case 0: ?>
+        <?php Kernel\View::part('pages.drop.public', compact('map_area', 'map_dif', 'map_ep', 'map_sec')) ?>
+        <?php break; ?>
+    <?php endswitch; ?>
 <?php Kernel\View::part('common.footer') ?>

@@ -13,26 +13,7 @@
     }
 
     .box-drop-unit {
-        position: relative;
         padding-bottom: 22px !important;
-    }
-
-    .box-drop-unit .droped-item {
-        display: inline-block;
-        width: 100%;
-        padding: 2px;
-        border: 1px solid rgba(0, 0, 0, .25);
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
-        border-radius: 3px;
-        margin-bottom: 2px;
-    }
-
-    .box-drop-unit .droped-item > span {
-        display: inline-block;
-        width: 100%;
-        margin-bottom: 2px;
-        border-bottom: 1px solid rgba(0, 0, 0, .25);
     }
 
     .box-drop-unit .droped-item:hover > span {
@@ -148,14 +129,19 @@
                                             <?php echo $dif[2]; ?>
                                         </td>
                                         <?php foreach ($map_sec as $sk => $sec): ?>
-                                            <td data-ep="<?php echo $ek; ?>" data-area="<?php echo $ak; ?>"
-                                                data-sec="<?php echo $sk; ?>" data-dif="<?php echo $dk; ?>"
-                                                class="box-drop-unit">
+                                            <td class="box-drop-unit"
+                                                data-ep="<?php echo $ek; ?>"
+                                                data-area="<?php echo $ak; ?>"
+                                                data-sec="<?php echo $sk; ?>"
+                                                data-dif="<?php echo $dk; ?>">
                                                 <?php if ($boxs = $box_drop[$dk][$ek][$ak][$sk] ?? []): ?>
                                                     <?php foreach ($boxs as $box): ?>
                                                         <span class="droped-item"
-                                                              data-item="<?php echo $item['item_hex']; ?>"
-                                                              data-rate="<?php echo $item['rate']; ?>">
+                                                              data-hash="<?php echo $box['hash']; ?>"
+                                                              data-item="<?php echo $box['item_hex']; ?>"
+                                                              data-rate="<?php echo $box['rate']; ?>"
+                                                              data-order="<?php echo $box['order']; ?>"
+                                                              data-lv="<?php echo $box['lv']; ?>">
                                                         <span><?php echo $box['name_zh']; ?></span>
                                                         <i><?php echo $box['rate_p']; ?></i>
                                                             <?php echo $box['item_name_zh']; ?><br/>
@@ -179,7 +165,8 @@
     </form>
 </div>
 <script>
-    var ITEMS = <?php echo $items->toJson();?>
+    var AREA = <?php echo json_encode($map_box_area_lv);?>;
+    var ITEMS = <?php echo $items->toJson();?>;
 </script>
 <script>
     (function ($) {
@@ -197,19 +184,30 @@
             return c.join('');
         }
 
+        function area(ep_key, area_key, current) {
+            var c = [];
+            c.push('<select name="lv" class="editable-select form-control">');
+            $.each(AREA[ep_key][area_key][1], function (lk, LV) {
+                c.push('<option' + (current == lk ? ' selected="selected"' : '') + ' value="' + lk + '">' + LV[0] + ',' + LV[1] + '</option>')
+            });
+            c.push('</select>');
+
+            return c.join('');
+        }
+
         function mobItemSelecter() {
             var info = $(this).data();
             var dialog = $.dialog(
                 '<form class="form-horizontal">' +
                 '<div class="form-group">' +
-                '   <div class="control-label col-xs-2">物品</div>' +
-                '   <div class="col-xs-9">' +
+                '   <div class="control-label col-xs-3">物品</div>' +
+                '   <div class="col-xs-8">' +
                 '       ' + items(info.item) +
                 '   </div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                '   <div class="control-label col-xs-2">掉率</div>' +
-                '   <div class="col-xs-9">' +
+                '   <div class="control-label col-xs-3">掉率</div>' +
+                '   <div class="col-xs-8">' +
                 '       <input name="rate" class="form-control" type="number" max="255" min="0" step="1" value="' + info.rate + '">' +
                 '   </div>' +
                 '</div>' +
@@ -272,13 +270,111 @@
         }
 
         function boxItemSelecter() {
+            var pub_info = $(this).parents('.box-drop-unit').data();
+            var info = $(this).data();
+            var dialog = $.dialog(
+                '<form class="form-horizontal">' +
+                '<div class="form-group">' +
+                '   <div class="control-label col-xs-3">区域(地图)</div>' +
+                '   <div class="col-xs-8">' +
+                '       ' + area(pub_info.ep, pub_info.area, info.lv) +
+                '   </div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '   <div class="control-label col-xs-3">物品</div>' +
+                '   <div class="col-xs-8">' +
+                '       ' + items(info.item) +
+                '   </div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '   <div class="control-label col-xs-3">掉率</div>' +
+                '   <div class="col-xs-8">' +
+                '       <input name="rate" class="form-control" type="number" max="255" min="0" step="1" value="' + info.rate + '">' +
+                '   </div>' +
+                '</div>' +
+                '</form>', {
+                    className: 'mob-drop-item',
+                    buttons: [
+                        {
+                            className: 'btn btn-info',
+                            button: '保存',
+                            callback: function (dialog) {
+                                var el = $(this);
+                                var parent = el.parents('.box-drop-unit');
+                                var info = el.data();
+                                var pub_info = parent.data();
+                                var data = dialog.find('form').serializeAssoc();
+                                if (data.lv > -1 && data.rate > -1 && data.item) {
+                                    if (info.hash) {
+                                        data.hash = info.hash;
+                                    }
+                                    data.type = 'box';
+                                    data = $.extend({}, data, pub_info);
 
+                                    $.post('/drop/update', data).done(function (ret) {
+                                        if (ret) {
+                                            if (ret.code === 0) {
+                                                $.topTip(ret.msg);
+                                                var rep = ret.response;
+                                                var item = $('<span class="droped-item"' +
+                                                    ' data-hash="' + rep.hash + '"' +
+                                                    ' data-item="' + rep.item + '"' +
+                                                    ' data-rate="' + rep.rate + '"' +
+                                                    ' data-order="' + rep.order + '"' +
+                                                    ' data-lv="' + rep.lv + '">' +
+                                                    '<span>' + rep.name_zh + '</span>' +
+                                                    '<i>' + rep.rate_p + '</i>' + rep.item_info.name_zh +
+                                                    '<br/>' + rep.item_info.name +
+                                                    '</span>');
+
+                                                var resItem = parent.find('[data-hash="' + data.hash + '"]');
+                                                if (resItem.length) {
+                                                    resItem.replaceWith(item);
+                                                } else {
+                                                    item.insertBefore(parent.find('.box-drop-unit-add'));
+                                                }
+                                                dialog.modal('hide');
+                                                return;
+                                            }
+                                            $.topTip(ret.msg, 'warning');
+                                        }
+                                    }).fail(function () {
+                                        $.topTip('保存失败', 'danger');
+                                    });
+                                }
+                            },
+                            context: this
+                        },
+                        {
+                            className: 'btn btn-secondary',
+                            button: '关闭',
+                            callback: function (dialog) {
+                                dialog.modal('hide');
+                            }
+                        }
+                    ]
+                });
+
+            dialog.on('hidden.bs.modal', function () {
+                dialog.remove();
+                dialog = null;
+            });
+
+            dialog.find('.editable-select').editableSelect({
+                effects: 'fade',
+                additional: true
+            });
         }
 
         form.on('click', '.mob-drop-unit.droped-item', function (e) {
             mobItemSelecter.call(this, e);
         });
+
         form.on('click', '.box-drop-unit > .droped-item', function (e) {
+            boxItemSelecter.call(this, e);
+        });
+
+        form.on('click', '.box-drop-unit > .box-drop-unit-add', function (e) {
             boxItemSelecter.call(this, e);
         });
     })(jQuery);

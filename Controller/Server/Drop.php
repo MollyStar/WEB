@@ -117,7 +117,7 @@ class Drop
 
         $manage = 1;
 
-        return Response::view('pages.drop.drop', compact('mob_drop', 'map_mob_drop', 'box_drop', 'map_box_drop', 'manage', 'items'));
+        return Response::view('pages.drop.drop', compact('map_box_area_lv', 'mob_drop', 'map_mob_drop', 'box_drop', 'map_box_drop', 'manage', 'items'));
 
     }
 
@@ -140,7 +140,7 @@ class Drop
                     }
                     $drop_info = DB::connection()->where('hash', $hash)->getOne('item_drop');
                     if (!$drop_info) {
-                        return Response::api(0, '无效的怪物');
+                        return Response::api(0, '无效的HASH');
                     }
                     $item_info = DB::connection()->where('hex', $item)->getOne('map_items');
                     if (!$item_info) {
@@ -164,6 +164,67 @@ class Drop
                 }
                 break;
             case 'box':
+                $hash = Input::post('hash');
+                $item = Input::post('item');
+                $rate = Input::post('rate') ?? 0;
+                $lv = Input::post('lv');
+
+                if ($lv > -1 && $item && $rate > -1) {
+
+                    $item_info = DB::connection()->where('hex', $item)->getOne('map_items');
+                    if (!$item_info) {
+                        return Response::api(0, '无效的物品');
+                    }
+
+                    $map_box_area_lv = Config::get('server.area');
+
+                    if ($hash) {
+                        $drop_info = DB::connection()->where('hash', $hash)->getOne('item_drop');
+                        if (!$drop_info) {
+                            return Response::api(0, '无效的HASH');
+                        }
+                        DB::connection()->where('hash', $hash)->delete('item_drop');
+                    }
+                    // 新增
+                    $ek = Input::post('ep');
+                    $dk = Input::post('dif');
+                    $sk = Input::post('sec');
+                    $ak = Input::post('area');
+                    $order = DB::connection()
+                        ->where('type', 0)
+                        ->where('ep', $ek)
+                        ->where('dif', $dk)
+                        ->where('area', $ak)
+                        ->where('sec', $sk)
+                        ->orderBy('`order`', 'desc')
+                        ->getValue('item_drop', '`order`', 1);
+
+                    $order = $order > -1 ? $order + 1 : 0;
+
+                    $data = [
+                        'hash'  => md5($ek . $dk . $sk . 0 . $order),
+                        'ep'    => $ek,
+                        'dif'   => $dk,
+                        'sec'   => $sk,
+                        'type'  => 0,
+                        'order' => $order,
+                        'area'  => $ak,
+                        'lv'    => $lv,
+                        'name'  => null,
+                        'rate'  => $rate,
+                        'item'  => $item,
+                    ];
+
+                    if (DB::connection()->insert('item_drop', $data)) {
+                        $data['name'] = $map_box_area_lv[$ek][$ak][1][$lv][0];
+                        $data['name_zh'] = $map_box_area_lv[$ek][$ak][1][$lv][1];
+                        $data['rate_p'] = sprintf('%.4f', $rate / 255);
+                        $data['item'] = $item;
+                        $data['item_info'] = $item_info;
+
+                        return Response::api(0, '掉落添加成功', $data);
+                    }
+                }
                 break;
         }
 
@@ -177,9 +238,9 @@ class Drop
                                ??
                                '');
 
-        if (Response::isCached($cacheName)) {
-            return Response::cache($cacheName);
-        }
+//        if (Response::isCached($cacheName)) {
+//            return Response::cache($cacheName);
+//        }
 
         $map_items = collect(DB::connection()->get('map_items'))->keyBy('hex')->toArray();
 

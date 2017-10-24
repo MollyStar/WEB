@@ -51,7 +51,7 @@
                                             </td>
                                             <?php foreach ($map_sec as $sk => $sec): ?>
                                                 <?php $item = $mob_drop[$dk][$ek][$ak][$mob['name']][$sk]; ?>
-                                                <td class="droped-item" data-id="<?php echo $item['hash']; ?>">
+                                                <td class="droped-item">
                                                     <i><?php echo $item['rate_p']; ?></i>
                                                     <?php echo $item['item_name_zh']; ?>
                                                 </td>
@@ -74,12 +74,12 @@
                                             </td>
                                             <?php foreach ($map_sec as $sk => $sec): ?>
                                                 <?php $items = $box_drop[$dk][$ek][$ak][$box['name']][$sk] ?? []; ?>
-                                                <td>
+                                                <td class="box-drop-unit">
                                                     <?php foreach ($items as $item): ?>
-                                                        <fieldset class="droped-item">
+                                                        <span class="droped-item">
                                                             <i><?php echo $item['rate_p']; ?></i>
                                                             <?php echo $item['item_name_zh']; ?>
-                                                        </fieldset>
+                                                        </span>
                                                     <?php endforeach; ?>
                                                 </td>
                                             <?php endforeach; ?>

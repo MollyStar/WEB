@@ -31,4 +31,7 @@ RouteGroup(function () {
     Route('POST', '/mob/update', 'Controller\Server\Mob@update');
     Route('GET', '/mob/sync_simple_names', 'Controller\Server\Mob@sync_simple_names');
 
+    Route('GET', '/character', 'Controller\Server\Character@manage');
+    Route('GET', '/character/bank', 'Controller\Server\Character@bank');
+
 }, ['middleware' => 'admin']);
