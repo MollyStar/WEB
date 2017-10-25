@@ -14,9 +14,10 @@ Route('GET', '/verifiation.jpg', 'Controller\Common@verifiation');
 Route('GET', '/item_drop', 'Controller\Server\Drop@public');
 
 RouteGroup(function () {
+    Route('GET', '/dashboard', 'Controller\Dashboard@index');
 
     Route('GET', '/item', 'Controller\Server\item@manage');
-    Route('GET', '/item/import', 'Controller\Server\item@import');
+    // Route('GET', '/item/import', 'Controller\Server\item@import');
     Route('POST', '/item/update', 'Controller\Server\item@update');
 
     Route('GET', '/drop', 'Controller\Server\Drop@manage');
@@ -33,5 +34,8 @@ RouteGroup(function () {
 
     Route('GET', '/character', 'Controller\Server\Character@manage');
     Route('GET', '/character/bank', 'Controller\Server\Character@bank');
+    Route('POST', '/character/bank/save', 'Controller\Server\Character@bank_save');
+
+    Route('GET', '/tools/db', 'Controller\Tools\DBStructure@index');
 
 }, ['middleware' => 'admin']);

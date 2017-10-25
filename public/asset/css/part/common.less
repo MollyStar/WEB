@@ -1,3 +1,4 @@
+@import "../lib/variables";
 @import "jquery.editableSelect";
 @import "../lib/top-tip";
 
@@ -37,4 +38,25 @@ body.topbar {
 
 body {
   font-family: 'San Fransisco', Arial, 'Microsoft YaHei', sans-serif;
+}
+
+.wide-table-fixed-btns {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  width: 96px;
+  z-index: @zindex-dropdown;
+
+  > .btn {
+    padding: 0;
+    margin-top: 15px;
+    height: 80px;
+    width: 96px;
+  }
+}
+
+.navbar-nav > li {
+  > .btn-sm {
+    margin: 12px 26px 0 0;
+  }
 }

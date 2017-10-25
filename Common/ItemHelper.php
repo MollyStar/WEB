@@ -9,9 +9,23 @@
 namespace Common;
 
 
+use Kernel\DB;
+
 class ItemHelper
 {
-    public static function bin2Item() {
+    private static $cache = [];
 
+    public static function all_items() {
+        return self::$cache['items']
+               ??
+               self::$cache['items'] = DB::connection()->orderBy('hex', 'asc')->get('map_items', null, [
+                   'hex',
+                   'name',
+                   'name_zh',
+               ]);
+    }
+
+    public static function map_items() {
+        return collect(self::all_items())->keyBy('hex')->toArray();
     }
 }

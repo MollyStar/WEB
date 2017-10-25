@@ -1,31 +1,22 @@
 <?php Kernel\View::part('common.header', ['title' => '怪物']) ?>
-<style>
-    #save-btn {
-        position: fixed;
-        right: 10px;
-        bottom: 10px;
-    }
-
-    #sync-btn {
-        position: fixed;
-        right: 10px;
-        bottom: 76px;
-    }
-</style>
 <div class="row m-sm-0">
     <form id="form" class="form-horizontal" onsubmit="return false;" action="/mob/update">
         <div class="col-sm-12">
             <section class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title">
+                    <h3>
                         怪物
                     </h3>
                 </div>
+            </section>
+            <section class="panel">
                 <div class="panel-body">
-                    <button id="sync-btn" href="/mob/sync_simple_names" class="btn btn-lg btn-warning"
-                            type="button">同步
-                    </button>
-                    <button id="save-btn" class="btn btn-lg btn-info" type="submit">保存</button>
+                    <div class="wide-table-fixed-btns">
+                        <button id="sync-btn" href="/mob/sync_simple_names" class="btn btn-lg btn-warning"
+                                type="button">同步
+                        </button>
+                        <button id="save-btn" class="btn btn-lg btn-info" type="submit">保存</button>
+                    </div>
                     <table class="table table-bordered">
                         <thead>
                         <tr>

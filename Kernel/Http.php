@@ -42,7 +42,8 @@ class Http
 
         switch ($routeInfo[0]) {
             case FastRoute\Dispatcher::NOT_FOUND:
-                // ... 404 Not Found
+                http_response_code(404);
+                exit(Response::view('pages.404'));
                 break;
             case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];

@@ -9,6 +9,7 @@
 namespace Controller\Server;
 
 use Carlosocarvalho\SimpleInput\Input\Input;
+use Common\ItemHelper;
 use Common\ServerHelper;
 use Kernel\Config;
 use Kernel\DB;
@@ -19,9 +20,7 @@ class Drop
 {
     public function manage() {
 
-        $items = collect(DB::connection()->orderBy('hex', 'asc')->get('map_items', null, ['hex', 'name', 'name_zh']));
-
-        $map_items = $items->keyBy('hex')->toArray();
+        $map_items = ItemHelper::map_items();
 
         $map_mob_drop = collect(DB::connection()->get('map_drop_mob', null, [
             'ep',
@@ -117,7 +116,7 @@ class Drop
 
         $manage = 1;
 
-        return Response::view('pages.drop.drop', compact('map_box_area_lv', 'mob_drop', 'map_mob_drop', 'box_drop', 'map_box_drop', 'manage', 'items'));
+        return Response::view('pages.drop.drop', compact('map_box_area_lv', 'mob_drop', 'map_mob_drop', 'box_drop', 'map_box_drop', 'manage'));
 
     }
 
@@ -238,9 +237,9 @@ class Drop
                                ??
                                '');
 
-//        if (Response::isCached($cacheName)) {
-//            return Response::cache($cacheName);
-//        }
+        //        if (Response::isCached($cacheName)) {
+        //            return Response::cache($cacheName);
+        //        }
 
         $map_items = collect(DB::connection()->get('map_items'))->keyBy('hex')->toArray();
 

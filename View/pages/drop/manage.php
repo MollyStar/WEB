@@ -166,7 +166,7 @@
 </div>
 <script>
     var AREA = <?php echo json_encode($map_box_area_lv);?>;
-    var ITEMS = <?php echo $items->toJson();?>;
+    var ITEMS = <?php echo json_encode(\Common\ItemHelper::all_items())?>;
 </script>
 <script>
     (function ($) {

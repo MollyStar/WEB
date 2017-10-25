@@ -1,7 +1,7 @@
 <?php if (\Common\UserHelper::isLoggedAdmin()): ?>
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="navbar-header">
-            <a href="../" class="navbar-brand">Bootswatch</a>
+            <a href="/dashboard" class="navbar-brand">HOME</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -11,56 +11,33 @@
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes" aria-expanded="false">Themes
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="main" aria-expanded="false">菜单
                         <span class="caret"></span></a>
-                    <ul class="dropdown-menu" aria-labelledby="themes">
-                        <li><a href="../default/">Default</a></li>
+                    <ul class="dropdown-menu" aria-labelledby="main">
+                        <li><a href="/dashboard">Dashboard</a></li>
                         <li class="divider"></li>
-                        <li><a href="../cerulean/">Cerulean</a></li>
-                        <li><a href="../cosmo/">Cosmo</a></li>
-                        <li><a href="../cyborg/">Cyborg</a></li>
-                        <li><a href="../darkly/">Darkly</a></li>
-                        <li><a href="../flatly/">Flatly</a></li>
-                        <li><a href="../journal/">Journal</a></li>
-                        <li><a href="../lumen/">Lumen</a></li>
-                        <li><a href="../paper/">Paper</a></li>
-                        <li><a href="../readable/">Readable</a></li>
-                        <li><a href="../sandstone/">Sandstone</a></li>
-                        <li><a href="../simplex/">Simplex</a></li>
-                        <li><a href="../slate/">Slate</a></li>
-                        <li><a href="../solar/">Solar</a></li>
-                        <li><a href="../spacelab/">Spacelab</a></li>
-                        <li><a href="../superhero/">Superhero</a></li>
-                        <li><a href="../united/">United</a></li>
-                        <li><a href="../yeti/">Yeti</a></li>
+                        <li><a href="/character">用户</a></li>
+                        <li><a href="/drop">掉落</a></li>
+                        <li><a href="/mob">怪物</a></li>
+                        <li><a href="/item">物品</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="../help/">Help</a>
-                </li>
-                <li>
-                    <a href="http://news.bootswatch.com">Blog</a>
-                </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="download">Flatly <span
-                                class="caret"></span></a>
-                    <ul class="dropdown-menu" aria-labelledby="download">
-                        <li><a href="https://jsfiddle.net/bootswatch/jmg3gykg/">Open Sandbox</a></li>
-                        <li class="divider"></li>
-                        <li><a href="./bootstrap.min.css">bootstrap.min.css</a></li>
-                        <li><a href="./bootstrap.css">bootstrap.css</a></li>
-                        <li class="divider"></li>
-                        <li><a href="./variables.less">variables.less</a></li>
-                        <li><a href="./bootswatch.less">bootswatch.less</a></li>
-                        <li class="divider"></li>
-                        <li><a href="./_variables.scss">_variables.scss</a></li>
-                        <li><a href="./_bootswatch.scss">_bootswatch.scss</a></li>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="tools" aria-expanded="false">工具
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu" aria-labelledby="tools">
+                        <li><a href="/tools/db">数据库结构</a></li>
                     </ul>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="http://builtwithbootstrap.com/" target="_blank">Built With Bootstrap</a></li>
-                <li><a href="https://wrapbootstrap.com/?ref=bsw" target="_blank">WrapBootstrap</a></li>
+                <li>
+                    <button class="dropdown-toggle btn btn-info btn-sm" data-toggle="dropdown" type="button" id="user"
+                            aria-expanded="false"><?php echo \Common\UserHelper::currentUser()['username'] ?></button>
+                    <ul class="dropdown-menu" aria-labelledby="user">
+                        <li><a href="/logout">登出</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>

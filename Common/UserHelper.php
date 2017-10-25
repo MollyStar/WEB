@@ -9,27 +9,39 @@
 namespace Common;
 
 use Kernel\Config;
+use Kernel\DB;
 
 class UserHelper
 {
 
     private static $loggedIn = false;
 
+    private static $user;
+
     public static function isLoggedAdmin() {
-        if (self::$loggedIn) {
+        if (isset(self::$user)) {
             return true;
         }
 
         if (isset($_COOKIE['AUTH_TOKEN'])) {
             $t = EncryptCookie::decrypt($_COOKIE['AUTH_TOKEN']);
             if ($t) {
-                list(, $S) = explode("\t", $t);
+                list($guildcard, $S) = explode("\t", $t);
                 if ($S === Config::get('auth.securt')) {
-                    return self::$loggedIn = true;
+                    $user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data');
+                    if ($user) {
+                        self::$user = $user;
+
+                        return true;
+                    }
                 }
             }
         }
 
-        return self::$loggedIn = false;
+        return false;
+    }
+
+    public static function currentUser() {
+        return self::isLoggedAdmin() ? self::$user : null;
     }
 }

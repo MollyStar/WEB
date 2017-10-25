@@ -12,6 +12,7 @@ namespace Controller\Server;
 use Carlosocarvalho\SimpleInput\Input\Input;
 use Kernel\DB;
 use Kernel\Response;
+use Model\CommonBank;
 use Model\CommonBankItem;
 
 class Character
@@ -47,34 +48,58 @@ class Character
             return $new_item;
         })->toArray();
 
-        dd($character_list);
-
         return Response::view('pages.character', compact('character_list'));
     }
 
     public function bank() {
-
         $guildcard = Input::get('guildcard');
         if ($guildcard > 0) {
-            $data = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
-            extract(unpack('IbankUse/IbankMeseta', substr($data, 0, 8)));
-            $items = collect(str_split(substr($data, 8), 24))->map(function ($bankItem) {
-                $item['BIN'] = $bankItem;
-                $item['HEX'] = bin2hex($bankItem);
+            $user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data');
 
-                $item['COLLECT'] = collect(unpack('C12data1:2:/Iitemid:8/C4data2:2:/Ibank_count:8', $bankItem))->mapWithKeys(function ($value, $key) {
-                    $key_args = explode(':', $key);
+            if ($user) {
 
-                    $len = $key_args[1];
-                    unset($key_args[1]);
+                $data = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
+                $bank = CommonBank::fromBin($data);
 
-                    return [join(':', $key_args) => $value]; //sprintf('%0' . $len . 'X', $value)];
-                });
+                $bank_use = $bank->USE;
+                $bank_meseta = $bank->MST;
+                $items = $bank->items(true);
 
-                return $item;
-            });
+                $codes = $bank->itemsHEX();
 
-            dd((new CommonBankItem('00080606,0000025f,011e052d,00000000', 1))->toBankRaw(), $items);
+                $map_items = collect(DB::connection()->where('hex', $codes, 'IN')->get('map_items'))
+                    ->keyBy('hex')
+                    ->toArray();
+
+                return Response::view('pages.character.commonbank', compact('items', 'map_items', 'bank_use', 'bank_meseta', 'user'));
+            }
         }
+    }
+
+    public function bank_save() {
+        $data = Input::post('data');
+        $guildcard = Input::post('guildcard') ?? 0;
+        $mst = Input::post('mst') ?? 0;
+
+        if (!$guildcard) {
+            return Response::api(-1, '无效的用户');
+        }
+
+        $user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data');
+        if (!$user) {
+            return Response::api(-2, '无效的用户');
+        }
+
+        $bank = CommonBank::make();
+        $bank->setMST($mst);
+        collect($data)->each(function ($item) use (&$bank) {
+            $bank->addItem(CommonBankItem::make($item['code'], $item['num']));
+        });
+
+        if (DB::connection()->where('guildcard', $user['guildcard'])->update('bank_data', ['data' => $bank->toBin()])) {
+            return Response::api(0, '保存成功');
+        }
+
+        return Response::api(-1, '保存失败');
     }
 }

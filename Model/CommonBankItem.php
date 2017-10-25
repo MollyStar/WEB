@@ -19,14 +19,17 @@ class CommonBankItem
     public $set3;
     public $set4; // for mag
     public $num;
+    public $itemid;
 
-    public function __construct($code = '', $num = 0) {
+    public function __construct($code = '', $num = 0, $itemid = 0) {
         if (is_array($code)) {
             $code = join('', $code);
         } elseif (is_string($code)) {
-            $code = str_replace(',', '', $code);
-        } else {
-            $code = str_repeat('0', 32);
+            if ($code == '') {
+                $code = str_repeat('0', 32);
+            } else {
+                $code = str_replace(',', '', $code);
+            }
         }
         $code = strtoupper($code);
         $this->code = $code;
@@ -35,16 +38,19 @@ class CommonBankItem
         list($this->set1, $this->set2, $this->set3, $this->set4) = str_split($code, 8);
 
         $this->setNum($num);
+        $this->setItemid($itemid);
     }
 
     public function toBankRaw() {
 
-        if ($this->item == '000000' || $this->num == 0) {
+        if (!$this->isValid()) {
             $hex_arr = array_fill(0, 18, 0);
             $hex_arr[12] = -1;
         } else {
-            $hex_arr = array_merge(str_split($this->set1, 2), str_split($this->set2, 2), str_split($this->set3, 2), ['00010000'], str_split($this->set4, 2), [
-                '0001' . sprintf('%04X', $this->num),
+            $hex_arr = array_merge(str_split($this->set1, 2), str_split($this->set2, 2), str_split($this->set3, 2), [
+                sprintf('%08X', $this->itemid + 0x00010000),
+            ], str_split($this->set4, 2), [
+                sprintf('%08X', $this->num + 0x00010000),
             ]);
 
             foreach ($hex_arr as &$item) {
@@ -56,10 +62,22 @@ class CommonBankItem
     }
 
     public static function fromBankRaw($bin) {
+        $hex_arr = array_values(unpack('C12a/Ib/C4c/Id', $bin));
 
+        $code = vsprintf(str_repeat('%02X', 16), array_merge(array_slice($hex_arr, 0, 12), array_slice($hex_arr, 13, 4)));
+        $num = $hex_arr[17] - 0x00010000;
+        $itemid = $hex_arr[12] - 0x00010000;
+
+        return new static($code, $num, $itemid);
+    }
+
+    public static function make($code = '', $num = 0, $itemid = 0) {
+        return new static($code, $num, $itemid);
     }
 
     public function setNum($num = 0) {
+        // 增加允许条件
+
         if ($num < 0) {
             $num = 0;
         } elseif ($num > 99) {
@@ -67,5 +85,19 @@ class CommonBankItem
         }
 
         $this->num = $num;
+    }
+
+    public function setItemid($id = 0) {
+        if ($id < 0) {
+            $id = 0;
+        } elseif ($id > 199) {
+            $id = 199;
+        }
+
+        $this->itemid = $id;
+    }
+
+    public function isValid() {
+        return $this->item != '000000' && $this->num > 0;
     }
 }
