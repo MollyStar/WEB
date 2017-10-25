@@ -4,7 +4,7 @@
         width: 80px;
     }
 </style>
-<div class="row m-sm-0">
+<div class="row m-lr-0">
     <form id="form" class="form-horizontal" onsubmit="return false;" action="/character/bank/save">
         <input type="hidden" name="guildcard" value="<?php echo $user['guildcard']; ?>">
         <div class="col-sm-12">

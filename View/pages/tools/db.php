@@ -29,7 +29,7 @@
     }
 </style>
 
-<div class="row">
+<div class="row m-lr-0">
     <div class="col-sm-12">
         <section class="panel">
             <div class="panel-body">

@@ -26,15 +26,15 @@ class User
         $verify_code = Input::post('verify_code') ?? '';
 
         if ($verify_code != $_SESSION['phrase']) {
-            return Response::api(-1,'验证码错误');
+            return Response::api(-1, '验证码错误');
         }
 
         if (!($username = trim($username))) {
-            return Response::api(-1,'请输入用户名');
+            return Response::api(-1, '请输入用户名');
         }
 
         if (!$password) {
-            return Response::api(-1,'请输入密码');
+            return Response::api(-1, '请输入密码');
         }
 
         $user = DB::connection()->where('username', $username)->getOne('account_data', [
@@ -46,13 +46,19 @@ class User
         $check_password = md5($password . '_' . $user['regtime'] . '_salt');
 
         if (!$user || $user['password'] !== $check_password) {
-            return Response::api(-1,'用户名/密码错误');
+            return Response::api(-1, '用户名/密码错误');
         }
 
         setcookie('AUTH_TOKEN', EncryptCookie::encrypt($user['guildcard'] . "\t" . Config::get('auth.securt')), time() +
                                                                                                                 86400, '/', null, null, true);
 
-        return Response::api(0,'登录成功');
+        return Response::api(0, '登录成功');
+    }
+
+    public function logout() {
+        setcookie('AUTH_TOKEN', '', 0, '/', null, null, true);
+
+        return Response::redirect('/');
     }
 
     public function register() {
@@ -66,11 +72,11 @@ class User
         $verify_code = Input::post('verify_code') ?? '';
 
         if ($verify_code != $_SESSION['phrase']) {
-            return Response::api(-1,'验证码错误');
+            return Response::api(-1, '验证码错误');
         }
 
         if (!($username = trim($username))) {
-            return Response::api(-1,'请输入用户名');
+            return Response::api(-1, '请输入用户名');
         }
 
         $db = DB::connection();
@@ -78,19 +84,19 @@ class User
         $result = $db->getValue('account_data', 'username');
 
         if ($result) {
-            return Response::api(-1,'帐号已存在');
+            return Response::api(-1, '帐号已存在');
         }
 
         if (!$password) {
-            return Response::api(-1,'请输入密码');
+            return Response::api(-1, '请输入密码');
         }
 
         if (strlen($password) < 6) {
-            return Response::api(-1,'密码长度过短(至少6位英文/数字)');
+            return Response::api(-1, '密码长度过短(至少6位英文/数字)');
         }
 
         if ($password != $rpassword) {
-            return Response::api(-1,'两次输入的密码不符，请重新确认');
+            return Response::api(-1, '两次输入的密码不符，请重新确认');
         }
 
         $regtime = ceil(time() / 3600);
@@ -107,12 +113,12 @@ class User
                 'isactive' => 1,
             ])
             ) {
-                return Response::api(0,'注册成功');
+                return Response::api(0, '注册成功');
             };
         } catch (\Exception $e) {
 
         }
 
-        return Response::api(-1,'注册失败');
+        return Response::api(-1, '注册失败');
     }
 }

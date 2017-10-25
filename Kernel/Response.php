@@ -12,6 +12,11 @@ class Response
 {
     private static $cacheDir = ROOT . '/__SERVER/cache';
 
+    public static function redirect($url) {
+        http_response_code(302);
+        header('Location:' . $url);
+    }
+
     public static function json($data = []) {
         header('Content-type: application/json');
 

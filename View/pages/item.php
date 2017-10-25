@@ -1,5 +1,5 @@
 <?php Kernel\View::part('common.header', ['title' => '物品管理']) ?>
-<div class="row">
+<div class="row m-lr-0">
     <form id="form" class="form-horizontal" onsubmit="return false;" action="/item/update">
         <div class="col-sm-12">
             <section class="panel">

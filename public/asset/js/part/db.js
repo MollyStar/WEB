@@ -1,5 +1,7 @@
 var marked = require('../lib/marked/lib/marked');
 
+$('#source').text($('#source').text().replace('_', '\\_'));
+
 var renderer = new marked.Renderer();
 
 renderer.table = function (header, body) {

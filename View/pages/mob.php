@@ -1,5 +1,5 @@
 <?php Kernel\View::part('common.header', ['title' => '怪物']) ?>
-<div class="row m-sm-0">
+<div class="row m-lr-0">
     <form id="form" class="form-horizontal" onsubmit="return false;" action="/mob/update">
         <div class="col-sm-12">
             <section class="panel">

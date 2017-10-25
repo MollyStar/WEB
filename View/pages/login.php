@@ -2,7 +2,7 @@
     <style>@import "/asset/css/part/form-signin.min.css";</style>
     <div class="container">
         <div class="form-signin">
-            <form id="form" class="form-horizontal col-xs-12" onsubmit="return false;" action="/login/submit">
+            <form id="form" class="form-horizontal col-xs-12" action="/login/submit">
                 <div class="form-group">
                     <div id="tips"></div>
                 </div>
@@ -55,7 +55,9 @@
             $('#verify_code').on('click', 'img', reflush);
 
             var success = false;
-            $('#form').on('submit', function () {
+            $('#form').on('submit', function (e) {
+                e.preventDefault();
+
                 if (success) {
                     return;
                 }
@@ -65,7 +67,9 @@
                         if (ret.code === 0) {
                             success = true;
                             tip(ret.msg, 'success');
-                            window.location.reload();
+                            setTimeout(function () {
+                                window.location.href = '/dashboard';
+                            }, 1500);
                         } else {
                             tip(ret.msg);
                             reflush();
