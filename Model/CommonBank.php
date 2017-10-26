@@ -9,18 +9,24 @@
 namespace Model;
 
 
+use Model\Traits\Items;
+
 class CommonBank
 {
-    public $MST;
-    public $USE;
-    public $ITEMS;
+    use Items;
 
-    public static $length = 4808;
+    private $MST;
+    private $USE;
+    private $ITEMS;
+
+    private $SOCK = 200;
+
+    private static $length = 4808;
 
     public function __construct() {
         $this->MST = 0;
         $this->USE = 0;
-        $this->ITEMS = array_fill(0, 200, CommonBankItem::make());
+        $this->ITEMS = array_fill(0, $this->SOCK, CommonBankItem::make());
     }
 
     public static function make() {
@@ -51,10 +57,6 @@ class CommonBank
         return $handler;
     }
 
-    public function itemsHEX() {
-        return collect($this->ITEMS)->pluck('item')->unique()->toArray();
-    }
-
     public function setMST($num = 0) {
         if ($num < 0) {
             $num = 0;
@@ -65,12 +67,23 @@ class CommonBank
         $this->MST = $num;
     }
 
+    public function getMST() {
+        return $this->MST;
+    }
+
     public function addItem(CommonBankItem $item) {
         $itemid = $this->USE++;
         $item->setItemid($itemid);
         $this->ITEMS[$itemid] = $item;
     }
 
+    /**
+     * 获取物品列表
+     *
+     * @param bool $valid true: only used socks, false: all
+     *
+     * @return array
+     */
     public function items($valid = false) {
         if (!!$valid) {
             return collect($this->ITEMS)->filter(function ($item) {
@@ -85,5 +98,13 @@ class CommonBank
         return pack('II', $this->USE, $this->MST) . collect($this->ITEMS)->map(function ($item) {
                 return $item->toBankRaw();
             })->implode('');
+    }
+
+    public function used() {
+        return $this->USE;
+    }
+
+    public function remaining() {
+        return $this->SOCK - $this->USE;
     }
 }

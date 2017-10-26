@@ -28,4 +28,8 @@ class ItemHelper
     public static function map_items() {
         return collect(self::all_items())->keyBy('hex')->toArray();
     }
+
+    public static function send_items_to_commonbank() {
+        
+    }
 }

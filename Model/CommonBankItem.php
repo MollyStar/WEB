@@ -25,11 +25,10 @@ class CommonBankItem
         if (is_array($code)) {
             $code = join('', $code);
         } elseif (is_string($code)) {
-            if ($code == '') {
-                $code = str_repeat('0', 32);
-            } else {
-                $code = str_replace(',', '', $code);
-            }
+            $code = str_replace(',', '', $code);
+        }
+        if ($code == '' || strlen($code) !== 32) {
+            $code = str_repeat('0', 32);
         }
         $code = strtoupper($code);
         $this->code = $code;

@@ -5,6 +5,7 @@ require('../jquery/jquery.dialog');
 require('../jquery/jquery.alert');
 require('../jquery/jquery.confirm');
 require('../jquery/jquery.editableSelect');
+require('../jquery/jquery.verifycode');
 
 $(document).ready(function () {
     $(window).scroll(function () {

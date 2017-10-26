@@ -61,8 +61,8 @@ class Character
                 $data = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
                 $bank = CommonBank::fromBin($data);
 
-                $bank_use = $bank->USE;
-                $bank_meseta = $bank->MST;
+                $bank_use = $bank->used();
+                $bank_meseta = $bank->getMST();
                 $items = $bank->items(true);
 
                 $codes = $bank->itemsHEX();
@@ -96,9 +96,11 @@ class Character
 
         $bank = CommonBank::make();
         $bank->setMST($mst);
-        collect($data)->each(function ($item) use (&$bank) {
-            $bank->addItem(CommonBankItem::make($item['code'], $item['num']));
-        });
+        if (!empty($data)) {
+            collect($data)->each(function ($item) use (&$bank) {
+                $bank->addItem(CommonBankItem::make($item['code'], $item['num']));
+            });
+        }
 
         if (DB::connection()->where('guildcard', $user['guildcard'])->update('bank_data', ['data' => $bank->toBin()])) {
             return Response::api(0, '保存成功');

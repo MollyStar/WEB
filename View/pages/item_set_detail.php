@@ -1,52 +1,32 @@
-<?php Kernel\View::part('common.header', ['title' => '公共银行']) ?>
-<style>
-    input[type="number"] {
-        width: 80px;
-    }
-</style>
+<?php Kernel\View::part('common.header', ['title' => '套装详情']) ?>
 <div class="row m-lr-0">
-    <form id="form" class="form-horizontal" onsubmit="return false;" action="/character/bank/save">
-        <input type="hidden" name="guildcard" value="<?php echo $user['guildcard']; ?>">
-        <div class="col-sm-12">
+    <div class="col-sm-12">
+        <form id="form" class="form-horizontal">
+            <div class="panel-heading">
+                <a class="btn btn-info pull-right" href="/item_set/detail/save">返回</a>
+                <h3>套装详情</h3>
+            </div>
             <section class="panel">
-                <div class="panel-heading">
-                    <a href="/character" class="btn btn-info pull-right">返回</a>
-                    <div
-                            class="btn btn-xs btn-<?php echo $user['islogged'] ? 'success' : 'danger'; ?> pull-left"><i
-                                class="fa fa-circle-o"></i></div>
-                    <h3>
-                        <?php echo $user['username']; ?> 的公共银行
-                    </h3>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">名称</label>
+                        <div class="col-sm-5">
+                            <input class="form-control required" name="name" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" name="description" type="text">
+                        </div>
+                    </div>
                 </div>
             </section>
             <section class="panel">
-                <div class="panel-heading">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>银行使用 <?php echo $bank_use; ?>/200</th>
-                            <th style="width: 200px;">
-                                <div class="input-group">
-                                    <label class="input-group-addon input-sm">美赛塔</label>
-                                    <input class="form-control input-sm"
-                                           type="number"
-                                           max="999999"
-                                           min="0"
-                                           name="mst"
-                                           value="<?php echo $bank_meseta; ?>"></div>
-                            </th>
-                        </tr>
-                        </thead>
-                    </table>
-                </div>
                 <div class="panel-body">
-                    <div class="wide-table-fixed-btns">
-                        <button id="save-btn" class="btn btn-lg btn-info" type="submit">保存</button>
-                    </div>
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>ID</th>
                             <th>物品编码</th>
                             <th>名称</th>
                             <th>编码</th>
@@ -57,9 +37,6 @@
                         <tbody>
                         <?php foreach ($items as $key => $item): ?>
                             <tr>
-                                <td>
-                                    <?php echo $item->itemid; ?>
-                                </td>
                                 <td>
                                     <?php echo $item->item; ?>
                                 </td>
@@ -87,8 +64,8 @@
                     <button type="button" class="btn btn-success add">添加</button>
                 </div>
             </section>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 <script>
     (function ($) {
@@ -127,7 +104,7 @@
         form.on('click', '.add', function () {
             var wrap = form.find('table > tbody');
             var row = '<tr>' +
-                '<td></td><td></td><td></td><td>' +
+                '<td></td><td></td><td>' +
                 '<input class="form-control input-sm" name="code">' +
                 '</td><td>' +
                 '<input class="form-control input-sm" type="number" maxlength="2" max="99" min="0" name="num" value="1">' +

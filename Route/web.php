@@ -14,12 +14,19 @@ Route('GET', '/logout', 'Controller\User@logout');
 Route('GET', '/verifiation.jpg', 'Controller\Common@verifiation');
 Route('GET', '/item_drop', 'Controller\Server\Drop@public');
 
+// 活动
+Route('GET', '/topic/newest_package', 'Controller\Topic@newest_package');
+
 RouteGroup(function () {
     Route('GET', '/dashboard', 'Controller\Dashboard@index');
 
     Route('GET', '/item', 'Controller\Server\item@manage');
     // Route('GET', '/item/import', 'Controller\Server\item@import');
     Route('POST', '/item/update', 'Controller\Server\item@update');
+
+    // 套装
+    Route('GET', '/item_set', 'Controller\Server\item@item_set');
+    Route('GET', '/item_set/detail', 'Controller\Server\item@item_set_detail');
 
     Route('GET', '/drop', 'Controller\Server\Drop@manage');
     Route('POST', '/drop/update', 'Controller\Server\Drop@update');

@@ -109,4 +109,14 @@ class Item
             return Response::api(0, '更新成功', $ret);
         }
     }
+
+    public function item_set() {
+        $data = DB::connection()->get('item_set');
+
+        return Response::view('pages.item_set', compact('data'));
+    }
+
+    public function item_set_detail() {
+        return Response::view('pages.item_set_detail');
+    }
 }

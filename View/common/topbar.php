@@ -27,6 +27,7 @@
                         <li><a href="/drop">掉落</a></li>
                         <li><a href="/mob">怪物</a></li>
                         <li><a href="/item">物品</a></li>
+                        <li><a href="/item_set">套装</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">

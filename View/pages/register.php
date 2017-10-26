@@ -60,9 +60,8 @@
 </div>
 <script>
     (function ($) {
-        function reflush() {
-            $('#verify_code').empty().append($('<img src="' + verify_code_url + '?r=' + (+new Date) + '">'));
-        }
+
+        $('#verify_code').verifycode();
 
         function tip(msg, type) {
             type = type || 'warning';
@@ -74,35 +73,32 @@
             ));
         }
 
-        var verify_code_url = '/verifiation.jpg';
-
-        $('#verify_code').on('click', 'img', reflush);
-
         var success = false;
         $('#form').on('submit', function () {
             if (success) {
                 return;
             }
             var el = $(this);
-            $.post(el.attr('action'), el.serializeArray(), function (ret) {
+            $.post(el.attr('action'), el.serializeArray()).done(function (ret) {
                 if (ret) {
                     if (ret.code === 0) {
                         success = true;
                         tip(ret.msg, 'success');
-                        window.location.reload();
-                    } else {
-                        tip(ret.msg);
-                        reflush();
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
+                        return;
                     }
-                    return;
                 }
-
+                tip(ret.msg);
+                $('#verify_code').trigger('reflush');
+            }).fail(function () {
                 tip('网络错误，请稍候再试');
-                reflush();
+                $('#verify_code').trigger('reflush');
             });
         });
 
-        reflush();
+        $('#verify_code').trigger('reflush');
     })(jQuery);
 </script>
 <?php Kernel\View::part('common.footer') ?>

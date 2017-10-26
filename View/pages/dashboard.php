@@ -8,7 +8,7 @@
     <div class="row m-lr-0">
         <div class="col-sm-12">
             <section class="panel">
-                <div class="panel-header">
+                <div class="panel-heading">
                     <h3 class="panel-title">服务器状态</h3>
                 </div>
                 <div class="panel-body row">

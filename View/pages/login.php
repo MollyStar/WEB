@@ -4,9 +4,6 @@
         <div class="form-signin">
             <form id="form" class="form-horizontal col-xs-12" action="/login/submit">
                 <div class="form-group">
-                    <div id="tips"></div>
-                </div>
-                <div class="form-group">
                     <div class="input-group col-xs-12">
                         <i class="input-group-addon fa fa-user"></i>
                         <input class="form-control required" type="text" placeholder="帐号" name="username"
@@ -36,23 +33,8 @@
     </div>
     <script>
         (function ($) {
-            function reflush() {
-                $('#verify_code').empty().append($('<img src="' + verify_code_url + '?r=' + (+new Date) + '">'));
-            }
 
-            function tip(msg, type) {
-                type = type || 'warning';
-                $('#tips').empty().append($('' +
-                    '<div class="alert alert-' + type + '">' +
-                    '<a href="#" class="close" data-dismiss="alert">&times;</a>' +
-                    msg +
-                    '</div>'
-                ));
-            }
-
-            var verify_code_url = '/verifiation.jpg';
-
-            $('#verify_code').on('click', 'img', reflush);
+            $('#verify_code').verifycode();
 
             var success = false;
             $('#form').on('submit', function (e) {
@@ -62,27 +44,26 @@
                     return;
                 }
                 var el = $(this);
-                $.post(el.attr('action'), el.serializeArray(), function (ret) {
+                $.post(el.attr('action'), el.serializeArray()).done(function (ret) {
                     if (ret) {
                         if (ret.code === 0) {
                             success = true;
-                            tip(ret.msg, 'success');
+                            $.topTip(ret.msg);
                             setTimeout(function () {
                                 window.location.href = '/dashboard';
                             }, 1500);
-                        } else {
-                            tip(ret.msg);
-                            reflush();
+                            return;
                         }
-                        return;
                     }
-
-                    tip('网络错误，请稍候再试');
-                    reflush();
+                    $.topTip(ret.msg, 'warning');
+                    $('#verify_code').trigger('reflush');
+                }).fail(function () {
+                    $.topTip('网络错误，请稍候再试', 'warning');
+                    $('#verify_code').trigger('reflush');
                 });
             });
 
-            reflush();
+            $('#verify_code').trigger('reflush');
         })(jQuery);
     </script>
 <?php Kernel\View::part('common.footer') ?>
