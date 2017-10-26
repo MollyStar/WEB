@@ -90,6 +90,10 @@ class Character
             return Response::api(-2, '无效的用户');
         }
 
+        if ($user['islogged']) {
+            return Response::api(-2, '保存失败，用于处于在线状态');
+        }
+
         $bank = CommonBank::make();
         $bank->setMST($mst);
         collect($data)->each(function ($item) use (&$bank) {

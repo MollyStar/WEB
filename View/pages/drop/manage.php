@@ -3,12 +3,14 @@
         cursor: pointer;
     }
 
-    .droped-item:hover {
+    .droped-item:hover,
+    .droped-item.multiple-edit-selected {
         color: #ffffff !important;
         background-color: #333333 !important;
     }
 
-    .droped-item:hover > i {
+    .droped-item:hover > i,
+    .droped-item.multiple-edit-selected > i {
         color: #d2d2d2 !important;
     }
 
@@ -46,7 +48,8 @@
         box-shadow: none;
     }
 
-    .ui-dialog.modal.mob-drop-item > .modal-dialog {
+    .ui-dialog.modal.mob-drop-item > .modal-dialog,
+    .ui-dialog.modal.box-drop-item > .modal-dialog {
         margin-top: 15%;
     }
 </style>
@@ -62,6 +65,13 @@
         </section>
     </div>
     <form id="form" onsubmit="return false;">
+        <div class="wide-table-fixed-btns">
+            <button id="multiple_edit" class="btn btn-lg btn-info" type="button">怪掉</button>
+            <button id="multiple_edit_selected" class="btn btn-lg btn-success" type="button" style="display: none">确认
+            </button>
+            <button id="multiple_edit_cancel" class="btn btn-lg btn-default" type="button" style="display: none">取消
+            </button>
+        </div>
         <?php foreach ($map_ep as $ek => $ep): ?>
             <div class="col-sm-12">
                 <section class="panel">
@@ -170,6 +180,9 @@
 </script>
 <script>
     (function ($) {
+
+        var M_Status = 0;
+
         var form = $('#form');
 
         function items(current) {
@@ -196,7 +209,10 @@
         }
 
         function mobItemSelecter() {
-            var info = $(this).data();
+            var info = {};
+            if (this.length === 1) {
+                info = this.data();
+            }
             var dialog = $.dialog(
                 '<form class="form-horizontal">' +
                 '<div class="form-group">' +
@@ -218,20 +234,23 @@
                             className: 'btn btn-info',
                             button: '保存',
                             callback: function (dialog) {
-                                var el = $(this);
-                                var info = el.data();
+                                var els = this;
+                                var hashes = [];
+                                els.each(function () {
+                                    hashes.push($(this).data('hash'));
+                                });
                                 var data = dialog.find('form').serializeAssoc();
                                 if (data.rate > -1 && data.item) {
-                                    data.hash = info.hash;
+                                    data.hash = hashes.join(',');
                                     data.type = 'mob';
                                     $.post('/drop/update', data).done(function (ret) {
                                         if (ret) {
                                             if (ret.code === 0) {
                                                 $.topTip(ret.msg);
                                                 var rep = ret.response;
-                                                el.data('item', rep.item);
-                                                el.data('rate', rep.rate);
-                                                el.html([
+                                                els.data('item', rep.item);
+                                                els.data('rate', rep.rate);
+                                                els.html([
                                                     '<i>' + rep.rate_p + '</i>',
                                                     rep.item_info.name_zh + '<br/>',
                                                     rep.item_info.name
@@ -243,6 +262,8 @@
                                         }
                                     }).fail(function () {
                                         $.topTip('保存失败', 'danger');
+                                    }).always(function () {
+                                        multiple_edit_cancel();
                                     });
                                 }
                             },
@@ -252,6 +273,7 @@
                             className: 'btn btn-secondary',
                             button: '关闭',
                             callback: function (dialog) {
+                                multiple_edit_cancel();
                                 dialog.modal('hide');
                             }
                         }
@@ -293,7 +315,7 @@
                 '   </div>' +
                 '</div>' +
                 '</form>', {
-                    className: 'mob-drop-item',
+                    className: 'box-drop-item',
                     buttons: [
                         {
                             className: 'btn btn-info',
@@ -367,7 +389,12 @@
         }
 
         form.on('click', '.mob-drop-unit.droped-item', function (e) {
-            mobItemSelecter.call(this, e);
+            var el = $(this);
+            if (M_Status == 1) {
+                el.toggleClass('multiple-edit-selected');
+            } else {
+                mobItemSelecter.call(el, e);
+            }
         });
 
         form.on('click', '.box-drop-unit > .droped-item', function (e) {
@@ -377,5 +404,37 @@
         form.on('click', '.box-drop-unit > .box-drop-unit-add', function (e) {
             boxItemSelecter.call(this, e);
         });
+
+        form.on('click', '#multiple_edit', function (e) {
+            M_Status = 1;
+            $(this).hide();
+            form.find('#multiple_edit_selected,#multiple_edit_cancel').show();
+        });
+
+        form.on('click', '#multiple_edit_selected', function (e) {
+            if (M_Status !== 1) {
+                return;
+            }
+            var els = form.find('.multiple-edit-selected');
+
+            if (els.length) {
+                mobItemSelecter.call(els, e);
+            } else {
+                $.topTip('没有选择任何怪物', 'warning');
+            }
+        });
+
+        form.on('click', '#multiple_edit_cancel', function (e) {
+            multiple_edit_cancel();
+        });
+
+        function multiple_edit_cancel() {
+            if (M_Status == 1) {
+                M_Status = 0;
+                form.find('#multiple_edit').show();
+                form.find('#multiple_edit_selected,#multiple_edit_cancel').hide();
+                form.find('.multiple-edit-selected').removeClass('multiple-edit-selected');
+            }
+        }
     })(jQuery);
 </script>

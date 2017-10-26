@@ -130,35 +130,37 @@ class Drop
                 $item = Input::post('item');
                 $rate = Input::post('rate') ?? 0;
 
-                if ($hash && $item && $rate > -1) {
+                $hashes = explode(',', $hash);
+
+                if (count($hashes) && $item && $rate > -1) {
                     if ($rate > 255) {
                         $rate = 255;
                     }
                     if ($rate < 0) {
                         $rate = 0;
                     }
-                    $drop_info = DB::connection()->where('hash', $hash)->getOne('item_drop');
-                    if (!$drop_info) {
+                    $drop_info = DB::connection()->where('hash', $hashes, 'IN')->get('item_drop');
+                    if (!$drop_info || count($drop_info) == 0) {
                         return Response::api(0, '无效的HASH');
                     }
                     $item_info = DB::connection()->where('hex', $item)->getOne('map_items');
                     if (!$item_info) {
                         return Response::api(0, '无效的物品');
                     }
-                    if ($hash) {
-                        if (DB::connection()->where('hash', $drop_info['hash'])->update('item_drop', [
+
+                    if (DB::connection()
+                        ->where('hash', collect($drop_info)->pluck('hash')->toArray(), 'IN')
+                        ->update('item_drop', [
                             'item' => $item_info['hex'],
                             'rate' => $rate,
                         ])
-                        ) {
-                            return Response::api(0, '保存成功', [
-                                'hash'      => $drop_info['hash'],
-                                'item'      => $item_info['hex'],
-                                'rate'      => $rate,
-                                'rate_p'    => sprintf('%.4f', $rate / 255),
-                                'item_info' => $item_info,
-                            ]);
-                        }
+                    ) {
+                        return Response::api(0, '保存成功', [
+                            'item'      => $item_info['hex'],
+                            'rate'      => $rate,
+                            'rate_p'    => sprintf('%.4f', $rate / 255),
+                            'item_info' => $item_info,
+                        ]);
                     }
                 }
                 break;
