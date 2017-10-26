@@ -384,6 +384,8 @@ class Drop
     public function remove_all_drop() {
         DB::connection()->where('type', 0)->delete('item_drop');
         DB::connection()->where('type', 1)->update('item_drop', ['item' => '000000', 'rate' => '0']);
+
+        return Response::api(0, '所有掉落已清除');
     }
 
     public function import() {

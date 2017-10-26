@@ -66,7 +66,8 @@
     </div>
     <form id="form" onsubmit="return false;">
         <div class="wide-table-fixed-btns">
-            <button id="multiple_edit" class="btn btn-lg btn-info" type="button">怪掉</button>
+            <button id="empty_all_drop" class="btn btn-lg btn-warning" type="button">清空</button>
+            <button id="multiple_edit" class="btn btn-lg btn-info" type="button">怪掉<br/>批量</button>
             <button id="multiple_edit_selected" class="btn btn-lg btn-success" type="button" style="display: none">确认
             </button>
             <button id="multiple_edit_cancel" class="btn btn-lg btn-default" type="button" style="display: none">取消
@@ -436,5 +437,20 @@
                 form.find('.multiple-edit-selected').removeClass('multiple-edit-selected');
             }
         }
+
+        form.on('click', '#empty_all_drop', function (e) {
+            $.confirm('确认要清空所有掉落吗？', function () {
+                $.get('/drop/remove_all_drop').done(function (ret) {
+                    if (ret && ret.code === 0) {
+                        $.topTip(ret.msg);
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1500);
+                    }
+                });
+            }, function (layer) {
+                layer.modal('hide');
+            });
+        });
     })(jQuery);
 </script>

@@ -17,7 +17,7 @@
         }
 
         var html = [
-            '<div class="ui-alert modal fade">',
+            '<div class="ui-alert modal" style="display: none">',
             '    <div class="modal-dialog modal-sm">',
             '    <div class="modal-content">',
             '    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>',

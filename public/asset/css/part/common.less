@@ -1,6 +1,9 @@
 @import "../lib/variables";
 @import "jquery.editableSelect";
 @import "../lib/top-tip";
+@import "../lib/dialog";
+@import "../lib/alert";
+@import "../lib/confirm";
 
 .m-lr-0 {
   margin-left: 0;
@@ -15,48 +18,50 @@ body.topbar {
   background-color: rgba(0, 0, 0, .5);
 }
 
-.ui-dialog {
-  .close {
-    margin: 2px 5px 0 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 1;
-  }
-
-  .modal-header {
-    padding: 10px;
-  }
-
-  .modal-body {
-    padding: 20px 10px;
-  }
-
-  .modal-footer {
-    padding: 9px 10px 10px;
-  }
-}
-
-.ui-alert {
-  .ui-dialog;
-}
-
 body {
   font-family: 'San Fransisco', Arial, 'Microsoft YaHei', sans-serif;
 }
 
 .wide-table-fixed-btns {
   position: fixed;
-  right: 10px;
+  left: 100%;
   bottom: 10px;
   width: 96px;
+  padding: 10px;
   z-index: @zindex-dropdown;
+  box-sizing: content-box;
+  -webkit-transition: transform 0.5s;
+  -moz-transition: transform 0.5s;
+  -ms-transition: transform 0.5s;
+  -o-transition: transform 0.5s;
+  transition: transform 0.5s;
 
   > .btn {
     padding: 0;
     margin-top: 15px;
     height: 80px;
     width: 96px;
+  }
+
+  .wide-table-fixed-btns-arrow {
+    display: block;
+    position: absolute;
+    right: 100%;
+    bottom: 10px;
+    height: 20px;
+    width: 0;
+    box-sizing: content-box;
+    border-width: 20px 20px 20px 0;
+    border-color: transparent @gray-darker transparent transparent;
+    border-style: dashed solid dashed dashed;
+  }
+
+  &.actived {
+    -webkit-transform: translateX(-100%);
+    -moz-transform: translateX(-100%);
+    -ms-transform: translateX(-100%);
+    -o-transform: translateX(-100%);
+    transform: translateX(-100%);
   }
 }
 
