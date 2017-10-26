@@ -41,12 +41,26 @@ class User
             'password',
             'regtime',
             'guildcard',
+            'isgm',
+            'isbanned',
         ]);
+
+        if (!$user) {
+            return Response::api(-1, '无效的用户');
+        }
+
+        if ($user['isbanned']) {
+            return Response::api(-1, '用户已冻结');
+        }
 
         $check_password = md5($password . '_' . $user['regtime'] . '_salt');
 
-        if (!$user || $user['password'] !== $check_password) {
+        if ($user['password'] !== $check_password) {
             return Response::api(-1, '用户名/密码错误');
+        }
+
+        if (!$user['isgm']) {
+            return Response::api(-1, '您不是管理员');
         }
 
         setcookie('AUTH_TOKEN', EncryptCookie::encrypt($user['guildcard'] . "\t" . Config::get('auth.securt')), time() +

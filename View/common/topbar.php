@@ -1,12 +1,19 @@
 <?php if (\Common\UserHelper::isLoggedAdmin()): ?>
     <div class="navbar navbar-default navbar-fixed-top">
+        <div class="navbar-panel">
+            <button class="dropdown-toggle btn btn-info btn-sm" data-toggle="dropdown" type="button" id="user"
+                    aria-expanded="false"><?php echo \Common\UserHelper::currentUser()['username'] ?></button>
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="user">
+                <li><a href="/logout">登出</a></li>
+            </ul>
+        </div>
         <div class="navbar-header">
-            <a href="/dashboard" class="navbar-brand">HOME</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <a href="/dashboard" class="navbar-brand">HOME</a>
         </div>
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav">
@@ -27,15 +34,6 @@
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu" aria-labelledby="tools">
                         <li><a href="/tools/db">数据库结构</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <button class="dropdown-toggle btn btn-info btn-sm" data-toggle="dropdown" type="button" id="user"
-                            aria-expanded="false"><?php echo \Common\UserHelper::currentUser()['username'] ?></button>
-                    <ul class="dropdown-menu" aria-labelledby="user">
-                        <li><a href="/logout">登出</a></li>
                     </ul>
                 </li>
             </ul>

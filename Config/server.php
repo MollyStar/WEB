@@ -7,22 +7,22 @@
  */
 
 return [
-    'ep'   => [
+    'ep'    => [
         [1, 'I', 'Episode: I'],
         [2, 'II', 'Episode: II'],
         [4, 'IV', 'Episode: IV'],
     ],
-    'type' => [
+    'type'  => [
         'box',
         'mob',
     ],
-    'dif'  => [
+    'dif'   => [
         ['Normal', '普通', 'N'],
         ['Hard', '困难', 'H'],
         ['Very Hard', '极难', 'V'],
         ['Ultimate', '极限', 'U'],
     ],
-    'sec'  => [
+    'sec'   => [
         ['VIRIDIA', '铬绿', '#94ffbc'],
         ['GREENNILL', '翠绿', '#97ff94'],
         ['SKYLY', '天青', '#94fffe'],
@@ -34,7 +34,7 @@ return [
         ['YELLOWBOZE', '金黄', '#f9ff94'],
         ['WHITILL', '羽白', '#ffffff'],
     ],
-    'area' => [
+    'area'  => [
         [
             [
                 ['Forest', '森林'],
@@ -142,5 +142,11 @@ return [
                 ],
             ],
         ],
+    ],
+    'ports' => [
+        '12000' => ['login', '登录服务器'],
+        '11000' => ['patch', '更新服务器'],
+        '5278'  => ['SHIP 1', '正式 船1'],
+        '5378'  => ['SHIP Beta', '测试 船BETA'],
     ],
 ];

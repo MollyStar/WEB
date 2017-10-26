@@ -38,5 +38,6 @@ RouteGroup(function () {
     Route('POST', '/character/bank/save', 'Controller\Server\Character@bank_save');
 
     Route('GET', '/tools/db', 'Controller\Tools\DBStructure@index');
+    Route('GET', '/tools/server/status', 'Controller\Tools\Server@status');
 
 }, ['middleware' => 'admin']);

@@ -47,6 +47,7 @@
                             <th>名称</th>
                             <th>编码</th>
                             <th>数量</th>
+                            <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -62,13 +63,18 @@
                                     <?php echo $map_items[$item->item]['name_zh']; ?>
                                 </td>
                                 <td>
-                                    <input class="form-control input-sm" name="data[<?php echo $key; ?>][code]"
+                                    <input class="form-control input-sm" name="code"
                                            value="<?php echo $item->code; ?>">
                                 </td>
                                 <td>
                                     <input class="form-control input-sm" type="number" maxlength="2" max="99" min="0"
-                                           name="data[<?php echo $key; ?>][num]"
+                                           name="num"
                                            value="<?php echo $item->num; ?>">
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm delete" type="button"><i
+                                                class="fa fa-trash"></i> 删除
+                                    </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -85,7 +91,18 @@
         var form = $('#form');
 
         form.on('submit', function (e) {
-            $.post(form.attr('action'), form.serializeArray()).done(function (ret) {
+            var data = {
+                mst: form.find('[name="mst"]').val(),
+                guildcard: form.find('[name="guildcard"]').val(),
+                data: []
+            };
+            form.find('tbody > tr').each(function () {
+                data.data.push({
+                    code: $.trim($(this).find('[name="code"]').val()),
+                    num: $.trim($(this).find('[name="num"]').val())
+                })
+            });
+            $.post(form.attr('action'), data).done(function (ret) {
                 if (ret) {
                     if (ret.code === 0) {
                         $.topTip(ret.msg);
@@ -105,16 +122,19 @@
 
         form.on('click', '.add', function () {
             var wrap = form.find('table > tbody');
-            var num = wrap.find('tr').length;
             var row = '<tr>' +
                 '<td></td><td></td><td></td><td>' +
-                '<input class="form-control input-sm" name="data[' + num + '][code]">' +
+                '<input class="form-control input-sm" name="code">' +
                 '</td><td>' +
-                '<input class="form-control input-sm" type="number" maxlength="2" max="99" min="0" name="data[' + num + '][num]" value="1">' +
+                '<input class="form-control input-sm" type="number" maxlength="2" max="99" min="0" name="num" value="1">' +
                 '</td>' +
                 '</tr>';
 
             $(row).appendTo(wrap);
+        });
+
+        form.on('click', '.delete', function () {
+            $(this).parents('tr').remove();
         });
     })(jQuery);
 </script>

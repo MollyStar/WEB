@@ -13,9 +13,6 @@ use Kernel\DB;
 
 class UserHelper
 {
-
-    private static $loggedIn = false;
-
     private static $user;
 
     public static function isLoggedAdmin() {
