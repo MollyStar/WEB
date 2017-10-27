@@ -58,7 +58,7 @@ class Drop
                                         $map_items[$item['item']]['name']
                                         ??
                                         '？？？？';
-                $item['rate_p'] = sprintf('%.4f', $item['rate'] / 255);
+                $item['rate_p'] = ServerHelper::DropRatePercent($item['rate']);
 
                 return $item;
             })
@@ -98,7 +98,7 @@ class Drop
                     $map_box_drop[$item['ep']][$item['area']][] = $in;
                 }
 
-                $item['rate_p'] = sprintf('%.4f', $item['rate'] / 255);
+                $item['rate_p'] = ServerHelper::DropRatePercent($item['rate']);
 
                 return $item;
             })
@@ -158,7 +158,7 @@ class Drop
                         return Response::api(0, '保存成功', [
                             'item'      => $item_info['hex'],
                             'rate'      => $rate,
-                            'rate_p'    => sprintf('%.4f', $rate / 255),
+                            'rate_p'    => ServerHelper::DropRatePercent($rate),
                             'item_info' => $item_info,
                         ]);
                     }
@@ -219,7 +219,7 @@ class Drop
                     if (DB::connection()->insert('item_drop', $data)) {
                         $data['name'] = $map_box_area_lv[$ek][$ak][1][$lv][0];
                         $data['name_zh'] = $map_box_area_lv[$ek][$ak][1][$lv][1];
-                        $data['rate_p'] = sprintf('%.4f', $rate / 255);
+                        $data['rate_p'] = ServerHelper::DropRatePercent($rate);
                         $data['item'] = $item;
                         $data['item_info'] = $item_info;
 
@@ -265,7 +265,7 @@ class Drop
                                         $map_items[$item['item']]['name']
                                         ??
                                         '？？？？';
-                $item['rate_p'] = sprintf('%.4f', $item['rate'] / 255);
+                $item['rate_p'] = ServerHelper::DropRatePercent($item['rate']);
 
                 return $item;
             })
@@ -308,7 +308,7 @@ class Drop
                 $map_box_drop[$item['ep']][$item['area']][] = $in;
             }
 
-            $item['rate_p'] = sprintf('%.4f', $item['rate'] / 255);
+            $item['rate_p'] = ServerHelper::DropRatePercent($item['rate']);
 
             return $item;
         })->groupBy('dif')->map(function ($item) {
@@ -328,6 +328,9 @@ class Drop
         return Response::view('pages.drop.drop', compact('mob_drop', 'map_mob_drop', 'box_drop', 'map_box_drop', 'manage'), $cacheName);
     }
 
+    /**
+     * 导出
+     */
     public function export() {
 
         $server = Config::get('server');
@@ -381,6 +384,11 @@ class Drop
 
     }
 
+    /**
+     * 删除所有怪物的掉落
+     *
+     * @return string
+     */
     public function remove_all_drop() {
         DB::connection()->where('type', 0)->delete('item_drop');
         DB::connection()->where('type', 1)->update('item_drop', ['item' => '000000', 'rate' => '0']);
@@ -388,12 +396,17 @@ class Drop
         return Response::api(0, '所有掉落已清除');
     }
 
+    /**
+     * 导入掉落
+     *
+     * @return string
+     */
     public function import() {
 
         $path = ROOT . '/__SERVER/drop';
 
         if (file_exists($path . '/imprted.lock')) {
-            return '已导入，若要重新导入请先<a href="/drop/clean" target="_blank">清空</a>';
+            return Response::api(-1, '已导入，若要重新导入请先清空');
         }
 
         file_put_contents($path . '/imprted.lock', '');
@@ -448,18 +461,23 @@ class Drop
 
         DB::connection()->insertMulti('item_drop', $data);
 
-        return '导入成功';
+        return Response::api(0, '导入成功');
     }
 
+    /**
+     * 清理所有掉落
+     *
+     * @return string
+     */
     public function clean() {
         $lockFile = ROOT . '/__SERVER/drop/imprted.lock';
         if (file_exists($lockFile)) {
             DB::connection()->rawQuery('truncate table `item_drop`');
             @unlink($lockFile);
 
-            return '清理成功';
+            return Response::api(0, '清理成功');
         }
 
-        return '无需清理';
+        return Response::api(-1, '无需清理');
     }
 }

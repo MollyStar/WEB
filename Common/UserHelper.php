@@ -45,4 +45,10 @@ class UserHelper
     public static function login_verify() {
 
     }
+
+    public static function isOnline($guildcard) {
+        $logs = ServerLogHelper::ship_logs();
+
+        return array_key_exists($guildcard, $logs) && $logs[$guildcard]['online'];
+    }
 }

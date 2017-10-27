@@ -11,9 +11,10 @@
             <section class="panel">
                 <div class="panel-heading">
                     <a href="/character" class="btn btn-info pull-right">返回</a>
-<!--                    <span-->
-<!--                            class="btn btn-xs btn---><?php //echo $user['islogged'] ? 'success' : 'danger'; ?><!-- pull-left"><i-->
-<!--                                class="fa fa-circle-o"></i></span>-->
+                    <span style="font-size: 2em; line-height: 1"
+                          class="btn btn-sm btn-<?php echo \Common\UserHelper::isOnline($user['guildcard']) ? 'success'
+                              : 'danger'; ?> m-r-15 pull-left"><i
+                                class="fa fa-circle-o"></i></span>
                     <h3>
                         <?php echo $user['username']; ?> 的公共银行
                     </h3>

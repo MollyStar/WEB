@@ -57,6 +57,9 @@
     <div class="col-sm-12">
         <section class="panel">
             <div class="panel-heading">
+                <button id="clean" class="btn btn-danger pull-right" type="button">清理掉落表</button>
+                <button id="import" class="btn btn-success pull-right" type="button">导入掉落表</button>
+                <button id="empty_all_drop" class="btn btn-warning pull-right" type="button">重置所有掉落</button>
                 <h1>
                     掉落管理
                 </h1>
@@ -70,7 +73,8 @@
                 <p>
                     <?php foreach ($map_ep as $ek => $ep): ?>
                         <?php foreach ($map_area[$ek] as $ak => $area): ?>
-                            <a class="btn btn-sm btn-default m-b-5" href="#ep_<?php echo $ek; ?>_area<?php echo $ak; ?>"><?php echo $area[0][1]; ?></a>
+                            <a class="btn btn-sm btn-default m-b-5"
+                               href="#ep_<?php echo $ek; ?>_area<?php echo $ak; ?>"><?php echo $area[0][1]; ?></a>
                         <?php endforeach; ?>
                     <?php endforeach; ?>
                 </p>
@@ -79,8 +83,7 @@
     </div>
     <form id="form" onsubmit="return false;">
         <div class="wide-table-fixed-btns">
-            <button class="btn btn-lg btn-info" type="button">返回<br/>顶部</button>
-            <button id="empty_all_drop" class="btn btn-lg btn-warning" type="button">清空</button>
+            <button class="btn btn-lg btn-info" type="button" onclick="window.scrollTo(0,0);">返回<br/>顶部</button>
             <button id="multiple_edit" class="btn btn-lg btn-info" type="button">怪掉<br/>批量</button>
             <button id="multiple_edit_selected" class="btn btn-lg btn-success" type="button" style="display: none">确认
             </button>
@@ -205,7 +208,7 @@
             var c = [];
             c.push('<select name="item" class="editable-select form-control">');
             $.each(ITEMS, function (_, item) {
-                c.push('<option' + (current == item['hex'] ? ' selected="selected"' : '') + ' value="' + item['hex'] + '">' + item['hex'] + ',' + item['name_zh'] + '</option>')
+                c.push('<option' + (current == item['hex'] ? ' selected="selected"' : '') + ' value="' + item['hex'] + '">' + item['hex'] + ',' + item['name'] + ',' + item['name_zh'] + '</option>')
             });
             c.push('</select>');
 
@@ -231,14 +234,14 @@
             var dialog = $.dialog(
                 '<form class="form-horizontal">' +
                 '<div class="form-group">' +
-                '   <div class="control-label col-xs-3">物品</div>' +
-                '   <div class="col-xs-8">' +
+                '   <div class="control-label col-xs-2">物品</div>' +
+                '   <div class="col-xs-9">' +
                 '       ' + items(info.item) +
                 '   </div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                '   <div class="control-label col-xs-3">掉率</div>' +
-                '   <div class="col-xs-8">' +
+                '   <div class="control-label col-xs-2">掉率</div>' +
+                '   <div class="col-xs-9">' +
                 '       <input name="rate" class="form-control" type="number" max="255" min="0" step="1" value="' + info.rate + '">' +
                 '   </div>' +
                 '</div>' +
@@ -312,20 +315,20 @@
             var dialog = $.dialog(
                 '<form class="form-horizontal">' +
                 '<div class="form-group">' +
-                '   <div class="control-label col-xs-3">区域(地图)</div>' +
-                '   <div class="col-xs-8">' +
+                '   <div class="control-label col-xs-2">区域(地图)</div>' +
+                '   <div class="col-xs-9">' +
                 '       ' + area(pub_info.ep, pub_info.area, info.lv) +
                 '   </div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                '   <div class="control-label col-xs-3">物品</div>' +
-                '   <div class="col-xs-8">' +
+                '   <div class="control-label col-xs-2">物品</div>' +
+                '   <div class="col-xs-9">' +
                 '       ' + items(info.item) +
                 '   </div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                '   <div class="control-label col-xs-3">掉率</div>' +
-                '   <div class="col-xs-8">' +
+                '   <div class="control-label col-xs-2">掉率</div>' +
+                '   <div class="col-xs-9">' +
                 '       <input name="rate" class="form-control" type="number" max="255" min="0" step="1" value="' + info.rate + '">' +
                 '   </div>' +
                 '</div>' +
@@ -452,18 +455,53 @@
             }
         }
 
-        form.on('click', '#empty_all_drop', function (e) {
-            $.confirm('确认要清空所有掉落吗？', function () {
+        $('#empty_all_drop').on('click', function (e) {
+            $.confirm('确认要重置所有掉落吗？', function (layer) {
                 $.get('/drop/remove_all_drop').done(function (ret) {
                     if (ret && ret.code === 0) {
                         $.topTip(ret.msg);
                         setTimeout(function () {
                             window.location.reload();
                         }, 1500);
+                        return;
                     }
+                    $.topTip(ret.msg, 'warning');
+                    layer.modal('hide');
                 });
             }, function (layer) {
                 layer.modal('hide');
+            });
+        });
+
+        $('#clean').on('click', function (e) {
+            $.confirm('确认要清空掉落表吗？', function (layer) {
+                $.get('/drop/clean').done(function (ret) {
+                    if (ret && ret.code === 0) {
+                        $.topTip(ret.msg);
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1500);
+                        return;
+                    }
+
+                    $.topTip(ret.msg, 'warning');
+                    layer.modal('hide');
+                });
+            }, function (layer) {
+                layer.modal('hide');
+            });
+        });
+
+        $('#import').on('click', function (e) {
+            $.get('/drop/import').done(function (ret) {
+                if (ret && ret.code === 0) {
+                    $.topTip(ret.msg);
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1500);
+                    return;
+                }
+                $.topTip(ret.msg, 'warning');
             });
         });
     })(jQuery);

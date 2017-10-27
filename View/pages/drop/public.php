@@ -6,11 +6,25 @@
                     掉落表
                 </h1>
             </div>
-            <div class="panel-body"></div>
+            <div class="panel-body">
+                <p>
+                    <?php foreach ($map_ep as $ek => $ep): ?>
+                        <a class="btn btn-sm btn-default" href="#ep_<?php echo $ek; ?>"><?php echo $ep[2]; ?></a>
+                    <?php endforeach; ?>
+                </p>
+                <p>
+                    <?php foreach ($map_ep as $ek => $ep): ?>
+                        <?php foreach ($map_area[$ek] as $ak => $area): ?>
+                            <a class="btn btn-sm btn-default m-b-5"
+                               href="#ep_<?php echo $ek; ?>_area<?php echo $ak; ?>"><?php echo $area[0][1]; ?></a>
+                        <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </p>
+            </div>
         </section>
     </div>
     <?php foreach ($map_ep as $ek => $ep): ?>
-        <div class="col-sm-12">
+        <div id="ep_<?php echo $ek; ?>" class="col-sm-12">
             <section class="panel">
                 <div class="panel-heading">
                     <h3><?php echo $ep[2]; ?></h3>
@@ -18,7 +32,7 @@
                 <div class="panel-body"></div>
             </section>
             <?php foreach ($map_area[$ek] as $ak => $area): ?>
-                <section class="panel">
+                <section id="ep_<?php echo $ek; ?>_area<?php echo $ak; ?>" class="panel">
                     <div class="panel-heading">
                         <h4><?php echo $area[0][1]; ?></h4>
                     </div>

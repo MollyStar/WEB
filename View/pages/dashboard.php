@@ -36,6 +36,11 @@
             </script>
             <section class="panel">
                 <div class="panel-body">
+                    <a href="/item_drop" class="btn btn-default">掉落表</a>
+                </div>
+            </section>
+            <section class="panel">
+                <div class="panel-body">
                     <a href="/drop/export" target="_blank" class="btn btn-info">下载掉落配置包</a>
                 </div>
             </section>

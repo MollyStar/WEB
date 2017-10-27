@@ -38,4 +38,25 @@ class ServerHelper
             })
             ->toArray();
     }
+
+    /**
+     * From tethealla_source
+     *
+     * @param $pc
+     *
+     * @return int
+     */
+    public static function ExpandDropRate($pc = 0) {
+        $pc &= 0xFF;
+        $shift = (($pc >> 3) & 0x1F) - 4;
+        if ($shift < 0) {
+            $shift = 0;
+        }
+
+        return (2 << $shift) * (($pc & 7) + 7);
+    }
+
+    public static function DropRatePercent($rate = 0) {
+        return 1 * sprintf('%.6f', self::ExpandDropRate($rate) / 0xFFFFFFFF * 100) . '%';
+    }
 }

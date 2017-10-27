@@ -30,14 +30,14 @@ $map_area = $config['area'];
     .table > tbody > tr:nth-child(4n-1) > td:nth-child(n+2),
     .table > tbody > tr:nth-child(4n) > td:nth-child(n+2) {
         font-size: 12px;
-        width: 8.5%;
+        width: 8.6%;
     }
 
     .table > tbody > tr:nth-child(4n-3) > td:nth-child(n+3),
     .table > tbody > tr:nth-child(4n-2) > td:nth-child(n+2),
     .table > tbody > tr:nth-child(4n-1) > td:nth-child(n+2),
     .table > tbody > tr:nth-child(4n) > td:nth-child(n+2) {
-        height: 4em;
+        /*height: 4em;*/
         padding: 2px 3px;
         color: #505050;
     }

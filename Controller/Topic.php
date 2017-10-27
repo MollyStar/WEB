@@ -9,9 +9,8 @@
 namespace Controller;
 
 
-use Common\ItemHelper;
+use Carlosocarvalho\SimpleInput\Input\Input;
 use Kernel\Response;
-use Model\ItemSet;
 
 class Topic
 {
@@ -20,6 +19,10 @@ class Topic
     }
 
     public function newest_package_get() {
+
+        Input::post('username');
+        Input::post('password');
+
         //dd(ItemHelper::send_items_to_commonbank(1, ItemSet::make('NEWEST_PACKAGE_HU')));
     }
 }

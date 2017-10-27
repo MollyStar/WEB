@@ -10,6 +10,7 @@ namespace Controller\Server;
 
 
 use Carlosocarvalho\SimpleInput\Input\Input;
+use Common\UserHelper;
 use Kernel\DB;
 use Kernel\Response;
 use Model\CommonBank;
@@ -17,11 +18,24 @@ use Model\CommonBankItem;
 
 class Character
 {
+
     public function manage() {
+
+        $account_list = collect(DB::connection()->get('account_data'))->map(function ($item) {
+            $item['isonline'] = UserHelper::isOnline($item['guildcard']);
+
+            return $item;
+        })->toArray();
+
+        return Response::view('pages.account', compact('account_list'));
+    }
+
+    public function manage_2() {
         $character_list = collect(DB::connection()
             ->join('account_data as ad', 'ad.guildcard = cd.guildcard', 'INNER')
             ->orderBy('ad.guildcard', 'asc')
             ->get('character_data as cd'))->map(function ($item) {
+
             $item['data'] = bin2hex($item['data']);
             $item['header'] = bin2hex($item['header']);
             $item['lasthwinfo'] = bin2hex($item['lasthwinfo']);
@@ -54,12 +68,13 @@ class Character
     public function bank() {
         $guildcard = Input::get('guildcard');
         if ($guildcard > 0) {
+
             $user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data');
 
             if ($user) {
 
                 $data = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
-                $bank = CommonBank::fromBin($data);
+                $bank = $data ? CommonBank::fromBin($data) : CommonBank::make();
 
                 $bank_use = $bank->used();
                 $bank_meseta = $bank->getMST();
@@ -88,6 +103,10 @@ class Character
         $user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data');
         if (!$user) {
             return Response::api(-2, '无效的用户');
+        }
+
+        if (UserHelper::isOnline($user['guildcard'])) {
+            return Response::api(-1, '用户处于在线状态，无法保存');
         }
 
         $bank = CommonBank::make();
