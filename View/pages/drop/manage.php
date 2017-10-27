@@ -139,7 +139,7 @@
                                                         data-item="<?php echo $item['item_hex']; ?>"
                                                         data-rate="<?php echo $item['rate']; ?>"
                                                         class="mob-drop-unit droped-item">
-                                                        <i><?php echo $item['rate_p']; ?></i>
+                                                        <i>[<?php echo $item['rate']; ?>]&nbsp;<?php echo $item['rate_p']; ?></i>
                                                         <?php echo $item['item_name_zh']; ?><br/>
                                                         <?php echo $item['item_name']; ?>
                                                     </td>
@@ -171,7 +171,7 @@
                                                               data-order="<?php echo $box['order']; ?>"
                                                               data-lv="<?php echo $box['lv']; ?>">
                                                         <span><?php echo $box['name_zh']; ?></span>
-                                                        <i><?php echo $box['rate_p']; ?></i>
+                                                        <i>[<?php echo $box['rate']; ?>]&nbsp;<?php echo $box['rate_p']; ?></i>
                                                             <?php echo $box['item_name_zh']; ?><br/>
                                                             <?php echo $box['item_name']; ?>
                                                     </span>
@@ -269,7 +269,7 @@
                                                 els.data('item', rep.item);
                                                 els.data('rate', rep.rate);
                                                 els.html([
-                                                    '<i>' + rep.rate_p + '</i>',
+                                                    '<i>[' + rep.rate + ']&nbsp;' + rep.rate_p + '</i>',
                                                     rep.item_info.name_zh + '<br/>',
                                                     rep.item_info.name
                                                 ].join("\n"));
@@ -363,7 +363,8 @@
                                                     ' data-order="' + rep.order + '"' +
                                                     ' data-lv="' + rep.lv + '">' +
                                                     '<span>' + rep.name_zh + '</span>' +
-                                                    '<i>' + rep.rate_p + '</i>' + rep.item_info.name_zh +
+                                                    '<i>[' + rep.rate + ']&nbsp;' + rep.rate_p + '</i>',
+                                                    rep.item_info.name_zh +
                                                     '<br/>' + rep.item_info.name +
                                                     '</span>');
 
@@ -382,6 +383,29 @@
                                         $.topTip('保存失败', 'danger');
                                     });
                                 }
+                            },
+                            context: this
+                        },
+                        {
+                            className: 'btn btn-danger',
+                            button: '删除',
+                            callback: function (dialog) {
+                                var el = $(this);
+                                var info = el.data();
+                                $.post('/drop/box_delete', {hash: info.hash}).done(function (ret) {
+                                    if (ret) {
+                                        if (ret.code === 0) {
+                                            $.topTip(ret.msg);
+                                            el.remove();
+                                            dialog.modal('hide');
+                                            return;
+                                        }
+                                        $.topTip(ret.msg, 'warning');
+                                    }
+                                }).fail(function () {
+                                    $.topTip('删除失败', 'danger');
+                                });
+                                dialog.modal('hide');
                             },
                             context: this
                         },

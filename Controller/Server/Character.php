@@ -23,6 +23,7 @@ class Character
 
         $account_list = collect(DB::connection()->get('account_data'))->map(function ($item) {
             $item['isonline'] = UserHelper::isOnline($item['guildcard']);
+            $item['regtime'] = date('Y-m-d H:i:s', $item['regtime'] * 3600);
 
             return $item;
         })->toArray();
@@ -117,8 +118,17 @@ class Character
             });
         }
 
-        if (DB::connection()->where('guildcard', $user['guildcard'])->update('bank_data', ['data' => $bank->toBin()])) {
-            return Response::api(0, '保存成功');
+        if (DB::connection()->where('guildcard', $user['guildcard'])->getOne('bank_data')) {
+            if (DB::connection()
+                ->where('guildcard', $user['guildcard'])
+                ->update('bank_data', ['data' => $bank->toBin()])
+            ) {
+                return Response::api(0, '保存成功');
+            }
+        } else {
+            if (DB::connection()->insert('bank_data', ['guildcard' => $user['guildcard'], 'data' => $bank->toBin()])) {
+                return Response::api(0, '公共银行初始化完成，保存成功');
+            }
         }
 
         return Response::api(-1, '保存失败');

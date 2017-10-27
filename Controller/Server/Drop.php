@@ -219,6 +219,7 @@ class Drop
                     if (DB::connection()->insert('item_drop', $data)) {
                         $data['name'] = $map_box_area_lv[$ek][$ak][1][$lv][0];
                         $data['name_zh'] = $map_box_area_lv[$ek][$ak][1][$lv][1];
+                        $data['rate'] = $rate;
                         $data['rate_p'] = ServerHelper::DropRatePercent($rate);
                         $data['item'] = $item;
                         $data['item_info'] = $item_info;
@@ -230,6 +231,17 @@ class Drop
         }
 
         return Response::api(-1, '保存失败');
+    }
+
+    public function box_delete() {
+        $hash = Input::post('hash');
+        if ($hash) {
+            if (DB::connection()->where('hash', $hash)->where('type', 0)->delete('item_drop')) {
+                return Response::api(0, '删除成功');
+            }
+        }
+
+        return Response::api(-1, '删除失败');
     }
 
     public function public () {
