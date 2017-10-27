@@ -16,7 +16,7 @@ Route('GET', '/item_drop', 'Controller\Server\Drop@public');
 
 // 活动
 Route('GET', '/topic/newest_package', 'Controller\Topic@newest_package');
-Route('GET', '/topic/newest_package/get', 'Controller\Topic@newest_package_get');
+Route('POST', '/topic/newest_package/get', 'Controller\Topic@newest_package_get');
 
 RouteGroup(function () {
     Route('GET', '/dashboard', 'Controller\Dashboard@index');

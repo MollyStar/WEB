@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-5">
-                <form id="form" class="form-horizontal" action="/topic/newest_package_get">
+                <form id="form" class="form-horizontal" onsubmit="return false;" action="/topic/newest_package/get">
                     <section class="panel panel-alpha">
                         <div class="panel-heading">
                             <h3>
@@ -28,7 +28,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <input class="form-control required" type="text" placeholder="帐号" name="username"
-                                           autofocus="autofocus"/>
+                                           autofocus="autofocus" autocomplete="off"/>
                                 </div>
                                 <div class="form-group">
                                     <input class="form-control required" type="password" placeholder="密码"
@@ -90,13 +90,16 @@
                 if (success) {
                     return;
                 }
+
                 var el = $(this);
                 $.post(el.attr('action'), el.serializeArray()).done(function (ret) {
                     if (ret) {
                         if (ret.code === 0) {
                             success = true;
                             $.topTip(ret.msg);
-                            form.reset();
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1500);
                             return;
                         }
                     }
