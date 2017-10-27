@@ -61,11 +61,25 @@
                     掉落管理
                 </h1>
             </div>
-            <div class="panel-body"></div>
+            <div class="panel-body">
+                <p>
+                    <?php foreach ($map_ep as $ek => $ep): ?>
+                        <a class="btn btn-sm btn-default" href="#ep_<?php echo $ek; ?>"><?php echo $ep[2]; ?></a>
+                    <?php endforeach; ?>
+                </p>
+                <p>
+                    <?php foreach ($map_ep as $ek => $ep): ?>
+                        <?php foreach ($map_area[$ek] as $ak => $area): ?>
+                            <a class="btn btn-sm btn-default m-b-5" href="#ep_<?php echo $ek; ?>_area<?php echo $ak; ?>"><?php echo $area[0][1]; ?></a>
+                        <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </p>
+            </div>
         </section>
     </div>
     <form id="form" onsubmit="return false;">
         <div class="wide-table-fixed-btns">
+            <button class="btn btn-lg btn-info" type="button">返回<br/>顶部</button>
             <button id="empty_all_drop" class="btn btn-lg btn-warning" type="button">清空</button>
             <button id="multiple_edit" class="btn btn-lg btn-info" type="button">怪掉<br/>批量</button>
             <button id="multiple_edit_selected" class="btn btn-lg btn-success" type="button" style="display: none">确认
@@ -74,7 +88,7 @@
             </button>
         </div>
         <?php foreach ($map_ep as $ek => $ep): ?>
-            <div class="col-sm-12">
+            <div id="ep_<?php echo $ek; ?>" class="col-sm-12">
                 <section class="panel">
                     <div class="panel-heading">
                         <h3><?php echo $ep[2]; ?></h3>
@@ -82,7 +96,7 @@
                     <div class="panel-body"></div>
                 </section>
                 <?php foreach ($map_area[$ek] as $ak => $area): ?>
-                    <section class="panel">
+                    <section id="ep_<?php echo $ek; ?>_area<?php echo $ak; ?>" class="panel">
                         <div class="panel-heading">
                             <h4><?php echo $area[0][1]; ?></h4>
                         </div>
