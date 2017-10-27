@@ -72,9 +72,14 @@ class CommonBank
     }
 
     public function addItem(CommonBankItem $item) {
+        if ($this->USE == $this->SOCK) {
+            return -1;
+        }
         $itemid = $this->USE++;
         $item->setItemid($itemid);
         $this->ITEMS[$itemid] = $item;
+
+        return $itemid;
     }
 
     /**

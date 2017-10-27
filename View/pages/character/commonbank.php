@@ -11,9 +11,9 @@
             <section class="panel">
                 <div class="panel-heading">
                     <a href="/character" class="btn btn-info pull-right">返回</a>
-                    <div
-                            class="btn btn-xs btn-<?php echo $user['islogged'] ? 'success' : 'danger'; ?> pull-left"><i
-                                class="fa fa-circle-o"></i></div>
+<!--                    <span-->
+<!--                            class="btn btn-xs btn---><?php //echo $user['islogged'] ? 'success' : 'danger'; ?><!-- pull-left"><i-->
+<!--                                class="fa fa-circle-o"></i></span>-->
                     <h3>
                         <?php echo $user['username']; ?> 的公共银行
                     </h3>

@@ -26,30 +26,32 @@
                             <?php $item = array_shift($row['items']); ?>
                             <tr>
                                 <td rowspan="<?php echo $row['items_count']; ?>">
-                                    <?php echo $row['name']; ?>
+                                    <a href="/item_set/detail?name=<?php echo $row['name']; ?>"><?php echo $row['name']; ?></a>
                                 </td>
                                 <td rowspan="<?php echo $row['items_count']; ?>">
                                     <?php echo $row['description']; ?>
                                 </td>
                                 <td>
-                                    <?php echo $item['name_zh']; ?>
+                                    <?php echo $map_items[$item['hex']]['name_zh']; ?>
                                 </td>
                                 <td>
                                     <?php echo $item['num']; ?>
                                 </td>
                             </tr>
                             <?php foreach ($row['items'] as $item): ?>
-                                <td>
-                                    <?php echo $item['name_zh']; ?>
-                                </td>
-                                <td>
-                                    <?php echo $item['num']; ?>
-                                </td>
+                                <tr>
+                                    <td>
+                                        <?php echo $map_items[$item['hex']]['name_zh']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $item['num']; ?>
+                                    </td>
+                                </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
                                 <td>
-                                    <?php echo $row['name']; ?>
+                                    <a href="/item_set/detail?name=<?php echo $row['name']; ?>"><?php echo $row['name']; ?></a>
                                 </td>
                                 <td>
                                     <?php echo $row['description']; ?>

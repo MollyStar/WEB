@@ -41,4 +41,8 @@ class UserHelper
     public static function currentUser() {
         return self::isLoggedAdmin() ? self::$user : null;
     }
+
+    public static function login_verify() {
+
+    }
 }

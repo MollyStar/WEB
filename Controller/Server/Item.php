@@ -11,6 +11,7 @@ namespace Controller\Server;
 use Carlosocarvalho\SimpleInput\Input\Input;
 use Kernel\DB;
 use Kernel\Response;
+use Model\CommonBankItem;
 
 class Item
 {
@@ -111,12 +112,121 @@ class Item
     }
 
     public function item_set() {
-        $data = DB::connection()->get('item_set');
 
-        return Response::view('pages.item_set', compact('data'));
+        $codes = [];
+
+        $data = collect(DB::connection()->orderBy('updated_at', 'desc')->get('item_set'))
+            ->map(function ($item) use (&$codes) {
+                $item['items'] = collect(($items = json_decode($item['items'], true)) ? $items : [])
+                    ->map(function ($item) use (&$codes) {
+                        $hex = substr($item[0], 0, 6);
+                        $codes[] = $hex;
+
+                        return ['hex' => $hex, 'code' => $item[0], 'num' => $item[1]];
+                    })
+                    ->toArray();
+
+                $item['items_count'] = count($item['items']);
+
+                return $item;
+            })
+            ->toArray();
+
+        $codes = array_unique($codes);
+        $map_items = [];
+        if ($codes) {
+            $map_items = collect(DB::connection()->where('hex', $codes, 'IN')->get('map_items'))
+                ->keyBy('hex')
+                ->toArray();
+        }
+
+        return Response::view('pages.item_set', compact('data', 'map_items'));
     }
 
     public function item_set_detail() {
-        return Response::view('pages.item_set_detail');
+        $name = Input::get('name');
+
+        $data = null;
+        if ($name) {
+
+            $codes = [];
+
+            $data = DB::connection()->where('name', $name)->getOne('item_set');
+            $data['items'] = collect(($items = json_decode($data['items'], true)) ? $items : [])
+                ->map(function ($item) use (&$codes) {
+                    $hex = substr($item[0], 0, 6);
+                    $codes[] = $hex;
+
+                    return ['hex' => $hex, 'code' => $item[0], 'num' => $item[1]];
+                })
+                ->toArray();
+
+            $codes = array_unique($codes);
+            $map_items = [];
+            if ($codes) {
+                $map_items = collect(DB::connection()->where('hex', $codes, 'IN')->get('map_items'))
+                    ->keyBy('hex')
+                    ->toArray();
+            }
+        }
+
+        return Response::view('pages.item_set_detail', compact('data', 'map_items'));
+    }
+
+    public function item_set_detail_save() {
+        $name = Input::post('name');
+        $description = Input::post('description') ??'';
+        $data = Input::post('data');
+
+        if (!$name) {
+            return Response::api(-1, '请输入名称');
+        }
+
+        $item_set = DB::connection()->where('name', $name)->getOne('item_set');
+
+        if (empty($data)) {
+            $data = [];
+        } else {
+            $data = collect($data)->map(function ($item) {
+                $item = CommonBankItem::make($item['code'], $item['num']);
+
+                if ($item->isValid()) {
+                    return [$item->code, $item->num];
+                }
+
+                return null;
+            })->filter()->toArray();
+        }
+
+        if ($item_set) {
+            $ret = DB::connection()->where('name', $name)->update('item_set', [
+                'description' => $description,
+                'items'       => json_encode($data),
+            ]);
+            $response = null;
+        } else {
+            $ret = DB::connection()->insert('item_set', [
+                'name'        => $name,
+                'description' => $description,
+                'items'       => json_encode($data),
+            ]);
+            $response = $name;
+        }
+        if ($ret) {
+            return Response::api(0, '保存成功', $response);
+        }
+
+        return Response::api(-1, '保存失败');
+    }
+
+    public function item_set_detail_delete() {
+        $name = Input::post('name');
+        if ($name) {
+            if (DB::connection()->where('name', $name)->delete('item_set')) {
+                return Response::api(0, '删除成功');
+            }
+        }
+
+        return Response::api(-1, '删除失败');
     }
 }

@@ -77,6 +77,8 @@ class CommonBankItem
     public function setNum($num = 0) {
         // 增加允许条件
 
+        $num = intval($num);
+
         if ($num < 0) {
             $num = 0;
         } elseif ($num > 99) {

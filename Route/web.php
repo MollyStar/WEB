@@ -16,6 +16,7 @@ Route('GET', '/item_drop', 'Controller\Server\Drop@public');
 
 // 活动
 Route('GET', '/topic/newest_package', 'Controller\Topic@newest_package');
+Route('GET', '/topic/newest_package/get', 'Controller\Topic@newest_package_get');
 
 RouteGroup(function () {
     Route('GET', '/dashboard', 'Controller\Dashboard@index');
@@ -27,6 +28,8 @@ RouteGroup(function () {
     // 套装
     Route('GET', '/item_set', 'Controller\Server\item@item_set');
     Route('GET', '/item_set/detail', 'Controller\Server\item@item_set_detail');
+    Route('POST', '/item_set/detail/save', 'Controller\Server\item@item_set_detail_save');
+    Route('POST', '/item_set/detail/delete', 'Controller\Server\item@item_set_detail_delete');
 
     Route('GET', '/drop', 'Controller\Server\Drop@manage');
     Route('POST', '/drop/update', 'Controller\Server\Drop@update');
