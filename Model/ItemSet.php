@@ -18,23 +18,33 @@ class ItemSet
 
     private $ITEMS = [];
 
+    private $MST = 0;
+
     /**
      * ItemSet constructor.
      *
      * @param array $items [[code, num], ...]
      */
-    public function __construct(array $items = []) {
+    public function __construct(array $items = [], $mst = 0) {
         $this->ITEMS = $items;
+        $this->MST = $mst;
     }
 
     public static function make($name) {
         $items = null;
+        $mst = 0;
 
         if ($name) {
-            $items = json_decode(DB::connection()->where('name', $name)->getValue('item_set', 'items'), true);
+            $itemSet = DB::connection()->where('name', $name)->getOne('item_set');
+            $items = json_decode($itemSet['items'], true);
+            $mst = intval($itemSet['mst']);
         }
 
-        return new static($items);
+        return new static($items, $mst);
+    }
+
+    public function getMST() {
+        return $this->MST;
     }
 
     public function toCommonBankItems() {

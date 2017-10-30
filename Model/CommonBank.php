@@ -20,6 +20,7 @@ class CommonBank
     private $ITEMS;
 
     private $SOCK = 200;
+    private $MAX_MST = 999999;
 
     private static $length = 4808;
 
@@ -60,7 +61,7 @@ class CommonBank
     public function setMST($num = 0) {
         if ($num < 0) {
             $num = 0;
-        } elseif ($num > 999999) {
+        } elseif ($num > $this->MAX_MST) {
             $num = 999999;
         }
 
@@ -69,6 +70,10 @@ class CommonBank
 
     public function getMST() {
         return $this->MST;
+    }
+
+    public function getFreeMST() {
+        return $this->MAX_MST - $this->MST;
     }
 
     public function addItem(CommonBankItem $item) {

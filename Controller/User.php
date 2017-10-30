@@ -62,6 +62,10 @@ class User
             return Response::api(-1, '请输入用户名');
         }
 
+        if (preg_match('/[^a-zA-Z0-9]+/', $username)) {
+            return Response::api(-1, '用户名只能由英文+数字组成');
+        }
+
         $db = DB::connection();
         $db->where('username', $username);
         $result = $db->getValue('account_data', 'username');

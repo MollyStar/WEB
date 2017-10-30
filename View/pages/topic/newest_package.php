@@ -47,7 +47,7 @@
                                 新手礼包
                             </h3>
                             <p>领取时请确认帐号处于<b class="text-danger"> 离线 </b>状态，<b class="text-info">
-                                    公共仓库 </b>留有有足够空位，否则会领取失败。<span class="text-warning">每个帐号仅限领取一次</span></p>
+                                    公共仓库 </b>留有有足够空位(包括美塞塔余额)，否则会领取失败。<span class="text-warning">每个帐号仅限领取一次</span></p>
                         </div>
                         <div class="panel-body">
                             <div class="col-sm-12">
@@ -80,20 +80,23 @@
                                     </div>
                                     <div class="tab-content">
                                         <div class="tab-pane fade active show" id="HU_disp">
+                                            <p>MST：200000</p>
                                             <p>武器：销金弧光匕首，最后生还者</p>
                                             <p>插件：恶魔级/战斗，巨人级/攻击 x3</p>
-                                            <p>马古：尼德拉 50 100 50 0</p>
+                                            <p>玛古：尼德拉 50 100 50 0</p>
                                         </div>
                                         <div class="tab-pane fade" id="RA_disp">
+                                            <p>MST：200000</p>
                                             <p>武器：销金格林机枪，最后的冲击</p>
                                             <p>插件：恶魔级/战斗，妖精级/命中 x3</p>
-                                            <p>马古：娑陀 40 80 80 0</p>
+                                            <p>玛古：娑陀 50 70 80 0</p>
                                         </div>
                                         <div class="tab-pane fade" id="FO_disp">
+                                            <p>MST：200000</p>
                                             <p>武器：炎杖阿耆尼，冰杖达衮，雷杖因陀罗</p>
-                                            <p>插件：恶魔级/魔法，天使级/精神x3</p>
+                                            <p>插件：恶魔级/魔法，天使级/精神 x3</p>
                                             <p>魔法：Lv14低/Lv12中/Lv10高级</p>
-                                            <p>马古：比玛 100 0 0 100</p>
+                                            <p>玛古：比玛 100 0 0 100</p>
                                         </div>
                                     </div>
                                 </div>

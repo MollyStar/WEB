@@ -175,7 +175,8 @@ class Item
 
     public function item_set_detail_save() {
         $name = Input::post('name');
-        $description = Input::post('description') ??'';
+        $description = Input::post('description') ?? '';
+        $mst = Input::post('mst') ?? 0;
         $data = Input::post('data');
 
         if (!$name) {
@@ -198,8 +199,15 @@ class Item
             })->filter()->toArray();
         }
 
+        if ($mst > 999999) {
+            $mst = 999999;
+        } elseif ($mst < -999999) {
+            $mst = -999999;
+        }
+
         if ($item_set) {
             $ret = DB::connection()->where('name', $name)->update('item_set', [
+                'mst'         => $mst,
                 'description' => $description,
                 'items'       => json_encode($data),
             ]);
@@ -207,11 +215,13 @@ class Item
         } else {
             $ret = DB::connection()->insert('item_set', [
                 'name'        => $name,
+                'mst'         => $mst,
                 'description' => $description,
                 'items'       => json_encode($data),
             ]);
             $response = $name;
         }
+
         if ($ret) {
             return Response::api(0, '保存成功', $response);
         }

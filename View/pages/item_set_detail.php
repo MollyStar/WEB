@@ -29,7 +29,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">美塞塔</label>
                         <div class="col-sm-5">
-                            <input class="form-control" name="mst" type="text"
+                            <input class="form-control" max="999999" min="-999999" name="mst" type="text"
                                    value="<?php echo $data['mst'] ?? 0; ?>">
                         </div>
                     </div>

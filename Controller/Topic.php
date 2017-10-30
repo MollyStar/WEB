@@ -23,7 +23,7 @@ class Topic
 
     public function newest_package_get() {
 
-        return Response::api(-1, '即将开放');
+        // return Response::api(-1, '即将开放');
 
         try {
             $user = UserHelper::verifiedFormUser();
@@ -49,10 +49,10 @@ class Topic
             return Response::api(-1, '您已经领取过了');
         } else {
             if (ItemHelper::send_items_to_commonbank($user['guildcard'], ItemSet::make($type))) {
-                DB::connection()->insert('topic_record', [
-                    'guildcard' => $user['guildcard'],
-                    'name'      => $type,
-                ]);
+                //                DB::connection()->insert('topic_record', [
+                //                    'guildcard' => $user['guildcard'],
+                //                    'name'      => $type,
+                //                ]);
 
                 return Response::api(0, '领取成功');
             }

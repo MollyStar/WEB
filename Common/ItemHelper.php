@@ -32,7 +32,7 @@ class ItemHelper
         return collect(self::all_items())->keyBy('hex')->toArray();
     }
 
-    public static function send_items_to_commonbank($guildcard, $items) {
+    public static function send_items_to_commonbank($guildcard, $itemOrSet) {
 
         if (!$guildcard || !$user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data')) {
             return false;
@@ -42,9 +42,9 @@ class ItemHelper
 
         $bank_handler = CommonBank::fromBin($bank);
 
-        if ($items instanceof CommonBankItem) {
-            if ($items->isValid() && $bank_handler->remaining() > 1) {
-                $bank_handler->addItem($items);
+        if ($itemOrSet instanceof CommonBankItem) {
+            if ($itemOrSet->isValid() && $bank_handler->remaining() > 1) {
+                $bank_handler->addItem($itemOrSet);
                 if (DB::connection()
                     ->where('guildcard', $guildcard)
                     ->update('bank_data', ['data' => $bank_handler->toBin()])
@@ -52,9 +52,13 @@ class ItemHelper
                     return true;
                 }
             }
-        } elseif ($items instanceof ItemSet) {
-            $items = $items->toCommonBankItems();
-            if (count($items) <= $bank_handler->remaining()) {
+        } elseif ($itemOrSet instanceof ItemSet) {
+            $items = $itemOrSet->toCommonBankItems();
+            $mst = $itemOrSet->getMST() + $bank_handler->getMST();
+            if (count($items) <= $bank_handler->remaining() && $mst >= 0 && $mst < 1000000) {
+
+                $bank_handler->setMST($mst);
+
                 foreach ($items as $item) {
                     $bank_handler->addItem($item);
                 }
