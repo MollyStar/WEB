@@ -83,7 +83,7 @@
             </section>
             <section class="panel">
                 <div class="panel-body">
-                    <button type="button" class="btn btn-danger btn-xs delete">删除</button>
+                    <button type="button" class="btn btn-danger btn-xs drop">删除</button>
                 </div>
             </section>
         </form>
@@ -142,6 +142,10 @@
         });
 
         form.on('click', '.delete', function () {
+            $(this).parents('tr').remove();
+        });
+
+        form.on('click', '.drop', function () {
             $.post('/item_set/detail/delete', {name: form.find('[name="name"]').val()}).done(function (ret) {
                 if (ret) {
                     if (ret.code === 0) {

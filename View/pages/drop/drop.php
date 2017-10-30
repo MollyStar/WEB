@@ -37,8 +37,6 @@ $map_area = $config['area'];
     .table > tbody > tr:nth-child(4n-2) > td:nth-child(n+2),
     .table > tbody > tr:nth-child(4n-1) > td:nth-child(n+2),
     .table > tbody > tr:nth-child(4n) > td:nth-child(n+2) {
-        /*height: 4em;*/
-        padding: 2px 3px;
         color: #505050;
     }
 
@@ -82,16 +80,13 @@ $map_area = $config['area'];
 
     .droped-item {
         position: relative;
-        padding-top: 14px !important;
     }
 
     .droped-item > i {
-        /*opacity: .7;*/
         position: absolute;
         top: 1px;
         right: 1px;
         color: #333;
-        /*background-color: #666;*/
         padding: 1px 4px;
         font-weight: bold;
         font-style: normal;

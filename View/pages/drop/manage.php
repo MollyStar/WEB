@@ -1,5 +1,15 @@
 <style>
+    .table > tbody > tr:nth-child(4n-3) > td:nth-child(n+3),
+    .table > tbody > tr:nth-child(4n-2) > td:nth-child(n+2),
+    .table > tbody > tr:nth-child(4n-1) > td:nth-child(n+2),
+    .table > tbody > tr:nth-child(4n) > td:nth-child(n+2) {
+        min-height: 4em;
+        padding: 2px 3px;
+        color: #505050;
+    }
+
     .droped-item {
+        padding-top: 14px !important;
         cursor: pointer;
     }
 
@@ -139,7 +149,8 @@
                                                         data-item="<?php echo $item['item_hex']; ?>"
                                                         data-rate="<?php echo $item['rate']; ?>"
                                                         class="mob-drop-unit droped-item">
-                                                        <i>[<?php echo $item['rate']; ?>]&nbsp;<?php echo $item['rate_p']; ?></i>
+                                                        <i>[<?php echo $item['rate']; ?>
+                                                            ]&nbsp;<?php echo $item['rate_p']; ?></i>
                                                         <?php echo $item['item_name_zh']; ?><br/>
                                                         <?php echo $item['item_name']; ?>
                                                     </td>
@@ -171,7 +182,8 @@
                                                               data-order="<?php echo $box['order']; ?>"
                                                               data-lv="<?php echo $box['lv']; ?>">
                                                         <span><?php echo $box['name_zh']; ?></span>
-                                                        <i>[<?php echo $box['rate']; ?>]&nbsp;<?php echo $box['rate_p']; ?></i>
+                                                        <i>[<?php echo $box['rate']; ?>
+                                                            ]&nbsp;<?php echo $box['rate_p']; ?></i>
                                                             <?php echo $box['item_name_zh']; ?><br/>
                                                             <?php echo $box['item_name']; ?>
                                                     </span>

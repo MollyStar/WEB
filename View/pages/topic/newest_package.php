@@ -2,18 +2,44 @@
     <style>
         body {
             min-height: 100vh;
-            background: white url("/asset/image/topic/newest_package.jpg") no-repeat 70% 7vh;
+            background: white url("/asset/image/topic/newest_package.jpg") no-repeat 80% 7vh;
         }
 
         .panel-alpha {
             background-color: rgba(255, 255, 255, .8);
         }
+
+        .nav-tabs {
+            border: 0 none;
+            margin-bottom: 10px;
+        }
+
+        .nav-tabs a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .nav-tabs .fa {
+            display: none;
+        }
+
+        .nav-tabs a.active {
+            color: #18bc9c;
+        }
+
+        .nav-tabs .active .fa {
+            display: inline-block;
+        }
+
+        .tab-content p {
+            line-height: 1;
+        }
     </style>
     <div class="container">
-        <div style="margin-top: 15vh;"></div>
+        <div style="margin-top: 7vh;"></div>
         <div class="row">
             <div class="col-sm-2"></div>
-            <div class="col-sm-5">
+            <div class="col-sm-6">
                 <form id="form" class="form-horizontal" onsubmit="return false;" action="/topic/newest_package/get">
                     <section class="panel panel-alpha">
                         <div class="panel-heading">
@@ -21,8 +47,7 @@
                                 新手礼包
                             </h3>
                             <p>领取时请确认帐号处于<b class="text-danger"> 离线 </b>状态，<b class="text-info">
-                                    公共仓库 </b>至少留有有<b
-                                        class="text-danger"> 5 </b>个空位。<span class="text-warning">每个帐号仅限领取一次</span></p>
+                                    公共仓库 </b>留有有足够空位，否则会领取失败。<span class="text-warning">每个帐号仅限领取一次</span></p>
                         </div>
                         <div class="panel-body">
                             <div class="col-sm-12">
@@ -35,24 +60,40 @@
                                            name="password"/>
                                 </div>
                                 <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-xs-4 radio">
-                                            <label>
-                                                <input type="radio" name="sec" value="0" checked="checked">
-                                                HU 战士
-                                            </label>
+                                    <div class="row nav nav-tabs">
+                                        <div class="col-xs-4">
+                                            <a data-sec="0" href="#HU_disp" class="active" data-toggle="tab"
+                                               aria-expanded="true">
+                                                <i class="fa fa-check"></i> HU 战士
+                                            </a>
                                         </div>
-                                        <div class="col-xs-4 radio">
-                                            <label>
-                                                <input type="radio" name="sec" value="1">
-                                                RA 枪手
-                                            </label>
+                                        <div class="col-xs-4">
+                                            <a data-sec="1" href="#RA_disp" data-toggle="tab" aria-expanded="false">
+                                                <i class="fa fa-check"></i> RA 枪手
+                                            </a>
                                         </div>
-                                        <div class="col-xs-4 radio">
-                                            <label>
-                                                <input type="radio" name="sec" value="2">
-                                                FO 法师
-                                            </label>
+                                        <div class="col-xs-4">
+                                            <a data-sec="2" href="#FO_disp" data-toggle="tab" aria-expanded="false">
+                                                <i class="fa fa-check"></i> FO 法师
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade active show" id="HU_disp">
+                                            <p>武器：销金弧光匕首，最后生还者</p>
+                                            <p>插件：恶魔级/战斗，巨人级/攻击 x3</p>
+                                            <p>马古：尼德拉 50 100 50 0</p>
+                                        </div>
+                                        <div class="tab-pane fade" id="RA_disp">
+                                            <p>武器：销金格林机枪，最后的冲击</p>
+                                            <p>插件：恶魔级/战斗，妖精级/命中 x3</p>
+                                            <p>马古：娑陀 40 80 80 0</p>
+                                        </div>
+                                        <div class="tab-pane fade" id="FO_disp">
+                                            <p>武器：炎杖阿耆尼，冰杖达衮，雷杖因陀罗</p>
+                                            <p>插件：恶魔级/魔法，天使级/精神x3</p>
+                                            <p>魔法：Lv14低/Lv12中/Lv10高级</p>
+                                            <p>马古：比玛 100 0 0 100</p>
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +133,11 @@
                 }
 
                 var el = $(this);
-                $.post(el.attr('action'), el.serializeArray()).done(function (ret) {
+                var data = el.serializeArray();
+
+                data.push({name: 'sec', value: form.find('.nav-tabs a.active').data('sec')});
+
+                $.post(el.attr('action'), data).done(function (ret) {
                     if (ret) {
                         if (ret.code === 0) {
                             success = true;

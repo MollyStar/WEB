@@ -1,3 +1,9 @@
+<style>
+    .droped-item {
+        padding-top: 14px !important;
+        cursor: pointer;
+    }
+</style>
 <div class="row m-lr-0">
     <div class="col-sm-12">
         <section class="panel">
