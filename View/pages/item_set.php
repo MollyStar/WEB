@@ -16,6 +16,7 @@
                     <tr>
                         <th>名称</th>
                         <th>备注</th>
+                        <th>MST</th>
                         <th>物品</th>
                         <th>数量</th>
                     </tr>
@@ -30,6 +31,9 @@
                                 </td>
                                 <td rowspan="<?php echo $row['items_count']; ?>">
                                     <?php echo $row['description']; ?>
+                                </td>
+                                <td rowspan="<?php echo $row['items_count']; ?>">
+                                    <?php echo $row['mst']; ?>
                                 </td>
                                 <td>
                                     <?php echo $map_items[$item['hex']]['name_zh']; ?>

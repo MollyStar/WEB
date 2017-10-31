@@ -415,7 +415,7 @@ class Drop
      */
     public function import() {
 
-        $path = ROOT . '/__SERVER/drop';
+        $path = ROOT . '/__SERVER/import/drop';
 
         if (file_exists($path . '/imprted.lock')) {
             return Response::api(-1, '已导入，若要重新导入请先清空');
@@ -482,7 +482,7 @@ class Drop
      * @return string
      */
     public function clean() {
-        $lockFile = ROOT . '/__SERVER/drop/imprted.lock';
+        $lockFile = ROOT . '/__SERVER/import/drop/imprted.lock';
         if (file_exists($lockFile)) {
             DB::connection()->rawQuery('truncate table `item_drop`');
             @unlink($lockFile);

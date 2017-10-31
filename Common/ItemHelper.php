@@ -40,31 +40,39 @@ class ItemHelper
 
         $bank = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
 
-        $bank_handler = CommonBank::fromBin($bank);
+        $bank_handler = $bank ? CommonBank::fromBin($bank) : CommonBank::make();
+        $tobe = false;
 
         if ($itemOrSet instanceof CommonBankItem) {
             if ($itemOrSet->isValid() && $bank_handler->remaining() > 1) {
                 $bank_handler->addItem($itemOrSet);
+                $tobe = true;
+            }
+        } elseif ($itemOrSet instanceof ItemSet) {
+            $items = $itemOrSet->toCommonBankItems();
+            $mst = $itemOrSet->getMST() + $bank_handler->getMST();
+            if (count($items) <= $bank_handler->remaining() && $mst >= 0 && $mst < 1000000) {
+                $bank_handler->setMST($mst);
+                foreach ($items as $item) {
+                    $bank_handler->addItem($item);
+                }
+                $tobe = true;
+            }
+        }
+
+        if ($tobe) {
+            if ($bank) {
                 if (DB::connection()
                     ->where('guildcard', $guildcard)
                     ->update('bank_data', ['data' => $bank_handler->toBin()])
                 ) {
                     return true;
                 }
-            }
-        } elseif ($itemOrSet instanceof ItemSet) {
-            $items = $itemOrSet->toCommonBankItems();
-            $mst = $itemOrSet->getMST() + $bank_handler->getMST();
-            if (count($items) <= $bank_handler->remaining() && $mst >= 0 && $mst < 1000000) {
-
-                $bank_handler->setMST($mst);
-
-                foreach ($items as $item) {
-                    $bank_handler->addItem($item);
-                }
-                if (DB::connection()
-                    ->where('guildcard', $guildcard)
-                    ->update('bank_data', ['data' => $bank_handler->toBin()])
+            } else {
+                if (DB::connection()->insert('bank_data', [
+                    'guildcard' => $guildcard,
+                    'data'      => $bank_handler->toBin(),
+                ])
                 ) {
                     return true;
                 }

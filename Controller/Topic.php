@@ -36,8 +36,8 @@ class Topic
         }
 
         $types = ['HU', 'RA', 'FO'];
-
-        $type = 'NEWEST_PACKAGE_' . $types[Input::post('sec')];
+        $type = Input::post('sec');
+        $type = 'NEWEST_PACKAGE_' . $types[$type];
 
         if ($user['isgm']) {
             if (ItemHelper::send_items_to_commonbank($user['guildcard'], ItemSet::make($type))) {
@@ -45,14 +45,18 @@ class Topic
             }
         }
 
-        if (DB::connection()->where('guildcard', $user['guildcard'])->where('name', $type)->getOne('topic_record')) {
+        if (DB::connection()
+            ->where('guildcard', $user['guildcard'])
+            ->where('name', 'NEWEST_PACKAGE')
+            ->getOne('topic_record')
+        ) {
             return Response::api(-1, '您已经领取过了');
         } else {
             if (ItemHelper::send_items_to_commonbank($user['guildcard'], ItemSet::make($type))) {
-                //                DB::connection()->insert('topic_record', [
-                //                    'guildcard' => $user['guildcard'],
-                //                    'name'      => $type,
-                //                ]);
+                DB::connection()->insert('topic_record', [
+                    'guildcard' => $user['guildcard'],
+                    'name'      => 'NEWEST_PACKAGE',
+                ]);
 
                 return Response::api(0, '领取成功');
             }
