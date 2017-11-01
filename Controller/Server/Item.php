@@ -11,7 +11,7 @@ namespace Controller\Server;
 use Carlosocarvalho\SimpleInput\Input\Input;
 use Kernel\DB;
 use Kernel\Response;
-use Model\Item as ItemModde;
+use Model\Item as ItemModel;
 
 class Item
 {
