@@ -9,11 +9,11 @@
 namespace Model;
 
 
-use Model\Traits\Items;
+use Model\Traits\ItemsUtility;
 
 class CommonBank
 {
-    use Items;
+    use ItemsUtility;
 
     private $MST;
     private $USE;

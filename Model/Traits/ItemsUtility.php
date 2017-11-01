@@ -9,7 +9,7 @@
 namespace Model\Traits;
 
 
-trait Items
+trait ItemsUtility
 {
     public function itemsHEX() {
         return collect($this->ITEMS)->pluck('item')->unique()->toArray();

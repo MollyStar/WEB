@@ -202,7 +202,7 @@ class Item
 
                 return null;
             })->filter()->sortBy(function ($item) {
-                return hexdec($item->item);
+                return hexdec($item->hex);
             })->values()->map(function ($item) {
                 return [$item->code, $item->num];
             })->toArray();

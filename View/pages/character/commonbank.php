@@ -62,10 +62,10 @@
                                     <?php echo $item->itemid; ?>
                                 </td>
                                 <td>
-                                    <?php echo $item->item; ?>
+                                    <?php echo $item->hex; ?>
                                 </td>
                                 <td>
-                                    <?php echo $map_items[$item->item]['name_zh']; ?>
+                                    <?php echo $map_items[$item->hex]['name_zh']; ?>
                                 </td>
                                 <td>
                                     <input class="form-control input-sm" name="code"

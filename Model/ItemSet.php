@@ -10,11 +10,11 @@ namespace Model;
 
 
 use Kernel\DB;
-use Model\Traits\Items;
+use Model\Traits\ItemsUtility;
 
 class ItemSet
 {
-    use Items;
+    use ItemsUtility;
 
     private $ITEMS = [];
 

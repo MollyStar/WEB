@@ -11,7 +11,7 @@ namespace Model;
 class Item
 {
 
-    public $item;
+    public $hex;
     public $strengthen;
     public $code;
     public $set1;
@@ -34,9 +34,9 @@ class Item
         $this->code = $code;
         if (substr($code, 0, 2) === '02') {
             // 马古
-            $this->item = substr($code, 0, 4) . '00';
+            $this->hex = substr($code, 0, 4) . '00';
         } else {
-            $this->item = substr($code, 0, 6);
+            $this->hex = substr($code, 0, 6);
         }
         $this->strengthen = hexdec(substr($code, 6, 2));
         list($this->set1, $this->set2, $this->set3, $this->set4) = str_split($code, 8);
@@ -104,6 +104,6 @@ class Item
     }
 
     public function isValid() {
-        return $this->item != '000000' && $this->num > 0;
+        return $this->hex != '000000' && $this->num > 0;
     }
 }

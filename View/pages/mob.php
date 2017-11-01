@@ -44,7 +44,7 @@
                                            value="<?php echo $item['name_zh']; ?>">
                                 </td>
                                 <td>
-                                    <select class="form-control" name="data[<?php echo $item['id']; ?>][area]">
+                                    <select class="form-control input-sm" name="data[<?php echo $item['id']; ?>][area]">
                                         <option value="">-</option>
                                         <?php foreach ($area[$item['ep']] as $ak => $a): ?>
                                             <option<?php echo $item['area'] === $ak ? ' selected="selected"' : ''; ?>
