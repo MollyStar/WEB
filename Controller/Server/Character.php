@@ -14,7 +14,7 @@ use Common\UserHelper;
 use Kernel\DB;
 use Kernel\Response;
 use Model\CommonBank;
-use Model\Item;
+use Model\BankItem;
 
 class Character
 {
@@ -74,8 +74,8 @@ class Character
 
             if ($user) {
 
-                $data = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
-                $bank = $data ? CommonBank::fromBin($data) : CommonBank::make();
+                $bin = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
+                $bank = CommonBank::make($bin);
 
                 $bank_use = $bank->used();
                 $bank_meseta = $bank->getMST();
@@ -114,7 +114,7 @@ class Character
         $bank->setMST($mst);
         if (!empty($data)) {
             collect($data)->each(function ($item) use (&$bank) {
-                $bank->addItem(Item::make($item['code'], $item['num']));
+                $bank->addItem(BankItem::make($item['code'], $item['num']));
             });
         }
 

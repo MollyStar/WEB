@@ -11,7 +11,7 @@ namespace Common;
 
 use Kernel\DB;
 use Model\CommonBank;
-use Model\Item;
+use Model\BankItem;
 use Model\ItemSet;
 
 class ItemHelper
@@ -38,23 +38,23 @@ class ItemHelper
             return false;
         }
 
-        $bank = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
+        $bin = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
 
-        $bank_handler = $bank ? CommonBank::fromBin($bank) : CommonBank::make();
+        $bank = CommonBank::make($bin);
         $tobe = false;
 
-        if ($itemOrSet instanceof Item) {
-            if ($itemOrSet->isValid() && $bank_handler->remaining() > 1) {
-                $bank_handler->addItem($itemOrSet);
+        if ($itemOrSet instanceof BankItem) {
+            if ($itemOrSet->isValid() && $bank->remaining() > 1) {
+                $bank->addItem($itemOrSet);
                 $tobe = true;
             }
         } elseif ($itemOrSet instanceof ItemSet) {
             $items = $itemOrSet->toCommonBankItems();
-            $mst = $itemOrSet->getMST() + $bank_handler->getMST();
-            if (count($items) <= $bank_handler->remaining() && $mst >= 0 && $mst < 1000000) {
-                $bank_handler->setMST($mst);
+            $mst = $itemOrSet->getMST() + $bank->getMST();
+            if (count($items) <= $bank->remaining() && $mst >= 0 && $mst < 1000000) {
+                $bank->setMST($mst);
                 foreach ($items as $item) {
-                    $bank_handler->addItem($item);
+                    $bank->addItem($item);
                 }
                 $tobe = true;
             }
@@ -62,16 +62,13 @@ class ItemHelper
 
         if ($tobe) {
             if ($bank) {
-                if (DB::connection()
-                    ->where('guildcard', $guildcard)
-                    ->update('bank_data', ['data' => $bank_handler->toBin()])
-                ) {
+                if (DB::connection()->where('guildcard', $guildcard)->update('bank_data', ['data' => $bank->toBin()])) {
                     return true;
                 }
             } else {
                 if (DB::connection()->insert('bank_data', [
                     'guildcard' => $guildcard,
-                    'data'      => $bank_handler->toBin(),
+                    'data'      => $bank->toBin(),
                 ])
                 ) {
                     return true;

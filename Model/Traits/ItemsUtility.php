@@ -8,10 +8,9 @@
 
 namespace Model\Traits;
 
-
 trait ItemsUtility
 {
     public function itemsHEX() {
-        return collect($this->ITEMS)->pluck('item')->unique()->toArray();
+        return collect($this->ITEMS)->pluck('hex')->unique()->toArray();
     }
 }

@@ -22,21 +22,38 @@ class CommonBank
     private $SOCK = 200;
     private $MAX_MST = 999999;
 
-    private static $length = 4808;
+    const BIN_LENGTH = 4808;
 
     public function __construct() {
         $this->MST = 0;
         $this->USE = 0;
-        $this->ITEMS = array_fill(0, $this->SOCK, Item::make());
+        $this->ITEMS = array_fill(0, $this->SOCK, BankItem::make());
     }
 
-    public static function make() {
-        return new static();
+    public static function make($bin = null) {
+        $instance = new static();
+
+        if (is_string($bin) && strlen($bin) === self::BIN_LENGTH) {
+            $_unpacked = unpack('Ibank_use/Ibank_meseta', substr($bin, 0, 8));
+
+            // $handler->USE = $_unpacked['bank_use'];
+            $instance->setMST($_unpacked['bank_meseta']);
+
+            $hex_arr = str_split(substr($bin, 8), 24);
+            foreach ($hex_arr as $raw) {
+                $item = BankItem::fromBin($raw);
+                if ($item->isValid()) {
+                    $instance->addItem($item);
+                }
+            }
+        }
+
+        return $instance;
     }
 
     public static function fromBin(string $bin) {
 
-        if (strlen($bin) !== self::$length) {
+        if (strlen($bin) !== self::BIN_LENGTH) {
             throw new \Exception('[ERROR] Bank data length!');
         }
 
@@ -49,7 +66,7 @@ class CommonBank
 
         $hex_arr = str_split(substr($bin, 8), 24);
         foreach ($hex_arr as $raw) {
-            $item = Item::fromBankRaw($raw);
+            $item = BankItem::fromBin($raw);
             if ($item->isValid()) {
                 $handler->addItem($item);
             }
@@ -76,7 +93,7 @@ class CommonBank
         return $this->MAX_MST - $this->MST;
     }
 
-    public function addItem(Item $item) {
+    public function addItem(BankItem $item) {
         if ($this->USE == $this->SOCK) {
             return -1;
         }

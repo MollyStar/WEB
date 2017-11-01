@@ -20,7 +20,7 @@ Route('POST', '/topic/newest_package/get', 'Controller\Topic@newest_package_get'
 
 RouteGroup(function () {
     Route('GET', '/dashboard', 'Controller\Dashboard@index');
-    // Route('GET', '/test', 'Controller\Dashboard@test');
+    Route('GET', '/test', 'Controller\Dashboard@test');
 
     Route('GET', '/item', 'Controller\Server\item@manage');
     // Route('GET', '/item/import', 'Controller\Server\item@import');

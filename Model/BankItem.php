@@ -8,7 +8,7 @@
 
 namespace Model;
 
-class Item
+class BankItem
 {
 
     public $hex;
@@ -65,7 +65,7 @@ class Item
         return call_user_func_array('pack', array_merge(['C12IC4I'], $hex_arr));
     }
 
-    public static function fromBankRaw($bin) {
+    public static function fromBin($bin) {
         $hex_arr = array_values(unpack('C12a/Ib/C4c/Id', $bin));
 
         $code = vsprintf(str_repeat('%02X', 16), array_merge(array_slice($hex_arr, 0, 12), array_slice($hex_arr, 13, 4)));
