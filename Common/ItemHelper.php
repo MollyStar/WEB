@@ -11,7 +11,7 @@ namespace Common;
 
 use Kernel\DB;
 use Model\CommonBank;
-use Model\CommonBankItem;
+use Model\Item;
 use Model\ItemSet;
 
 class ItemHelper
@@ -43,7 +43,7 @@ class ItemHelper
         $bank_handler = $bank ? CommonBank::fromBin($bank) : CommonBank::make();
         $tobe = false;
 
-        if ($itemOrSet instanceof CommonBankItem) {
+        if ($itemOrSet instanceof Item) {
             if ($itemOrSet->isValid() && $bank_handler->remaining() > 1) {
                 $bank_handler->addItem($itemOrSet);
                 $tobe = true;

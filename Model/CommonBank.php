@@ -27,7 +27,7 @@ class CommonBank
     public function __construct() {
         $this->MST = 0;
         $this->USE = 0;
-        $this->ITEMS = array_fill(0, $this->SOCK, CommonBankItem::make());
+        $this->ITEMS = array_fill(0, $this->SOCK, Item::make());
     }
 
     public static function make() {
@@ -49,7 +49,7 @@ class CommonBank
 
         $hex_arr = str_split(substr($bin, 8), 24);
         foreach ($hex_arr as $raw) {
-            $item = CommonBankItem::fromBankRaw($raw);
+            $item = Item::fromBankRaw($raw);
             if ($item->isValid()) {
                 $handler->addItem($item);
             }
@@ -76,7 +76,7 @@ class CommonBank
         return $this->MAX_MST - $this->MST;
     }
 
-    public function addItem(CommonBankItem $item) {
+    public function addItem(Item $item) {
         if ($this->USE == $this->SOCK) {
             return -1;
         }

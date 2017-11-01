@@ -14,7 +14,7 @@ use Common\UserHelper;
 use Kernel\DB;
 use Kernel\Response;
 use Model\CommonBank;
-use Model\CommonBankItem;
+use Model\Item;
 
 class Character
 {
@@ -114,7 +114,7 @@ class Character
         $bank->setMST($mst);
         if (!empty($data)) {
             collect($data)->each(function ($item) use (&$bank) {
-                $bank->addItem(CommonBankItem::make($item['code'], $item['num']));
+                $bank->addItem(Item::make($item['code'], $item['num']));
             });
         }
 

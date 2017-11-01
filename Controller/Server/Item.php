@@ -11,7 +11,7 @@ namespace Controller\Server;
 use Carlosocarvalho\SimpleInput\Input\Input;
 use Kernel\DB;
 use Kernel\Response;
-use Model\CommonBankItem;
+use Model\Item as ItemModde;
 
 class Item
 {
@@ -173,6 +173,11 @@ class Item
         return Response::view('pages.item_set_detail', compact('data', 'map_items'));
     }
 
+    /**
+     * 保存套装信息
+     *
+     * @return string
+     */
     public function item_set_detail_save() {
         $name = Input::post('name');
         $description = Input::post('description') ?? '';
@@ -189,14 +194,18 @@ class Item
             $data = [];
         } else {
             $data = collect($data)->map(function ($item) {
-                $item = CommonBankItem::make($item['code'], $item['num']);
+                $item = ItemModel::make($item['code'], $item['num']);
 
                 if ($item->isValid()) {
-                    return [$item->code, $item->num];
+                    return $item;
                 }
 
                 return null;
-            })->filter()->toArray();
+            })->filter()->sortBy(function ($item) {
+                return hexdec($item->item);
+            })->values()->map(function ($item) {
+                return [$item->code, $item->num];
+            })->toArray();
         }
 
         if ($mst > 999999) {

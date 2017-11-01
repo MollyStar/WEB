@@ -51,7 +51,7 @@ class ItemSet
         $items = $this->ITEMS;
         if (!empty($items)) {
             $items = collect($items)->map(function ($item) {
-                $item = CommonBankItem::make($item[0], $item[1]);
+                $item = Item::make($item[0], $item[1]);
 
                 return $item->isValid() ? $item : null;
             })->filter()->toArray();

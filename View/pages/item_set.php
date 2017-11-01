@@ -17,53 +17,32 @@
                         <th>名称</th>
                         <th>备注</th>
                         <th>MST</th>
-                        <th>物品</th>
-                        <th>数量</th>
+                        <th>物品/数量</th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php foreach ($data as $row): ?>
-                        <?php if ($row['items_count']): ?>
-                            <?php $item = array_shift($row['items']); ?>
-                            <tr>
-                                <td rowspan="<?php echo $row['items_count']; ?>">
-                                    <a href="/item_set/detail?name=<?php echo $row['name']; ?>"><?php echo $row['name']; ?></a>
-                                </td>
-                                <td rowspan="<?php echo $row['items_count']; ?>">
-                                    <?php echo $row['description']; ?>
-                                </td>
-                                <td rowspan="<?php echo $row['items_count']; ?>">
-                                    <?php echo $row['mst']; ?>
-                                </td>
-                                <td>
-                                    <?php echo $map_items[$item['hex']]['name_zh']; ?>
-                                </td>
-                                <td>
-                                    <?php echo $item['num']; ?>
-                                </td>
-                            </tr>
-                            <?php foreach ($row['items'] as $item): ?>
-                                <tr>
-                                    <td>
-                                        <?php echo $map_items[$item['hex']]['name_zh']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $item['num']; ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td>
-                                    <a href="/item_set/detail?name=<?php echo $row['name']; ?>"><?php echo $row['name']; ?></a>
-                                </td>
-                                <td>
-                                    <?php echo $row['description']; ?>
-                                </td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        <?php endif; ?>
+                        <tr>
+                            <td>
+                                <a href="/item_set/detail?name=<?php echo $row['name']; ?>"><?php echo $row['name']; ?></a>
+                            </td>
+                            <td style="min-width: 200px;">
+                                <?php echo $row['description']; ?>
+                            </td>
+                            <td>
+                                <?php echo $row['mst']; ?>
+                            </td>
+                            <td>
+                                <?php if ($row['items_count']): ?>
+                                    <?php foreach ($row['items'] as $item): ?>
+                                        <div class="item-group item-group-inline m-b-5">
+                                            <span class="form-control input-sm"><?php echo $map_items[$item['hex']]['name_zh']; ?></span><span
+                                                    class="form-control input-sm"><sub style="margin-bottom: 5px">&times;</sub><?php echo $item['num']; ?></span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
                     <?php endforeach; ?>
                     </tbody>
                 </table>

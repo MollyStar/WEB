@@ -1,0 +1,36 @@
+@import "../variables";
+
+.item-group {
+
+  &.item-group-inline {
+    display: inline-block;
+
+    .form-control {
+      width: auto;
+      display: inline-block;
+    }
+
+    sub {
+      bottom: -.175em;
+    }
+  }
+
+  > * {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+
+    &:first-child {
+      border-right: 0 none;
+      border-top-left-radius: @border-radius-base;
+      border-bottom-left-radius: @border-radius-base;
+    }
+
+    &:last-child {
+      border-left: 0 none;
+      border-top-right-radius: @border-radius-base;
+      border-bottom-right-radius: @border-radius-base;
+    }
+  }
+
+}
