@@ -45,7 +45,7 @@ class BankItem
         $this->setItemid($itemid);
     }
 
-    public function toBankRaw() {
+    public function toBin() {
 
         if (!$this->isValid()) {
             $hex_arr = array_fill(0, 18, 0);

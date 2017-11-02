@@ -123,7 +123,7 @@ class CommonBank
 
     public function toBin() {
         return pack('II', $this->USE, $this->MST) . collect($this->ITEMS)->map(function ($item) {
-                return $item->toBankRaw();
+                return $item->toBin();
             })->implode('');
     }
 
