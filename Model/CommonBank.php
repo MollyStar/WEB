@@ -9,6 +9,7 @@
 namespace Model;
 
 
+use Codante\Binary\Binary;
 use Model\Traits\ItemsUtility;
 
 class CommonBank
@@ -31,24 +32,11 @@ class CommonBank
     }
 
     public static function make($bin = null) {
-        $instance = new static();
-
         if (is_string($bin) && strlen($bin) === self::BIN_LENGTH) {
-            $_unpacked = unpack('Ibank_use/Ibank_meseta', substr($bin, 0, 8));
-
-            // $handler->USE = $_unpacked['bank_use'];
-            $instance->setMST($_unpacked['bank_meseta']);
-
-            $hex_arr = str_split(substr($bin, 8), 24);
-            foreach ($hex_arr as $raw) {
-                $item = BankItem::fromBin($raw);
-                if ($item->isValid()) {
-                    $instance->addItem($item);
-                }
-            }
+            return self::fromBin($bin);
         }
 
-        return $instance;
+        return new static();
     }
 
     public static function fromBin(string $bin) {
@@ -56,21 +44,21 @@ class CommonBank
         if (strlen($bin) !== self::BIN_LENGTH) {
             throw new \Exception('[ERROR] Bank data length!');
         }
-
         $handler = new static();
-
-        $_unpacked = unpack('Ibank_use/Ibank_meseta', substr($bin, 0, 8));
-
+        $_unpacked = (Binary::Parser([
+            'used'   => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK),
+            'meseta' => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK),
+            'items'  => [Binary::UNSIGNED_CHAR(24), 200],
+        ]))->parse(Binary::Stream($bin));
         // $handler->USE = $_unpacked['bank_use'];
-        $handler->setMST($_unpacked['bank_meseta']);
+        $handler->setMST($_unpacked['meseta']);
 
-        $hex_arr = str_split(substr($bin, 8), 24);
-        foreach ($hex_arr as $raw) {
-            $item = BankItem::fromBin($raw);
+        collect($_unpacked['items'])->each(function ($item) use (&$handler) {
+            $item = BankItem::fromBin($item);
             if ($item->isValid()) {
                 $handler->addItem($item);
             }
-        }
+        });
 
         return $handler;
     }

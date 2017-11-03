@@ -8,6 +8,8 @@
 
 namespace Model;
 
+use Codante\Binary\Binary;
+
 class BankItem
 {
 
@@ -21,13 +23,13 @@ class BankItem
     public $num;
     public $itemid;
 
-    public function __construct($code = '', $num = 0, $itemid = 0) {
+    public function __construct($code = null, $num = 0, $itemid = 0) {
         if (is_array($code)) {
             $code = join('', $code);
         } elseif (is_string($code)) {
             $code = str_replace(',', '', $code);
         }
-        if ($code == '' || strlen($code) !== 32) {
+        if (is_null($code) || strlen($code) !== 32) {
             $code = str_repeat('0', 32);
         }
         $code = strtoupper($code);
@@ -66,16 +68,23 @@ class BankItem
     }
 
     public static function fromBin($bin) {
-        $hex_arr = array_values(unpack('C12a/Ib/C4c/Id', $bin));
+        $_up = (Binary::Parser([
+            'set1'   => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+            'set2'   => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+            'set3'   => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+            'itemid' => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK, function ($res) {
+                return $res - 0x00010000;
+            }),
+            'set4'   => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_HEX),
+            'num'    => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK, function ($res) {
+                return $res - 0x00010000;
+            }),
+        ]))->parse(Binary::Stream($bin));
 
-        $code = vsprintf(str_repeat('%02X', 16), array_merge(array_slice($hex_arr, 0, 12), array_slice($hex_arr, 13, 4)));
-        $num = $hex_arr[17] - 0x00010000;
-        $itemid = $hex_arr[12] - 0x00010000;
-
-        return new static($code, $num, $itemid);
+        return new static($_up['set1'] . $_up['set2'] . $_up['set3'] . $_up['set4'], $_up['num'], $_up['itemid']);
     }
 
-    public static function make($code = '', $num = 0, $itemid = 0) {
+    public static function make($code = null, $num = 0, $itemid = 0) {
         return new static($code, $num, $itemid);
     }
 

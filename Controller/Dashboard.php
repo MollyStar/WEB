@@ -9,6 +9,9 @@
 namespace Controller;
 
 use Carlosocarvalho\SimpleInput\Input\Input;
+use Codante\Binary\Binary;
+use Codante\Binary\Parser;
+use Codante\Binary\Stream;
 use Kernel\DB;
 use Kernel\Response;
 
@@ -28,22 +31,35 @@ class Dashboard
 
                 $data = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
 
-                $structure = new Collection([
-                    'used'  => ['int', 4],
-                    'mst'   => ['int', 4],
+                $parser = new Parser([
+                    'used'  => Binary::UNSIGNED_INTEGER(null, 1),
+                    'mst'   => Binary::UNSIGNED_INTEGER(null, 1),
                     'items' => [
-                        'arr',
-                        200,
                         [
-                            'code'   => ['string', 12],
-                            'num'    => ['int', 4],
-                            'mag'    => ['string', 4],
-                            'itemid' => ['int', 4],
+                            'set0'   => Binary::UNSIGNED_CHAR(null, 2),
+                            'set1'   => Binary::UNSIGNED_CHAR(null, 1),
+                            'set2'   => Binary::UNSIGNED_CHAR(null, 1),
+                            'itemid' => Binary::UNSIGNED_INTEGER(null, 1, function ($value) {
+                                return $value - 0x00010000;
+                            }),
+                            'set3'   => Binary::UNSIGNED_CHAR(null, 1),
+                            'num'    => Binary::UNSIGNED_INTEGER(null, 1, function ($value) {
+                                return $value - 0x00010000;
+                            }),
                         ],
+                        200,
                     ],
-                ]);
+                    //                    'items' => Binary::COLLECTION([
+                    //                        'set0'   => Binary::UNSIGNED_CHAR(),
+                    //                        'set1'   => Binary::UNSIGNED_CHAR(),
+                    //                        'set2'   => Binary::UNSIGNED_CHAR(),
+                    //                        'num'    => Binary::UNSIGNED_INTEGER(),
+                    //                        'set3'   => Binary::UNSIGNED_CHAR(),
+                    //                        'itemid' => Binary::UNSIGNED_INTEGER(),
+                    //                    ], 200),
+                ], new Stream($data));
 
-                dd($structure->parse(new StringStream($data)));
+                dd($parser->data());
             }
         }
     }
