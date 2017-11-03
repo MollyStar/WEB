@@ -12,7 +12,6 @@ use Codante\Binary\Binary;
 
 class BankItem
 {
-
     public $hex;
     public $strengthen;
     public $code;
@@ -68,20 +67,10 @@ class BankItem
     }
 
     public static function fromBin($bin) {
-        $_up = (Binary::Parser([
-            'set1'   => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
-            'set2'   => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
-            'set3'   => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
-            'itemid' => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK, function ($res) {
-                return $res - 0x00010000;
-            }),
-            'set4'   => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_HEX),
-            'num'    => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK, function ($res) {
-                return $res - 0x00010000;
-            }),
-        ]))->parse(Binary::Stream($bin));
+        $_unpacked = Binary::Parser(Config::get('DATA_STRUCTURE.BANK_ITEM'), Binary::Stream($bin))->data();
 
-        return new static($_up['set1'] . $_up['set2'] . $_up['set3'] . $_up['set4'], $_up['num'], $_up['itemid']);
+        return new static($_unpacked['data'] . $_unpacked['data1'], $_unpacked['bank_count'] -
+                                                                    0x00010000, $_unpacked['itemid'] - 0x00010000);
     }
 
     public static function make($code = null, $num = 0, $itemid = 0) {

@@ -10,6 +10,7 @@ namespace Model;
 
 
 use Codante\Binary\Binary;
+use Kernel\Config;
 use Model\Traits\ItemsUtility;
 
 class CommonBank
@@ -45,16 +46,13 @@ class CommonBank
             throw new \Exception('[ERROR] Bank data length!');
         }
         $handler = new static();
-        $_unpacked = (Binary::Parser([
-            'used'   => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK),
-            'meseta' => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK),
-            'items'  => [Binary::UNSIGNED_CHAR(24), 200],
-        ]))->parse(Binary::Stream($bin));
-        // $handler->USE = $_unpacked['bank_use'];
+        $_unpacked = Binary::Parser(Config::get('DATA_STRUCTURE.BANK'), Binary::Stream($bin))->data();
+
         $handler->setMST($_unpacked['meseta']);
 
-        collect($_unpacked['items'])->each(function ($item) use (&$handler) {
-            $item = BankItem::fromBin($item);
+        collect($_unpacked['bankInventory'])->each(function ($item) use (&$handler) {
+            $item = BankItem::make($item['data'] . $item['data2'], $item['bank_count'] - 0x00010000, $item['itemid'] -
+                                                                                                     0x00010000);
             if ($item->isValid()) {
                 $handler->addItem($item);
             }

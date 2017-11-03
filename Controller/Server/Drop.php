@@ -251,9 +251,9 @@ class Drop
                                ??
                                '');
 
-        //        if (Response::isCached($cacheName)) {
-        //            return Response::cache($cacheName);
-        //        }
+        if (Response::isCached($cacheName)) {
+            return Response::cache($cacheName);
+        }
 
         $map_items = collect(DB::connection()->get('map_items'))->keyBy('hex')->toArray();
 
