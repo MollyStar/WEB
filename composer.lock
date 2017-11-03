@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "421a8b7dfe715631b69f794d71914f5d",
+    "content-hash": "42b3a2ea3401b020f41a4ab2e4b22a88",
     "packages": [
         {
             "name": "carlosocarvalho/simple-input",
@@ -52,6 +52,42 @@
                 "put"
             ],
             "time": "2015-04-09T10:09:26+00:00"
+        },
+        {
+            "name": "codante/binary",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shinate/Binary.git",
+                "reference": "f658aedcba6de0ce19cfa56c8c387d09f9dbe51c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shinate/Binary/zipball/f658aedcba6de0ce19cfa56c8c387d09f9dbe51c",
+                "reference": "f658aedcba6de0ce19cfa56c8c387d09f9dbe51c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Codante\\Binary\\": "/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "shinate",
+                    "email": "shine.wangrs@gmail.com"
+                }
+            ],
+            "description": "Binary stream parser & builder",
+            "time": "2017-11-02 16:53:16"
         },
         {
             "name": "grandt/binstring",
@@ -441,7 +477,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "codante/binary": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

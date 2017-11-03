@@ -12,11 +12,12 @@
     "nikic/fast-route": "^1.2",
     "carlosocarvalho/simple-input": "^1.0",
     "tightenco/collect": "^5.5",
-    "phpzip/phpzip": "^2.0"
+    "phpzip/phpzip": "^2.0",
+    "codante/binary": "dev-master"
   },
   "autoload": {
     "psr-4": {
-      "": "./"
+      "": ""
     },
     "files": [
       "Common/Functions.php"
