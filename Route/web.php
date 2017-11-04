@@ -22,9 +22,13 @@ RouteGroup(function () {
     Route('GET', '/dashboard', 'Controller\Dashboard@index');
     Route('GET', '/test', 'Controller\Dashboard@test');
 
+    // 物品
     Route('GET', '/item', 'Controller\Server\item@manage');
     // Route('GET', '/item/import', 'Controller\Server\item@import');
     Route('POST', '/item/update', 'Controller\Server\item@update');
+
+    Route('GET', '/item/stat_boosts', 'Controller\Server\item@stat_boosts');
+
 
     // 套装
     Route('GET', '/item_set', 'Controller\Server\item@item_set');

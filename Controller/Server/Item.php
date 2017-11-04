@@ -9,19 +9,29 @@
 namespace Controller\Server;
 
 use Carlosocarvalho\SimpleInput\Input\Input;
+use Kernel\Config;
 use Kernel\DB;
 use Kernel\Response;
 use Model\BankItem as ItemModel;
 
 class Item
 {
-
+    /**
+     * 物品管理
+     *
+     * @return string
+     */
     public function manage() {
         $data = DB::connection()->orderBy('hex', 'asc')->get('map_items');
 
         return Response::view('pages.item', compact('data'));
     }
 
+    /**
+     * 更新物品信息
+     *
+     * @return string
+     */
     public function update() {
         $data = Input::post('data');
 
@@ -44,7 +54,50 @@ class Item
         return Response::api(0, '更新完成', $updated);
     }
 
+
+    public function stat_boosts() {
+
+        $map_items = collect(DB::connection()->get('map_items'))->keyBy('hex')->toArray();
+        $map_stat_boosts = Config::get('server.stat_boosts');
+        $map_stat = Config::get('server.stat');
+
+        $itemspmt = [];
+
+        collect([
+            'armorpmt'  => 19,
+            'shieldpmt' => 19,
+            'weaponpmt' => 18,
+        ])->each(function ($column, $name) use (&$itemspmt, &$map_items) {
+            $itemspmt[$name] = collect(file(realpath(sprintf('%s/__SERVER/item/%s.ini', ROOT, $name))))->map(function ($line) use ($column, $name, &$map_items) {
+                $data = explode(',', trim($line, "\n"));
+
+                return [
+                    'hex'         => $data[0],
+                    'name_zh'     => $map_items[substr($data[0], 2)]['name_zh'],
+                    'name'        => $data[1],
+                    'stat_boosts' => $data[$column],
+                    'type'        => $name,
+                ];
+            });
+        });
+
+        $data = collect($itemspmt)->flatten(1)->sortBy('stat_boosts')->groupBy('stat_boosts')->toArray();
+
+        return Response::view('pages.item.stat_boosts', compact('data', 'map_stat_boosts', 'map_stat'));
+
+    }
+
+    /**
+     * 导入
+     *
+     * @return string
+     */
     public function import() {
+
+        // 不能再用了
+        // TODO 用修正对比导入取代
+        return false;
+
         $itemspmt = collect();
         collect(['armorpmt', 'shieldpmt', 'weaponpmt'])->each(function ($name) use (&$itemspmt) {
             $itemspmt = $itemspmt->merge(collect(file(ROOT .
@@ -111,6 +164,11 @@ class Item
         }
     }
 
+    /**
+     * 套装
+     *
+     * @return string
+     */
     public function item_set() {
 
         $codes = [];
@@ -143,6 +201,11 @@ class Item
         return Response::view('pages.item_set', compact('data', 'map_items'));
     }
 
+    /**
+     * 套装详情
+     *
+     * @return string
+     */
     public function item_set_detail() {
         $name = Input::get('name');
 
@@ -238,6 +301,11 @@ class Item
         return Response::api(-1, '保存失败');
     }
 
+    /**
+     * 删除套装
+     *
+     * @return string
+     */
     public function item_set_detail_delete() {
         $name = Input::post('name');
         if ($name) {
@@ -248,4 +316,6 @@ class Item
 
         return Response::api(-1, '删除失败');
     }
+
+
 }
