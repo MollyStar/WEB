@@ -16,8 +16,8 @@ $BANK_ITEM = [
 ];
 
 $BANK = [
-    'used'          => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK),
-    'meseta'        => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK),
+    'bankUse'       => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK),
+    'bankMeseta'    => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK),
     'bankInventory' => Binary::COLLECTION($BANK_ITEM, 200),
 ];
 

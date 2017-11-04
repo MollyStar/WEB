@@ -13,7 +13,7 @@ use Carlosocarvalho\SimpleInput\Input\Input;
 use Common\UserHelper;
 use Kernel\DB;
 use Kernel\Response;
-use Model\CommonBank;
+use Model\Bank;
 use Model\BankItem;
 
 class Character
@@ -75,7 +75,8 @@ class Character
             if ($user) {
 
                 $bin = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
-                $bank = CommonBank::make($bin);
+
+                $bank = Bank::make($bin);
 
                 $bank_use = $bank->used();
                 $bank_meseta = $bank->getMST();
@@ -110,7 +111,7 @@ class Character
             return Response::api(-1, '用户处于在线状态，无法保存');
         }
 
-        $bank = CommonBank::make();
+        $bank = Bank::make();
         $bank->setMST($mst);
         if (!empty($data)) {
             collect($data)->each(function ($item) use (&$bank) {

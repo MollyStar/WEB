@@ -13,7 +13,7 @@ use Codante\Binary\Binary;
 use Kernel\Config;
 use Model\Traits\ItemsUtility;
 
-class CommonBank
+class Bank
 {
     use ItemsUtility;
 
@@ -45,14 +45,16 @@ class CommonBank
         if (strlen($bin) !== self::BIN_LENGTH) {
             throw new \Exception('[ERROR] Bank data length!');
         }
+
         $handler = new static();
+
         $_unpacked = Binary::Parser(Config::get('DATA_STRUCTURE.BANK'), Binary::Stream($bin))->data();
 
-        $handler->setMST($_unpacked['meseta']);
+        $handler->setMST($_unpacked['bankMeseta']);
 
         collect($_unpacked['bankInventory'])->each(function ($item) use (&$handler) {
-            $item = BankItem::make($item['data'] . $item['data2'], $item['bank_count'] - 0x00010000, $item['itemid'] -
-                                                                                                     0x00010000);
+            $item = BankItem::make($item['data'] . $item['data2'], $item['bank_count'] & 0xFFFF, $item['itemid'] &
+                                                                                                 0xFFFF);
             if ($item->isValid()) {
                 $handler->addItem($item);
             }
@@ -108,9 +110,13 @@ class CommonBank
     }
 
     public function toBin() {
-        return pack('II', $this->USE, $this->MST) . collect($this->ITEMS)->map(function ($item) {
-                return $item->toBin();
-            })->implode('');
+        return Binary::Builder(Config::get('DATA_STRUCTURE.BANK'), [
+            'bankUse'       => $this->used(),
+            'bankMeseta'    => $this->getMST(),
+            'bankInventory' => collect($this->ITEMS)->map(function ($item) {
+                return $item->data();
+            })->toArray(),
+        ])->stream()->all();
     }
 
     public function used() {

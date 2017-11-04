@@ -47,7 +47,7 @@ class ItemSet
         return $this->MST;
     }
 
-    public function toCommonBankItems() {
+    public function toBankItems() {
         $items = $this->ITEMS;
         if (!empty($items)) {
             $items = collect($items)->map(function ($item) {

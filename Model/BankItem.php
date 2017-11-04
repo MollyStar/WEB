@@ -9,16 +9,15 @@
 namespace Model;
 
 use Codante\Binary\Binary;
+use Kernel\Config;
 
 class BankItem
 {
     public $hex;
-    public $strengthen;
+    public $detail;
     public $code;
-    public $set1;
-    public $set2;
-    public $set3;
-    public $set4; // for mag
+    public $data;
+    public $data2; // for mag
     public $num;
     public $itemid;
 
@@ -33,44 +32,47 @@ class BankItem
         }
         $code = strtoupper($code);
         $this->code = $code;
-        if (substr($code, 0, 2) === '02') {
-            // 马古
-            $this->hex = substr($code, 0, 4) . '00';
-        } else {
-            $this->hex = substr($code, 0, 6);
-        }
-        $this->strengthen = hexdec(substr($code, 6, 2));
-        list($this->set1, $this->set2, $this->set3, $this->set4) = str_split($code, 8);
-
+        $this->data = substr($code, 0, 24);
+        $this->data2 = substr($code, -8);
         $this->setNum($num);
         $this->setItemid($itemid);
+
+        switch (hexdec(substr($code, 0, 2))) {
+            case 0x00: // 武器
+                $this->hex = substr($code, 0, 6);
+                break;
+            case 0x01: // 防具
+                $this->hex = substr($code, 0, 6);
+                break;
+            case 0x02: // 马古
+                $this->hex = substr($code, 0, 4) . '00';
+                break;
+            case 0x03: // TODO 物品，未细分
+                $this->hex = substr($code, 0, 6);
+                break;
+            default:
+                $this->hex = substr($code, 0, 6);
+        }
+    }
+
+    public function data() {
+        return [
+            'data'       => $this->data,
+            'itemid'     => $this->isValid() ? $this->itemid | 0x10000 : -1,
+            'data2'      => $this->data2,
+            'bank_count' => $this->isValid() ? $this->num | 0x10000 : 0,
+        ];
     }
 
     public function toBin() {
-
-        if (!$this->isValid()) {
-            $hex_arr = array_fill(0, 18, 0);
-            $hex_arr[12] = -1;
-        } else {
-            $hex_arr = array_merge(str_split($this->set1, 2), str_split($this->set2, 2), str_split($this->set3, 2), [
-                sprintf('%08X', $this->itemid + 0x00010000),
-            ], str_split($this->set4, 2), [
-                sprintf('%08X', $this->num + 0x00010000),
-            ]);
-
-            foreach ($hex_arr as &$item) {
-                $item = hexdec($item);
-            }
-        }
-
-        return call_user_func_array('pack', array_merge(['C12IC4I'], $hex_arr));
+        return Binary::Builder(Config::get('DATA_STRUCTURE.BANK_ITEM'), $this->data())->stream()->all();
     }
 
     public static function fromBin($bin) {
         $_unpacked = Binary::Parser(Config::get('DATA_STRUCTURE.BANK_ITEM'), Binary::Stream($bin))->data();
 
-        return new static($_unpacked['data'] . $_unpacked['data1'], $_unpacked['bank_count'] -
-                                                                    0x00010000, $_unpacked['itemid'] - 0x00010000);
+        return new static($_unpacked['data'] . $_unpacked['data2'], $_unpacked['bank_count'] &
+                                                                    0xFFFF, $_unpacked['itemid'] & 0xFFFF);
     }
 
     public static function make($code = null, $num = 0, $itemid = 0) {

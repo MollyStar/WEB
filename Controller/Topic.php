@@ -14,6 +14,7 @@ use Common\UserHelper;
 use Kernel\DB;
 use Kernel\Response;
 use Model\ItemSet;
+use \Exception;
 
 class Topic
 {
@@ -27,7 +28,7 @@ class Topic
 
         try {
             $user = UserHelper::verifiedFormUser();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Response::api(-1, $e->getMessage());
         }
 
@@ -39,26 +40,26 @@ class Topic
         $type = Input::post('sec');
         $type = 'NEWEST_PACKAGE_' . $types[$type];
 
-        if ($user['isgm']) {
-            if (ItemHelper::send_items_to_commonbank($user['guildcard'], ItemSet::make($type))) {
-                return Response::api(0, '领取成功');
-            }
-        }
 
-        if (DB::connection()
-            ->where('guildcard', $user['guildcard'])
-            ->where('name', 'NEWEST_PACKAGE')
-            ->getOne('topic_record')
+        if (!$user['isgm'] &&
+            DB::connection()
+                ->where('guildcard', $user['guildcard'])
+                ->where('name', 'NEWEST_PACKAGE')
+                ->getOne('topic_record')
         ) {
             return Response::api(-1, '您已经领取过了');
         } else {
-            if (ItemHelper::send_items_to_commonbank($user['guildcard'], ItemSet::make($type))) {
-                DB::connection()->insert('topic_record', [
-                    'guildcard' => $user['guildcard'],
-                    'name'      => 'NEWEST_PACKAGE',
-                ]);
+            try {
+                if (ItemHelper::send_items_to_commonbank($user['guildcard'], ItemSet::make($type))) {
+                    !$user['isgm'] && DB::connection()->insert('topic_record', [
+                        'guildcard' => $user['guildcard'],
+                        'name'      => 'NEWEST_PACKAGE',
+                    ]);
 
-                return Response::api(0, '领取成功');
+                    return Response::api(0, '领取成功');
+                }
+            } catch (Exception $e) {
+                return Response::api(-1, '领取失败，' . $e->getMessage());
             }
         }
 

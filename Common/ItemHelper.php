@@ -10,9 +10,10 @@ namespace Common;
 
 
 use Kernel\DB;
-use Model\CommonBank;
+use Model\Bank;
 use Model\BankItem;
 use Model\ItemSet;
+use \Exception;
 
 class ItemHelper
 {
@@ -40,24 +41,35 @@ class ItemHelper
 
         $bin = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
 
-        $bank = CommonBank::make($bin);
+        $bank = Bank::make($bin);
         $tobe = false;
 
         if ($itemOrSet instanceof BankItem) {
-            if ($itemOrSet->isValid() && $bank->remaining() > 1) {
+            if ($bank->remaining() < 1) {
+                throw new Exception('公共仓库没有足够的位置');
+            }
+
+            if ($itemOrSet->isValid()) {
                 $bank->addItem($itemOrSet);
                 $tobe = true;
             }
         } elseif ($itemOrSet instanceof ItemSet) {
-            $items = $itemOrSet->toCommonBankItems();
+            $items = $itemOrSet->toBankItems();
             $mst = $itemOrSet->getMST() + $bank->getMST();
-            if (count($items) <= $bank->remaining() && $mst >= 0 && $mst < 1000000) {
-                $bank->setMST($mst);
-                foreach ($items as $item) {
-                    $bank->addItem($item);
-                }
-                $tobe = true;
+
+            if (count($items) > $bank->remaining()) {
+                throw new Exception('公共仓库没有足够的位置');
             }
+
+            if ($mst < 0 || $mst > 999999) {
+                throw new Exception('公共银行无法装下更多的美塞塔');
+            }
+
+            $bank->setMST($mst);
+            foreach ($items as $item) {
+                $bank->addItem($item);
+            }
+            $tobe = true;
         }
 
         if ($tobe) {
