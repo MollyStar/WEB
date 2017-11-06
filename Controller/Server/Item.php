@@ -13,6 +13,7 @@ use Kernel\Config;
 use Kernel\DB;
 use Kernel\Response;
 use Model\BankItem as ItemModel;
+use Model\BankItem;
 
 class Item
 {
@@ -177,10 +178,14 @@ class Item
             ->map(function ($item) use (&$codes) {
                 $item['items'] = collect(($items = json_decode($item['items'], true)) ? $items : [])
                     ->map(function ($item) use (&$codes) {
-                        $hex = substr($item[0], 0, 6);
-                        $codes[] = $hex;
+                        $item = new BankItem($item[0], $item[1]);
+                        $codes[] = $item->hex;
 
-                        return ['hex' => $hex, 'code' => $item[0], 'num' => $item[1]];
+                        return [
+                            'hex'  => $item->hex,
+                            'code' => join(',', str_split($item->code, 8)),
+                            'num'  => $item->num,
+                        ];
                     })
                     ->toArray();
 
@@ -217,10 +222,14 @@ class Item
             $data = DB::connection()->where('name', $name)->getOne('item_set');
             $data['items'] = collect(($items = json_decode($data['items'], true)) ? $items : [])
                 ->map(function ($item) use (&$codes) {
-                    $hex = substr($item[0], 0, 6);
-                    $codes[] = $hex;
+                    $item = new BankItem($item[0], $item[1]);
+                    $codes[] = $item->hex;
 
-                    return ['hex' => $hex, 'code' => $item[0], 'num' => $item[1]];
+                    return [
+                        'hex'  => $item->hex,
+                        'code' => join(',', str_split($item->code, 8)),
+                        'num'  => $item->num,
+                    ];
                 })
                 ->toArray();
 

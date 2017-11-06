@@ -11,48 +11,13 @@ namespace Model;
 use Codante\Binary\Binary;
 use Kernel\Config;
 
-class BankItem
+class BankItem extends Item
 {
-    public $hex;
-    public $detail;
-    public $code;
-    public $data;
-    public $data2; // for mag
     public $num;
-    public $itemid;
 
-    public function __construct($code = null, $num = 0, $itemid = 0) {
-        if (is_array($code)) {
-            $code = join('', $code);
-        } elseif (is_string($code)) {
-            $code = str_replace(',', '', $code);
-        }
-        if (is_null($code) || strlen($code) !== 32) {
-            $code = str_repeat('0', 32);
-        }
-        $code = strtoupper($code);
-        $this->code = $code;
-        $this->data = substr($code, 0, 24);
-        $this->data2 = substr($code, -8);
+    public function __construct($code = null, $num = 0, $itemid = -1) {
+        parent::__construct($code, $itemid);
         $this->setNum($num);
-        $this->setItemid($itemid);
-
-        switch (hexdec(substr($code, 0, 2))) {
-            case 0x00: // 武器
-                $this->hex = substr($code, 0, 6);
-                break;
-            case 0x01: // 防具
-                $this->hex = substr($code, 0, 6);
-                break;
-            case 0x02: // 马古
-                $this->hex = substr($code, 0, 4) . '00';
-                break;
-            case 0x03: // TODO 物品，未细分
-                $this->hex = substr($code, 0, 6);
-                break;
-            default:
-                $this->hex = substr($code, 0, 6);
-        }
     }
 
     public function data() {
@@ -91,16 +56,6 @@ class BankItem
         }
 
         $this->num = $num;
-    }
-
-    public function setItemid($id = 0) {
-        if ($id < 0) {
-            $id = 0;
-        } elseif ($id > 199) {
-            $id = 199;
-        }
-
-        $this->itemid = $id;
     }
 
     public function isValid() {

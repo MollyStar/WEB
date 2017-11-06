@@ -8,6 +8,22 @@
 
 use Codante\Binary\Binary;
 
+$MAG = [
+    'two'     => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+    'mtype'   => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+    'level'   => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+    'blasts'  => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+    'defense' => Binary::SIGNED_SHORT(null, Binary::RAW_FILTER_PACK),
+    'power'   => Binary::SIGNED_SHORT(null, Binary::RAW_FILTER_PACK),
+    'dex'     => Binary::SIGNED_SHORT(null, Binary::RAW_FILTER_PACK),
+    'mind'    => Binary::SIGNED_SHORT(null, Binary::RAW_FILTER_PACK),
+    //'itemid'  => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK),
+    'synchro' => Binary::SIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+    'IQ'      => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+    'PBflags' => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+    'color'   => Binary::UNSIGNED_CHAR(null, Binary::RAW_FILTER_HEX),
+];
+
 $BANK_ITEM = [
     'data'       => Binary::UNSIGNED_CHAR(12, Binary::RAW_FILTER_HEX),
     'itemid'     => Binary::UNSIGNED_INTEGER(null, Binary::RAW_FILTER_PACK),
@@ -117,4 +133,4 @@ $CHARDATA = [
     'teamRewards'           => Binary::UNSIGNED_CHAR(8, Binary::RAW_FILTER_HEX),
 ];
 
-return compact('ITEM', 'INVENTORY', 'BANK', 'CHARDATA', 'BANK_ITEM');
+return compact('ITEM', 'INVENTORY', 'BANK', 'CHARDATA', 'BANK_ITEM', 'MAG');

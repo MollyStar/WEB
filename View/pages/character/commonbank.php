@@ -50,6 +50,7 @@
                             <th>ID</th>
                             <th>物品编码</th>
                             <th>名称</th>
+                            <th>详情</th>
                             <th>编码</th>
                             <th>数量</th>
                             <th>操作</th>
@@ -68,8 +69,11 @@
                                     <?php echo $map_items[$item->hex]['name_zh']; ?>
                                 </td>
                                 <td>
+                                    <?php \Kernel\View::part('part.item.detail', ['detail' => $item->detail]) ?>
+                                </td>
+                                <td>
                                     <input class="form-control input-sm" name="code"
-                                           value="<?php echo $item->code; ?>">
+                                           value="<?php echo join(',', str_split($item->code, 8)); ?>">
                                 </td>
                                 <td>
                                     <input class="form-control input-sm" type="number" maxlength="2" max="99" min="0"
