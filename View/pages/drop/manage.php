@@ -375,7 +375,7 @@
                                                     ' data-order="' + rep.order + '"' +
                                                     ' data-lv="' + rep.lv + '">' +
                                                     '<span>' + rep.name_zh + '</span>' +
-                                                    '<i>[' + rep.rate + ']&nbsp;' + rep.rate_p + '</i>',
+                                                    '<i>[' + rep.rate + ']&nbsp;' + rep.rate_p + '</i>' +
                                                     rep.item_info.name_zh +
                                                     '<br/>' + rep.item_info.name +
                                                     '</span>');
