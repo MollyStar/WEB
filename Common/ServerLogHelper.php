@@ -47,13 +47,16 @@ class ServerLogHelper
                 $row = trim($row, "\r\n");
                 if ($row) {
                     preg_match('/\[([^\]]+)\] User (\d+).+has (connected|disconnected)/', $row, $match);
-                    preg_match('/(\d+)-(\d+)-(\d+), (\d+)\:(\d+)/', $match[1], $match2);
 
-                    return [
-                        'time'      => mktime($match2[4], $match2[5], 0, $match2[1], $match2[2], $match2[3]),
-                        'guildcard' => $match[2],
-                        'online'    => $match[3] == 'connected' ? true : false,
-                    ];
+                    if ($match) {
+                        preg_match('/(\d+)-(\d+)-(\d+), (\d+)\:(\d+)/', $match[1], $match2);
+
+                        return [
+                            'time'      => mktime($match2[4], $match2[5], 0, $match2[1], $match2[2], $match2[3]),
+                            'guildcard' => $match[2],
+                            'online'    => $match[3] == 'connected' ? true : false,
+                        ];
+                    }
                 }
 
                 return null;
