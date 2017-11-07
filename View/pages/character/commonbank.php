@@ -132,7 +132,7 @@
         form.on('click', '.add', function () {
             var wrap = form.find('table > tbody');
             var row = '<tr>' +
-                '<td></td><td></td><td></td><td>' +
+                '<td></td><td></td><td></td><td></td><td>' +
                 '<input class="form-control input-sm" name="code">' +
                 '</td><td>' +
                 '<input class="form-control input-sm" type="number" maxlength="2" max="99" min="0" name="num" value="1">' +
