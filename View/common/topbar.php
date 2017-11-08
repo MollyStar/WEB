@@ -1,7 +1,7 @@
 <?php if (\Common\UserHelper::isLoggedAdmin()): ?>
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="navbar-panel">
-            <button class="dropdown-toggle btn btn-info btn-sm" data-toggle="dropdown" type="button" id="user"
+            <button class="dropdown-toggle btn btn-default btn-sm" data-toggle="dropdown" type="button" id="user"
                     aria-expanded="false"><?php echo \Common\UserHelper::currentUser()['username'] ?></button>
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="user">
                 <li><a href="/logout">登出</a></li>
@@ -29,6 +29,7 @@
                         <li><a href="/item">物品</a></li>
                         <li><a href="/item/stat_boosts">物品效果(属性)</a></li>
                         <li><a href="/item_set">套装</a></li>
+                        <li><a href="/item_set/send">套装发放</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
