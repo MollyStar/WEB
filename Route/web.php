@@ -26,7 +26,6 @@ RouteGroup(function () {
     Route('GET', '/item', 'Controller\Server\Item@manage');
     // Route('GET', '/item/import', 'Controller\Server\item@import');
     Route('POST', '/item/update', 'Controller\Server\Item@update');
-
     Route('GET', '/item/stat_boosts', 'Controller\Server\Item@stat_boosts');
 
 
@@ -35,9 +34,11 @@ RouteGroup(function () {
     Route('GET', '/item_set/detail', 'Controller\Server\ItemSet@detail');
     Route('POST', '/item_set/detail/save', 'Controller\Server\ItemSet@save');
     Route('POST', '/item_set/detail/delete', 'Controller\Server\ItemSet@delete');
-    Route('GET', '/item_set/send_to_character_commonbank', 'Controller\Server\ItemSet@send_to_character_commonbank');
+    Route('GET', '/item_set/send', 'Controller\Server\ItemSet@send');
+    Route('POST', '/item_set/send_to_account_commonbank', 'Controller\Server\ItemSet@send_to_account_commonbank');
 
 
+    // 掉落
     Route('GET', '/drop', 'Controller\Server\Drop@manage');
     Route('POST', '/drop/update', 'Controller\Server\Drop@update');
     Route('POST', '/drop/box_delete', 'Controller\Server\Drop@box_delete');
@@ -54,6 +55,10 @@ RouteGroup(function () {
     Route('GET', '/character', 'Controller\Server\Character@manage');
     Route('GET', '/character/bank', 'Controller\Server\Character@bank');
     Route('POST', '/character/bank/save', 'Controller\Server\Character@bank_save');
+
+    // 用户
+    Route('POST', '/user/ajax_search_account_by_name', 'Controller\User@ajax_search_account_by_name');
+
 
     Route('GET', '/tools/db', 'Controller\Tools\DBStructure@index');
     Route('GET', '/tools/server/status', 'Controller\Tools\Server@status');

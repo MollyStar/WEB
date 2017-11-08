@@ -183,12 +183,17 @@ class ItemSet
     }
 
     public function send() {
-        $item_set = Input::post('item_set');
+        $name = Input::get('name');
+
+        $item_set = ItemSetModel::make($name);
+        $item_set_list = DB::connection()->get('item_set', null, 'name');
+
+        return Response::view('pages.item.set.send', compact('item_set', 'item_set_list'));
     }
 
-    public function send_to_character_commonbank() {
-        $item_set = Input::get('item_set');
-        $guildcard = Input::get('guildcard') ?? 0;
+    public function send_to_account_commonbank() {
+        $name = Input::post('name');
+        $guildcard = Input::post('guildcard') ?? 0;
 
         if ($guildcard == 0 || !$user = UserHelper::getUserInfoByGuildcard($guildcard)) {
             return Response::api(-1, '无效的帐号');
@@ -199,16 +204,16 @@ class ItemSet
         }
 
         try {
-            if (ItemHelper::send_items_to_commonbank($user['guildcard'], ItemSetModel::make($item_set))) {
+            if (ItemHelper::send_items_to_commonbank($user['guildcard'], ItemSetModel::make($name))) {
                 !$user['isgm'] && DB::connection()->insert('topic_record', [
                     'guildcard' => $user['guildcard'],
                     'name'      => 'NEWEST_PACKAGE',
                 ]);
 
-                return Response::api(0, '领取成功');
+                return Response::api(0, '发放成功');
             }
         } catch (Exception $e) {
-            return Response::api(-1, '领取失败，' . $e->getMessage());
+            return Response::api(-1, '发放失败，' . $e->getMessage());
         }
     }
 }

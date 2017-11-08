@@ -12,16 +12,16 @@
             callback = function (ret) {
                 if (ret) {
                     if (ret.code === 0) {
-                        $.topTip(ret.msg);
+                        $.topTip(ret.msg, 'success');
                         setTimeout(function () {
                             window.location.reload();
                         }, 1500);
                     } else {
-                        $.topTip(ret.msg);
+                        $.topTip(ret.msg, 'warning');
                     }
                     return;
                 }
-                $.topTip('保存中发生错误，请稍后重试');
+                $.topTip('保存中发生错误，请稍后重试', 'danger');
             }
         }
 

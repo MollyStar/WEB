@@ -48,7 +48,7 @@
                     if (ret) {
                         if (ret.code === 0) {
                             success = true;
-                            $.topTip(ret.msg);
+                            $.topTip(ret.msg, 'success');
                             setTimeout(function () {
                                 window.location.href = '/dashboard';
                             }, 1500);

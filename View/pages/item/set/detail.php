@@ -113,7 +113,7 @@
             $.post(form.attr('action'), data).done(function (ret) {
                 if (ret) {
                     if (ret.code === 0) {
-                        $.topTip(ret.msg);
+                        $.topTip(ret.msg, 'success');
                         setTimeout(function () {
                             if (ret.response != null)
                                 window.location.href = '?name=' + ret.response;
@@ -121,13 +121,13 @@
                                 window.location.reload();
                         }, 1500);
                     } else {
-                        $.topTip(ret.msg);
+                        $.topTip(ret.msg, 'warning');
                     }
                     return;
                 }
-                $.topTip('保存中发生错误，请稍后重试');
+                $.topTip('保存中发生错误，请稍后重试', 'warning');
             }).fail(function () {
-                $.topTip('保存中发生错误，请稍后重试');
+                $.topTip('保存中发生错误，请稍后重试', 'danger');
             });
         });
 
@@ -153,18 +153,18 @@
             $.post('/item_set/detail/delete', {name: form.find('[name="name"]').val()}).done(function (ret) {
                 if (ret) {
                     if (ret.code === 0) {
-                        $.topTip(ret.msg);
+                        $.topTip(ret.msg, 'success');
                         setTimeout(function () {
                             window.location.href = '/item_set';
                         }, 1500);
                     } else {
-                        $.topTip(ret.msg);
+                        $.topTip(ret.msg, 'warning');
                     }
                     return;
                 }
-                $.topTip('删除时发生错误，请稍后重试');
+                $.topTip('删除时发生错误，请稍后重试', 'warning');
             }).fail(function () {
-                $.topTip('删除时发生错误，请稍后重试');
+                $.topTip('删除时发生错误，请稍后重试', 'danger');
             });
         });
     })(jQuery);

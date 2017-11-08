@@ -18,6 +18,7 @@
                         <th>备注</th>
                         <th>MST</th>
                         <th>物品/数量</th>
+                        <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -41,6 +42,10 @@
                                         </div>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-success"
+                                   href="/item_set/send?name=<?php echo $row['name']; ?>">发放</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -14,6 +14,7 @@
         this.$select = $(select);
         this.$input = $('<input type="text" autocomplete="off">');
         this.$list = $('<ul class="es-list">');
+        this.$LAST_SEARCH = null;
 
         if (this.options.additional) {
             this.$additional = $('<input type="hidden">');
@@ -46,7 +47,7 @@
         this.utility.initializeList();
         this.utility.initializeInput();
         this.utility.trigger('create');
-    }
+    };
 
     EditableSelect.DEFAULTS = {
         filter: true,
@@ -96,30 +97,26 @@
 
     EditableSelect.prototype.inputing = function () {
         var that = this;
-        if (that.options.source) {
+        var value = that.$input.val().trim();
+        if (that.$LAST_SEARCH != value && that.options.source) {
+            that.$LAST_SEARCH = value;
             if (that.handler.ajax && that.handler.ajax.state() == 'pending') {
                 that.handler.ajax.abort();
                 that.handler.ajax = null;
             }
             that.handler.inputListener && clearTimeout(that.handler.inputListener);
-
-            var value = that.$input.val().trim();
             that.handler.inputListener = setTimeout(function () {
-                if (value) {
-                    that.loadFromSource(value);
-                } else if (that.options.additional) {
+                that.loadFromSource(value);
+                if (!value && that.options.additional) {
                     that.$additional.val('');
                 }
             }, 500);
         } else {
             that.handler.inputListener && clearTimeout(that.handler.inputListener);
-
-            var value = that.$input.val().trim();
             that.handler.inputListener = setTimeout(function () {
-                if (value) {
-                    that.filter();
-                    that.utility.highlight(0);
-                } else if (that.options.additional) {
+                that.filter();
+                that.utility.highlight(0);
+                if (!value && that.options.additional) {
                     that.$additional.val('');
                 }
             }, 500);
@@ -247,9 +244,13 @@
                         that.highlight(selected - 1);
                         break;
                     case 40: // Down
-                        var visibles = that.es.$list.find('li.es-visible');
-                        var selected = visibles.index(visibles.filter('li.selected'));
-                        that.highlight(selected + 1);
+                        if (that.es.$list.children().length === 0) {
+                            that.es.inputing();
+                        } else {
+                            var visibles = that.es.$list.find('li.es-visible');
+                            var selected = visibles.index(visibles.filter('li.selected'));
+                            that.highlight(selected + 1);
+                        }
                         break;
                     case 13: // Enter
                         if (that.es.$list.is(':visible')) {

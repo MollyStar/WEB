@@ -108,4 +108,16 @@ class User
 
         return Response::api(-1, '注册失败');
     }
+
+    public function ajax_search_account_by_name() {
+        $key = trim(Input::post('key')) ?? '';
+        $result = collect(DB::connection()->where('username', '%' . $key . '%', 'LIKE')->get('account_data', 10, [
+            'username',
+            'guildcard',
+        ]))->map(function ($item) {
+            return [$item['guildcard'], $item['username']];
+        })->toArray();
+
+        return Response::api(0, 'success', $result);
+    }
 }

@@ -15,6 +15,8 @@ class Http
 
     private $dispatcher;
 
+    public $isAjax = false;
+
     public $uri;
 
     public $method;
@@ -33,8 +35,12 @@ class Http
         $uri = rawurldecode($uri);
 
         $this->uri = $uri;
-
         $this->method = $httpMethod;
+
+        $all_headers = getallheaders();
+        if (isset($all_headers['X-Requested-With']) && $all_headers['X-Requested-With'] === 'XMLHttpRequest') {
+            $this->isAjax = true;
+        }
     }
 
     public function dispatch() {
@@ -43,7 +49,7 @@ class Http
         switch ($routeInfo[0]) {
             case FastRoute\Dispatcher::NOT_FOUND:
                 http_response_code(404);
-                exit(Response::view('pages.404'));
+                exit($this->isAjax ? Response::api(-1, '404 Not Found!') : Response::view('pages.404'));
                 break;
             case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];

@@ -276,7 +276,7 @@
                                     $.post('/drop/update', data).done(function (ret) {
                                         if (ret) {
                                             if (ret.code === 0) {
-                                                $.topTip(ret.msg);
+                                                $.topTip(ret.msg, 'success');
                                                 var rep = ret.response;
                                                 els.data('item', rep.item);
                                                 els.data('rate', rep.rate);
@@ -366,7 +366,7 @@
                                     $.post('/drop/update', data).done(function (ret) {
                                         if (ret) {
                                             if (ret.code === 0) {
-                                                $.topTip(ret.msg);
+                                                $.topTip(ret.msg, 'success');
                                                 var rep = ret.response;
                                                 var item = $('<span class="droped-item"' +
                                                     ' data-hash="' + rep.hash + '"' +
@@ -407,7 +407,7 @@
                                 $.post('/drop/box_delete', {hash: info.hash}).done(function (ret) {
                                     if (ret) {
                                         if (ret.code === 0) {
-                                            $.topTip(ret.msg);
+                                            $.topTip(ret.msg, 'success');
                                             el.remove();
                                             dialog.modal('hide');
                                             return;
@@ -495,7 +495,7 @@
             $.confirm('确认要重置所有掉落吗？', function (layer) {
                 $.get('/drop/remove_all_drop').done(function (ret) {
                     if (ret && ret.code === 0) {
-                        $.topTip(ret.msg);
+                        $.topTip(ret.msg, 'success');
                         setTimeout(function () {
                             window.location.reload();
                         }, 1500);
@@ -513,7 +513,7 @@
             $.confirm('确认要清空掉落表吗？', function (layer) {
                 $.get('/drop/clean').done(function (ret) {
                     if (ret && ret.code === 0) {
-                        $.topTip(ret.msg);
+                        $.topTip(ret.msg, 'success');
                         setTimeout(function () {
                             window.location.reload();
                         }, 1500);
@@ -531,7 +531,7 @@
         $('#import').on('click', function (e) {
             $.get('/drop/import').done(function (ret) {
                 if (ret && ret.code === 0) {
-                    $.topTip(ret.msg);
+                    $.topTip(ret.msg, 'success');
                     setTimeout(function () {
                         window.location.reload();
                     }, 1500);
