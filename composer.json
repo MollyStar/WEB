@@ -13,7 +13,8 @@
     "carlosocarvalho/simple-input": "^1.0",
     "tightenco/collect": "^5.5",
     "phpzip/phpzip": "^2.0",
-    "codante/binary": "dev-master"
+    "codante/binary": "dev-master",
+    "lokielse/omnipay-alipay": "^2.3"
   },
   "autoload": {
     "psr-4": {

@@ -10,4 +10,7 @@ return [
     'admin' => [
         \Middleware\Adminauth::class,
     ],
+    'user'  => [
+        \Middleware\Userauth::class,
+    ],
 ];

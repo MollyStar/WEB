@@ -15,33 +15,57 @@ use \Exception;
 
 class UserHelper
 {
-    private static $user;
+
+    const USER_ADMIN = 0;
+
+    const USER_NORMAL = 1;
+
+    private static $currentUser;
+
+    private static $type = null;
 
     public static function isLoggedAdmin() {
-        if (isset(self::$user)) {
-            return true;
-        }
+        return self::$type === self::USER_ADMIN;
+    }
 
+    public static function isLoggedUser() {
+        return self::$type === self::USER_NORMAL;
+    }
+
+    public static function isUserLogginedGame() {
+        dd(self::$currentUser);
+    }
+
+    public static function initialize() {
         if (isset($_COOKIE['AUTH_TOKEN'])) {
             $t = EncryptCookie::decrypt($_COOKIE['AUTH_TOKEN']);
             if ($t) {
-                list($guildcard, $S) = explode("\t", $t);
-                if ($S === Config::get('auth.securt')) {
-                    $user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data');
+                $args = explode("\t", $t);
+                if (isset($args[2]) && $args[2] === Config::get('auth.admin') && isset($args[1])) {
+                    $user = DB::connection()->where('guildcard', $args[1])->getOne('account_data');
                     if ($user) {
-                        self::$user = $user;
-
-                        return true;
+                        self::$currentUser = $user;
+                        self::$type = self::USER_ADMIN;
+                    }
+                }
+            }
+        } elseif (isset($_COOKIE['AUTH_USER'])) {
+            $t = EncryptCookie::decrypt($_COOKIE['AUTH_USER']);
+            if ($t) {
+                $args = explode("\t", $t);
+                if (isset($args[2]) && $args[2] === Config::get('auth.user') && isset($args[1])) {
+                    $user = DB::connection()->where('guildcard', $args[1])->getOne('account_data');
+                    if ($user) {
+                        self::$currentUser = $user;
+                        self::$type = self::USER_NORMAL;
                     }
                 }
             }
         }
-
-        return false;
     }
 
     public static function currentUser() {
-        return self::isLoggedAdmin() ? self::$user : null;
+        return self::$currentUser;
     }
 
     public static function verifiedFormUser() {

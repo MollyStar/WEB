@@ -18,6 +18,12 @@ use \Exception;
 
 class Topic
 {
+    public function index() {
+        UserHelper::isUserLogginedGame();
+
+        return Response::view('pages.topic.index');
+    }
+
     public function newest_package() {
         return Response::view('pages.topic.newest_package');
     }

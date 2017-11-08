@@ -14,32 +14,50 @@ use Common\UserHelper;
 use Kernel\Config;
 use Kernel\DB;
 use Kernel\Response;
+use \Exception;
 
 class User
 {
     public function login() {
-        return Response::view('pages.login');
+        if (UserHelper::isLoggedAdmin()) {
+            return Response::redirect('/dashboard');
+        } elseif (UserHelper::isLoggedUser()) {
+            return Response::redirect('/topic');
+        }
+
+        $jump = Input::get('jump') ?? '';
+
+        return Response::view('pages.login', compact('jump'));
     }
 
     public function login_submit() {
         try {
             $user = UserHelper::verifiedFormUser();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Response::api(-1, $e->getMessage());
         }
 
-        if (!$user['isgm']) {
-            return Response::api(-1, '您不是管理员');
+        if ($user['isgm']) {
+            $token = EncryptCookie::encrypt(time() . "\t" . $user['guildcard'] . "\t" . Config::get('auth.admin'));
+            setcookie('AUTH_TOKEN', $token, time() + 86400, '/', null, null, true);
+            $jump = '/dsahboard';
+        } else {
+            $token = EncryptCookie::encrypt(time() . "\t" . $user['guildcard'] . "\t" . Config::get('auth.user'));
+            setcookie('AUTH_USER', $token, null, '/', null, null, true);
+            $jump = '/topic';
         }
 
-        setcookie('AUTH_TOKEN', EncryptCookie::encrypt($user['guildcard'] . "\t" . Config::get('auth.securt')), time() +
-                                                                                                                86400, '/', null, null, true);
+        $jump = Input::post('jump') ?? $jump;
 
-        return Response::api(0, '登录成功');
+        return Response::api(0, '登录成功', $jump);
     }
 
     public function logout() {
-        setcookie('AUTH_TOKEN', '', 0, '/', null, null, true);
+        if (UserHelper::isLoggedAdmin()) {
+            setcookie('AUTH_TOKEN', '', 0, '/', null, null, true);
+        } elseif (UserHelper::isLoggedUser()) {
+            setcookie('AUTH_USER', '', 0, '/', null, null, true);
+        }
 
         return Response::redirect('/');
     }
@@ -102,7 +120,7 @@ class User
             ) {
                 return Response::api(0, '注册成功');
             };
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
         }
 

@@ -3,6 +3,7 @@
     <div class="container">
         <div class="form-signin">
             <form id="form" class="form-horizontal col-xs-12" action="/login/submit">
+                <input type="hidden" name="jump" value="<?php echo $jump ? base64_decode(urldecode($jump)) : ''; ?>">
                 <div class="form-group">
                     <div class="input-group col-xs-12">
                         <i class="input-group-addon fa fa-user"></i>
@@ -50,7 +51,7 @@
                             success = true;
                             $.topTip(ret.msg, 'success');
                             setTimeout(function () {
-                                window.location.href = '/dashboard';
+                                window.location.href = ret.response || '/';
                             }, 1500);
                             return;
                         }

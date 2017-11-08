@@ -8,6 +8,7 @@
 
 namespace Kernel;
 
+use Common\UserHelper;
 use FastRoute;
 
 class Http
@@ -24,23 +25,11 @@ class Http
     public function __construct() {
         $this->dispatcher = FastRoute\simpleDispatcher(Route::register());
 
-        // Fetch method and URI from somewhere
-        $httpMethod = $_SERVER['REQUEST_METHOD'];
-        $uri = $_SERVER['REQUEST_URI'];
+        $this->uri = Request::uri();
+        $this->method = Request::method();
+        $this->isAjax = Request::isAjax();
 
-        // Strip query string (?foo=bar) and decode URI
-        if (false !== $pos = strpos($uri, '?')) {
-            $uri = substr($uri, 0, $pos);
-        }
-        $uri = rawurldecode($uri);
-
-        $this->uri = $uri;
-        $this->method = $httpMethod;
-
-        $all_headers = getallheaders();
-        if (isset($all_headers['X-Requested-With']) && $all_headers['X-Requested-With'] === 'XMLHttpRequest') {
-            $this->isAjax = true;
-        }
+        UserHelper::initialize();
     }
 
     public function dispatch() {

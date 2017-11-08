@@ -12,10 +12,10 @@ use Common\UserHelper;
 use Kernel\Request;
 use Kernel\Response;
 
-class Adminauth implements MiddlewareInterface
+class Userauth implements MiddlewareInterface
 {
     public function handle() {
-        if (!UserHelper::isLoggedAdmin()) {
+        if (!UserHelper::isLoggedAdmin() && !UserHelper::isLoggedUser()) {
             Response::redirect('/login?jump=' . urlencode(base64_encode(Request::uriWithQueryString())));
             exit();
         }
