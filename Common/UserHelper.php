@@ -11,6 +11,7 @@ namespace Common;
 use Carlosocarvalho\SimpleInput\Input\Input;
 use Kernel\Config;
 use Kernel\DB;
+use \Exception;
 
 class UserHelper
 {
@@ -49,15 +50,15 @@ class UserHelper
         $verify_code = Input::post('verify_code') ?? '';
 
         if ($verify_code != $_SESSION['phrase']) {
-            throw new \Exception('验证码错误');
+            throw new Exception('验证码错误');
         }
 
         if (!($username = trim($username))) {
-            throw new \Exception('请输入用户名');
+            throw new Exception('请输入用户名');
         }
 
         if (!$password) {
-            throw new \Exception('请输入密码');
+            throw new Exception('请输入密码');
         }
 
         $user = DB::connection()->where('username', $username)->getOne('account_data', [
@@ -69,17 +70,17 @@ class UserHelper
         ]);
 
         if (!$user) {
-            throw new \Exception('无效的用户');
+            throw new Exception('无效的用户');
         }
 
         if ($user['isbanned']) {
-            throw new \Exception('用户已冻结');
+            throw new Exception('用户已冻结');
         }
 
         $check_password = md5($password . '_' . $user['regtime'] . '_salt');
 
         if ($user['password'] !== $check_password) {
-            throw new \Exception('用户名/密码错误');
+            throw new Exception('用户名/密码错误');
         }
 
         unset($user['password']);
@@ -91,5 +92,15 @@ class UserHelper
         $logs = ServerLogHelper::ship_logs();
 
         return array_key_exists($guildcard, $logs) && $logs[$guildcard]['online'];
+    }
+
+    public static function getUserInfoByGuildcard($guildcard) {
+        return DB::connection()->where('guildcard', $guildcard)->getOne('account_data', [
+            'password',
+            'regtime',
+            'guildcard',
+            'isgm',
+            'isbanned',
+        ]);
     }
 }

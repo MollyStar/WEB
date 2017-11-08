@@ -36,8 +36,9 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>物品编码</th>
+                            <th>HEX</th>
                             <th>名称</th>
+                            <th>详情</th>
                             <th>编码</th>
                             <th>数量</th>
                             <th>操作</th>
@@ -52,6 +53,9 @@
                                     </td>
                                     <td>
                                         <?php echo $map_items[$item['hex']]['name_zh']; ?>
+                                    </td>
+                                    <td>
+                                        <?php \Kernel\View::part('part.item.detail', ['detail' => $item['detail']]); ?>
                                     </td>
                                     <td>
                                         <input class="form-control input-sm" type="text" name="code"
@@ -130,7 +134,7 @@
         form.on('click', '.add', function () {
             var wrap = form.find('table > tbody');
             var row = '<tr>' +
-                '<td></td><td></td><td>' +
+                '<td></td><td></td><td></td><td>' +
                 '<input class="form-control input-sm" name="code">' +
                 '</td><td>' +
                 '<input class="form-control input-sm" type="number" maxlength="2" max="99" min="0" name="num" value="1">' +

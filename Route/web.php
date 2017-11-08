@@ -23,18 +23,20 @@ RouteGroup(function () {
     Route('GET', '/test', 'Controller\Dashboard@test');
 
     // 物品
-    Route('GET', '/item', 'Controller\Server\item@manage');
+    Route('GET', '/item', 'Controller\Server\Item@manage');
     // Route('GET', '/item/import', 'Controller\Server\item@import');
-    Route('POST', '/item/update', 'Controller\Server\item@update');
+    Route('POST', '/item/update', 'Controller\Server\Item@update');
 
-    Route('GET', '/item/stat_boosts', 'Controller\Server\item@stat_boosts');
+    Route('GET', '/item/stat_boosts', 'Controller\Server\Item@stat_boosts');
 
 
     // 套装
-    Route('GET', '/item_set', 'Controller\Server\item@item_set');
-    Route('GET', '/item_set/detail', 'Controller\Server\item@item_set_detail');
-    Route('POST', '/item_set/detail/save', 'Controller\Server\item@item_set_detail_save');
-    Route('POST', '/item_set/detail/delete', 'Controller\Server\item@item_set_detail_delete');
+    Route('GET', '/item_set', 'Controller\Server\ItemSet@list');
+    Route('GET', '/item_set/detail', 'Controller\Server\ItemSet@detail');
+    Route('POST', '/item_set/detail/save', 'Controller\Server\ItemSet@save');
+    Route('POST', '/item_set/detail/delete', 'Controller\Server\ItemSet@delete');
+    Route('GET', '/item_set/send_to_character_commonbank', 'Controller\Server\ItemSet@send_to_character_commonbank');
+
 
     Route('GET', '/drop', 'Controller\Server\Drop@manage');
     Route('POST', '/drop/update', 'Controller\Server\Drop@update');

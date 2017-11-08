@@ -69,7 +69,7 @@
                                     <?php echo $map_items[$item->hex]['name_zh']; ?>
                                 </td>
                                 <td>
-                                    <?php \Kernel\View::part('part.item.detail', ['detail' => $item->detail]) ?>
+                                    <?php \Kernel\View::part('part.item.detail', ['detail' => $item->detail]); ?>
                                 </td>
                                 <td>
                                     <input class="form-control input-sm" name="code"

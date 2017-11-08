@@ -16,6 +16,8 @@ class ItemSet
 {
     use ItemsUtility;
 
+    private $NAME;
+
     private $ITEMS = [];
 
     private $MST = 0;
@@ -25,26 +27,39 @@ class ItemSet
      *
      * @param array $items [[code, num], ...]
      */
-    public function __construct(array $items = [], $mst = 0) {
+    public function __construct($name = null, array $items = [], $mst = 0) {
+        $this->NAME = $name;
         $this->ITEMS = $items;
         $this->MST = $mst;
     }
 
     public static function make($name) {
-        $items = null;
+        $set_name = null;
+        $items = [];
         $mst = 0;
 
         if ($name) {
             $itemSet = DB::connection()->where('name', $name)->getOne('item_set');
-            $items = json_decode($itemSet['items'], true);
-            $mst = intval($itemSet['mst']);
+            if ($itemSet) {
+                $set_name = $itemSet['name'];
+                $items = json_decode($itemSet['items'], true);
+                $mst = intval($itemSet['mst']);
+            }
         }
 
-        return new static($items, $mst);
+        return new static($set_name, $items, $mst);
     }
 
     public function getMST() {
         return $this->MST;
+    }
+
+    public function getName() {
+        return $this->NAME;
+    }
+
+    public function isValid() {
+        return !is_null($this->NAME) && $this->count() > 0;
     }
 
     public function toBankItems() {

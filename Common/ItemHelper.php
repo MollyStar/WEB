@@ -54,6 +54,11 @@ class ItemHelper
                 $tobe = true;
             }
         } elseif ($itemOrSet instanceof ItemSet) {
+
+            if (!$itemOrSet->isValid()) {
+                throw new Exception('无效的套装');
+            }
+
             $items = $itemOrSet->toBankItems();
             $mst = $itemOrSet->getMST() + $bank->getMST();
 

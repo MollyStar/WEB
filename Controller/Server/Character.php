@@ -31,40 +31,40 @@ class Character
         return Response::view('pages.account', compact('account_list'));
     }
 
-    public function manage_2() {
-        $character_list = collect(DB::connection()
-            ->join('account_data as ad', 'ad.guildcard = cd.guildcard', 'INNER')
-            ->orderBy('ad.guildcard', 'asc')
-            ->get('character_data as cd'))->map(function ($item) {
-
-            $item['data'] = bin2hex($item['data']);
-            $item['header'] = bin2hex($item['header']);
-            $item['lasthwinfo'] = bin2hex($item['lasthwinfo']);
-            $item['lastchar'] = bin2hex($item['lastchar']);
-            $item['regtime'] = date('Y-m-d H:i:s', $item['regtime'] * 3600);
-
-            return $item;
-        })->groupBy('guildcard')->map(function ($item) {
-            $new_item = collect($item[0])->only([
-                'guildcard',
-                'username',
-                'regtime',
-                'lastip',
-                'isgm',
-                'isbanned',
-                'islogged',
-                'isactive',
-            ]);
-            $new_item['characters'] = collect($item)->map(function ($item) {
-                return collect($item)->only(['slot', 'data', 'header']);
-            });
-            $new_item['character_num'] = count($new_item['characters']);
-
-            return $new_item;
-        })->toArray();
-
-        return Response::view('pages.character', compact('character_list'));
-    }
+    //    public function manage_2() {
+    //        $character_list = collect(DB::connection()
+    //            ->join('account_data as ad', 'ad.guildcard = cd.guildcard', 'INNER')
+    //            ->orderBy('ad.guildcard', 'asc')
+    //            ->get('character_data as cd'))->map(function ($item) {
+    //
+    //            $item['data'] = bin2hex($item['data']);
+    //            $item['header'] = bin2hex($item['header']);
+    //            $item['lasthwinfo'] = bin2hex($item['lasthwinfo']);
+    //            $item['lastchar'] = bin2hex($item['lastchar']);
+    //            $item['regtime'] = date('Y-m-d H:i:s', $item['regtime'] * 3600);
+    //
+    //            return $item;
+    //        })->groupBy('guildcard')->map(function ($item) {
+    //            $new_item = collect($item[0])->only([
+    //                'guildcard',
+    //                'username',
+    //                'regtime',
+    //                'lastip',
+    //                'isgm',
+    //                'isbanned',
+    //                'islogged',
+    //                'isactive',
+    //            ]);
+    //            $new_item['characters'] = collect($item)->map(function ($item) {
+    //                return collect($item)->only(['slot', 'data', 'header']);
+    //            });
+    //            $new_item['character_num'] = count($new_item['characters']);
+    //
+    //            return $new_item;
+    //        })->toArray();
+    //
+    //        return Response::view('pages.character', compact('character_list'));
+    //    }
 
     public function bank() {
         $guildcard = Input::get('guildcard');
