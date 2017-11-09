@@ -37,6 +37,7 @@ RouteGroup(function () {
     // Route('GET', '/item/import', 'Controller\Server\item@import');
     Route('POST', '/item/update', 'Controller\Server\Item@update');
     Route('GET', '/item/stat_boosts', 'Controller\Server\Item@stat_boosts');
+    Route('GET', '/item/tech_boosts', 'Controller\Server\Item@tech_boosts');
 
 
     // 套装

@@ -11,8 +11,8 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">服务器状态</h3>
                 </div>
-                <div class="panel-body row">
-                    <div id="server_status" class="row m-lr-0" style="display: none"></div>
+                <div class="panel-body">
+                    <div id="server_status" class="row" style="display: none"></div>
                 </div>
             </section>
             <script>

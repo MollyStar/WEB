@@ -82,8 +82,54 @@ class Item
 
         $data = collect($itemspmt)->flatten(1)->sortBy('stat_boosts')->groupBy('stat_boosts')->toArray();
 
+        unset($data[0]);
+
         return Response::view('pages.item.stat_boosts', compact('data', 'map_stat_boosts', 'map_stat'));
 
+    }
+
+    public function tech_boosts() {
+        $map_items = collect(DB::connection()->get('map_items'))->keyBy('hex')->toArray();
+        $map_tech_boosts = Config::get('server.tech_boosts');
+        $map_tech = Config::get('server.tech');
+        $itemspmt = [];
+
+        collect([
+            'armorpmt'  => 20,
+            'shieldpmt' => 20,
+            'weaponpmt' => 30,
+        ])->each(function ($column, $name) use (&$itemspmt, &$map_items) {
+            $itemspmt[$name] = collect(file(realpath(sprintf('%s/__SERVER/item/%s.ini', ROOT, $name))))->map(function ($line) use ($column, $name, &$map_items) {
+                $data = explode(',', trim($line, "\n"));
+
+                return [
+                    'hex'         => $data[0],
+                    'name_zh'     => $map_items[substr($data[0], 2)]['name_zh'],
+                    'name'        => $data[1],
+                    'tech_boosts' => $data[$column],
+                    'type'        => $name,
+                ];
+            });
+        });
+
+        $data = collect($itemspmt)->flatten(1)->sortBy('tech_boosts')->groupBy('tech_boosts')->toArray();
+
+        unset($data[0]);
+
+//        collect($data)->flatten(1)->each(function ($item) use (&$map_tech_boosts, &$map_tech) {
+//            echo '| ' . join(' | ', [
+//                    $item['hex'],
+//                    $item['name_zh'],
+//                    collect($map_tech_boosts[$item['tech_boosts']])->map(function ($item) use (&$map_tech) {
+//                        return $map_tech[$item[0]][1] .
+//                               ($item[1] > 0 ? '+' . ($item[1] * 100) . '%' : ($item[1] * 100) . '%');
+//                    })->implode(' '),
+//                ]) . ' |  |<br/>';
+//        });
+//
+//        return;
+
+        return Response::view('pages.item.tech_boosts', compact('data', 'map_tech', 'map_tech_boosts'));
     }
 
     /**

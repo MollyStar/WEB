@@ -1,10 +1,10 @@
-<?php Kernel\View::part('common.header', ['title' => '属性增益效果']) ?>
+<?php Kernel\View::part('common.header', ['title' => '魔法增益效果']) ?>
 <div class="row m-lr-0">
     <div class="col-sm-12">
         <section class="panel">
             <div class="panel-heading">
                 <h3>
-                    属性增益效果
+                    魔法增益效果
                 </h3>
             </div>
         </section>
@@ -13,11 +13,13 @@
                 <div class="panel-heading">
                     <h4>
                         <b><?php echo $key; ?></b>
-                        <?php if (isset($map_stat_boosts[$key])): ?>
-                            <?php foreach ($map_stat_boosts[$key] as $effect): ?>
-                                <?php echo $map_stat[$effect[0]][1]; ?><?php echo ($r = $effect[1] *
-                                                                                        $map_stat[$effect[0]][2]) > 0
-                                    ? '+' . $r : $r; ?>
+                        <?php if (isset($map_tech_boosts[$key])): ?>
+                            <?php foreach ($map_tech_boosts[$key] as $effect): ?>
+                                <?php echo $map_tech[$effect[0]][1]; ?><?php echo $effect[1] > 0
+                                    ? '+' .
+                                      ($effect[1] * 100) .
+                                      '%' : ($effect[1] *
+                                             100) . '%'; ?>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </h4>

@@ -19,8 +19,6 @@ use \Exception;
 class Topic
 {
     public function index() {
-        UserHelper::isUserLogginedGame();
-
         return Response::view('pages.topic.index');
     }
 

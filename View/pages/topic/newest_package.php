@@ -2,7 +2,9 @@
     <style>
         body {
             min-height: 100vh;
-            background: white url("/asset/image/topic/newest_package.jpg") no-repeat 80% 7vh;
+            background: white url("/asset/image/topic/package.jpg") no-repeat 80% 7vh;
+            -webkit-background-size: auto 90vh;
+            background-size: auto 90vh;
         }
 
         .panel-alpha {

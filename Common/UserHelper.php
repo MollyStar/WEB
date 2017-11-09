@@ -33,7 +33,7 @@ class UserHelper
     }
 
     public static function isUserLogginedGame() {
-        dd(self::$currentUser);
+        return self::$currentUser['lastip'] && self::$currentUser['lasthwinfo'];
     }
 
     public static function initialize() {
