@@ -3,16 +3,16 @@
         <?php echo $detail->name_zh ?> lv.<?php echo $detail->level ?>
     <?php elseif ($detail instanceof \Model\Weapon): ?>
         <?php if ($detail->strengthen): ?>
-            <?php echo $detail->strengthen > 0 ? '+' . $detail->strengthen : $detail->strengthen; ?><br/>
+            打磨&nbsp;<?php echo $detail->strengthen; ?><br/>
         <?php endif; ?>
         <?php if ($detail->st1): ?>
-            <?php echo $detail->st1['name_zh']; ?><?php echo $detail->st1['val']; ?>
+            <?php echo $detail->st1['name_zh']; ?>&nbsp;<?php echo $detail->st1['val']; ?><br/>
         <?php endif; ?>
         <?php if ($detail->st2): ?>
-            <?php echo $detail->st2['name_zh']; ?><?php echo $detail->st2['val']; ?>
+            <?php echo $detail->st2['name_zh']; ?>&nbsp;<?php echo $detail->st2['val']; ?><br/>
         <?php endif; ?>
         <?php if ($detail->st3): ?>
-            <?php echo $detail->st3['name_zh']; ?><?php echo $detail->st3['val']; ?>
+            <?php echo $detail->st3['name_zh']; ?>&nbsp;<?php echo $detail->st3['val']; ?><br/>
         <?php endif; ?>
     <?php elseif ($detail instanceof \Model\Mag): ?>
         防御 <?php echo $detail->defense[0]; ?>+<?php echo $detail->defense[1]; ?><br/>

@@ -77,7 +77,7 @@ class Item
         return new static($_unpacked['data'] . $_unpacked['data2'], $_unpacked['itemid'] & 0xFFFF);
     }
 
-    public static function make($code = null, $itemid = 0) {
+    public static function make($code = null, $itemid = -1) {
         return new static($code, $itemid);
     }
 

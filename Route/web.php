@@ -70,6 +70,8 @@ RouteGroup(function () {
     Route('GET', '/account', 'Controller\Server\Account@manage');
     Route('GET', '/account/common_bank', 'Controller\Server\Account@common_bank');
     Route('POST', '/account/common_bank/save', 'Controller\Server\Account@common_bank_save');
+    Route('GET', '/account/character', 'Controller\Server\Account@character');
+    Route('GET', '/account/character/detail', 'Controller\Server\Account@character_detail');
 
     // 用户
     Route('POST', '/user/ajax_search_account_by_name', 'Controller\User@ajax_search_account_by_name');

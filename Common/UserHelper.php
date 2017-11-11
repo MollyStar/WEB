@@ -128,6 +128,7 @@ class UserHelper
 
     public static function getUserInfoByGuildcard($guildcard) {
         return DB::connection()->where('guildcard', $guildcard)->getOne('account_data', [
+            'username',
             'password',
             'regtime',
             'guildcard',

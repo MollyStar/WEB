@@ -8,22 +8,20 @@
 
 namespace Controller\Server;
 
+
 use Carlosocarvalho\SimpleInput\Input\Input;
-use Codante\Binary\Binary;
-use Common\CharacterHelper;
-use Common\ItemHelper;
 use Common\UserHelper;
-use Kernel\Config;
 use Kernel\DB;
 use Kernel\Response;
 use Model\Bank;
 use Model\BankItem;
-use Model\InventoryCollection;
 
-class Account
+class Character
 {
 
     public function manage() {
+
+        $guildcard = Input::get('guildcard');
 
         $account_list = collect(DB::connection()->get('account_data'))->map(function ($item) {
             $item['isonline'] = UserHelper::isOnline($item['guildcard']);
@@ -137,96 +135,5 @@ class Account
         }
 
         return Response::api(-1, '保存失败');
-    }
-
-    public function character() {
-        $guildcard = Input::get('guildcard') ?? 0;
-
-        if ($guildcard == 0) {
-            return Response::redirect('/account');
-        }
-
-        $user_info = UserHelper::getUserInfoByGuildcard($guildcard);
-
-        $character_list = DB::connection()->where('guildcard', $guildcard)->get('character_data', null, [
-            'guildcard',
-            'slot',
-            'data',
-        ]);
-
-        if ($character_list) {
-
-            $map_sec = Config::get('server.sec');
-            $map_class = Config::get('server.class');
-
-            $character_list = collect($character_list)->map(function ($character) use (&$map_sec, &$map_class) {
-
-                $data = collect(Binary::Parser(Config::get('DATA_STRUCTURE.CHARDATA'), Binary::Stream($character['data']))
-                    ->data())->only(['name', 'level', 'sectionID', 'playTime', '_class'])->toArray();
-
-                $data['level'] += 1;
-                $data['sectionID'] = hexdec($data['sectionID']);
-                $data['sec'] = $map_sec[$data['sectionID']];
-                $data['_class'] = hexdec($data['_class']);
-                $data['class'] = $map_class[$data['_class']];
-                $data['name'] = CharacterHelper::decode_name($data['name']);
-                $data['playTime'] = intval(ceil($data['playTime'] / 3600));
-
-                $character['data'] = $data;
-
-                return $character;
-            })->sortBy('slot')->values()->toArray();
-        }
-
-        return Response::view('pages.character.manage', compact('character_list', 'user_info'));
-    }
-
-    public function character_detail() {
-        $guildcard = Input::get('guildcard') ?? 0;
-        $slot = Input::get('slot');
-
-        if ($guildcard == 0) {
-            return Response::redirect('/account');
-        }
-
-        if ($slot === false) {
-            return Response::redirect('/account/character?guildcard=' . $guildcard);
-        }
-
-        $map_sec = Config::get('server.sec');
-        $map_class = Config::get('server.class');
-
-        $chardata = DB::connection()
-            ->where('guildcard', $guildcard)
-            ->where('slot', $slot)
-            ->getValue('character_data', 'data');
-
-        if (!$chardata) {
-            return Response::redirect('/account/character?guildcard=' . $guildcard);
-        }
-
-        $chardata = collect(Binary::Parser(Config::get('DATA_STRUCTURE.CHARDATA'), Binary::Stream($chardata))->data());
-
-        $info = $chardata->only(['name', 'level', 'sectionID', 'playTime', '_class', 'guildCard'])->toArray();
-
-        $info['level'] += 1;
-        $info['sectionID'] = hexdec($info['sectionID']);
-        $info['sec'] = $map_sec[$info['sectionID']];
-        $info['_class'] = hexdec($info['_class']);
-        $info['class'] = $map_class[$info['_class']];
-        $info['name'] = CharacterHelper::decode_name($info['name']);
-        $info['playTime'] = intval(ceil($info['playTime'] / 3600));
-
-        $bank = Bank::make();
-        $bank->setMST($chardata['bankMeseta']);
-        $bank->fillInventory($chardata['bankInventory']);
-
-        $inventory = InventoryCollection::make();
-        $inventory->setMST($chardata['meseta']);
-        $inventory->fillInventory($chardata['inventory']);
-
-        $map_items = ItemHelper::map_items();
-
-        return Response::view('pages.character.detail', compact('info', 'bank', 'inventory', 'map_items'));
     }
 }

@@ -17,6 +17,7 @@
                         <th>online?</th>
                         <th>帐户名</th>
                         <th>公共银行</th>
+                        <th>角色</th>
                         <th>注册时间</th>
                         <th>GM</th>
                         <th>BAN</th>
@@ -40,6 +41,11 @@
                             <td>
                                 <a class="btn btn-primary btn-xs"
                                    href="/account/common_bank?guildcard=<?php echo $account['guildcard']; ?>"><i
+                                            class="fa fa-edit"></i></a>
+                            </td>
+                            <td>
+                                <a class="btn btn-primary btn-xs"
+                                   href="/account/character?guildcard=<?php echo $account['guildcard']; ?>"><i
                                             class="fa fa-edit"></i></a>
                             </td>
                             <td>

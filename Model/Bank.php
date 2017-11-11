@@ -17,12 +17,12 @@ class Bank
 {
     use ItemsUtility;
 
-    private $MST;
-    private $USE;
-    private $ITEMS;
+    protected $MST;
+    protected $USE;
+    protected $ITEMS;
 
-    private $SOCK = 200;
-    private $MAX_MST = 999999;
+    protected $SOCK = 200;
+    protected $MAX_MST = 999999;
 
     const BIN_LENGTH = 4808;
 
@@ -52,15 +52,19 @@ class Bank
 
         $handler->setMST($_unpacked['bankMeseta']);
 
-        collect($_unpacked['bankInventory'])->each(function ($item) use (&$handler) {
+        $handler->fillInventory($_unpacked['bankInventory']);
+
+        return $handler;
+    }
+
+    public function fillInventory($items = []) {
+        collect($items)->each(function ($item) {
             $item = BankItem::make($item['data'] . $item['data2'], $item['bank_count'] & 0xFFFF, $item['itemid'] &
                                                                                                  0xFFFF);
             if ($item->isValid()) {
-                $handler->addItem($item);
+                $this->addItem($item);
             }
         });
-
-        return $handler;
     }
 
     public function setMST($num = 0) {
@@ -81,7 +85,7 @@ class Bank
         return $this->MAX_MST - $this->MST;
     }
 
-    public function addItem(BankItem $item) {
+    public function addItem($item) {
         if ($this->USE == $this->SOCK) {
             return -1;
         }
