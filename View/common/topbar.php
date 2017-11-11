@@ -23,12 +23,17 @@
                     <ul class="dropdown-menu" aria-labelledby="main">
                         <li><a href="/dashboard">Dashboard</a></li>
                         <li class="divider"></li>
-                        <li><a href="/character">用户</a></li>
+                        <li><a href="/account">用户</a></li>
+                        <li class="divider"></li>
                         <li><a href="/drop">掉落</a></li>
+                        <li class="divider"></li>
                         <li><a href="/mob">怪物</a></li>
-                        <li><a href="/item">物品</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/item">物品名称管理</a></li>
                         <li><a href="/item/stat_boosts">物品效果(属性)</a></li>
-                        <li><a href="/item_set">套装</a></li>
+                        <li><a href="/item/tech_boosts">物品效果(魔法)</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/item_set">套装管理</a></li>
                         <li><a href="/item_set/send">套装发放</a></li>
                     </ul>
                 </li>

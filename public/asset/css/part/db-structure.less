@@ -1,0 +1,30 @@
+@import "../lib/variables";
+
+#indexes {
+  .btn {
+    margin-bottom: 3px;
+  }
+
+  .btn-default {
+    color: @gray-darker;
+    background-color: @body-bg;
+    &:hover {
+      color: @gray-darker;
+      background-color: darken(@body-bg, 20%);
+    }
+  }
+
+}
+
+h2 {
+  padding-bottom: .2em;
+  border-bottom: 1px solid @gray-dark;
+}
+
+.table-responsive:nth-child(4n-1) .table thead tr {
+  background-color: #b7c9ff;
+}
+
+.table-responsive:nth-child(4n) .table thead tr {
+  background-color: #fbffb8;
+}

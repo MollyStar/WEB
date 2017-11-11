@@ -13,6 +13,7 @@ Route('POST', '/login/submit', 'Controller\User@login_submit');
 Route('GET', '/logout', 'Controller\User@logout');
 Route('GET', '/verifiation.jpg', 'Controller\Common@verifiation');
 Route('GET', '/item_drop', 'Controller\Server\Drop@public');
+Route('GET', '/notice', 'Controller\Topic@notice');
 
 // 活动
 Route('GET', '/topic/newest_package', 'Controller\Topic@newest_package');
@@ -31,6 +32,9 @@ RouteGroup(function () {
 RouteGroup(function () {
     Route('GET', '/dashboard', 'Controller\Dashboard@index');
     Route('GET', '/test', 'Controller\Dashboard@test');
+
+    //    Route('GET', '/server/process/login_server', 'Controller\Server\Process@login_server');
+    //    Route('GET', '/server/process/patch_server', 'Controller\Server\Process@patch_server');
 
     // 物品
     Route('GET', '/item', 'Controller\Server\Item@manage');
@@ -63,9 +67,9 @@ RouteGroup(function () {
     Route('POST', '/mob/update', 'Controller\Server\Mob@update');
     Route('GET', '/mob/sync_simple_names', 'Controller\Server\Mob@sync_simple_names');
 
-    Route('GET', '/character', 'Controller\Server\Character@manage');
-    Route('GET', '/character/bank', 'Controller\Server\Character@bank');
-    Route('POST', '/character/bank/save', 'Controller\Server\Character@bank_save');
+    Route('GET', '/account', 'Controller\Server\Account@manage');
+    Route('GET', '/account/common_bank', 'Controller\Server\Account@common_bank');
+    Route('POST', '/account/common_bank/save', 'Controller\Server\Account@common_bank_save');
 
     // 用户
     Route('POST', '/user/ajax_search_account_by_name', 'Controller\User@ajax_search_account_by_name');

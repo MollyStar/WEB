@@ -1,4 +1,4 @@
-<?php Kernel\View::part('common.header', ['title' => 'Dashboard']) ?>
+<?php Kernel\View::part('common.topic.header', ['title' => 'Dashboard']) ?>
     <style>
         body {
             min-height: 100vh;
@@ -170,4 +170,4 @@
             $('#verify_code').trigger('reflush');
         })(jQuery);
     </script>
-<?php Kernel\View::part('common.footer') ?>
+<?php Kernel\View::part('common.topic.footer') ?>

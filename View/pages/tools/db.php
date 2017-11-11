@@ -1,32 +1,7 @@
 <?php Kernel\View::part('common.header', ['title' => '数据库结构']) ?>
 
 <style>
-    #indexes .btn {
-        margin-bottom: 3px
-    }
-
-    #indexes .btn-default {
-        color: #4f4f4f;
-        background-color: #FFFFFF;
-    }
-
-    #indexes .btn-default:hover {
-        color: #242424;
-        background-color: #d2d2d2;
-    }
-
-    h2 {
-        padding-bottom: .2em;
-        border-bottom: 1px solid #a5a5a5;
-    }
-
-    .table-responsive:nth-child(4n-1) .table thead tr {
-        background-color: #b7c9ff;
-    }
-
-    .table-responsive:nth-child(4n) .table thead tr {
-        background-color: #fbffb8;
-    }
+    @import "/asset/css/part/db-structure.min.css";
 </style>
 
 <div class="row m-lr-0">
@@ -71,3 +46,4 @@
 <?php endforeach; ?></pre>
 
 <script src="/asset/js/part/db.min.js"></script>
+<?php Kernel\View::part('common.footer') ?>

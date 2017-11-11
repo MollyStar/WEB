@@ -39,7 +39,7 @@
                             </td>
                             <td>
                                 <a class="btn btn-primary btn-xs"
-                                   href="/character/bank?guildcard=<?php echo $account['guildcard']; ?>"><i
+                                   href="/account/common_bank?guildcard=<?php echo $account['guildcard']; ?>"><i
                                             class="fa fa-edit"></i></a>
                             </td>
                             <td>

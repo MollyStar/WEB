@@ -26,6 +26,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="btn btn-default btn-xs">
+                        <input class="checkbox-inline" type="checkbox" name="keep_auth" value="1"/>
+                        记住我
+                    </label>
+                    <span class="text-muted">7 天之内免登陆</span>
+                </div>
                 <div class="form-group clearfix">
                     <input type="submit" class="btn btn-info btn-block" value="登&nbsp;&nbsp;&nbsp;&nbsp;录"/>
                 </div>

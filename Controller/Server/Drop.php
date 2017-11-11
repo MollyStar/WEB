@@ -181,11 +181,12 @@ class Drop
 
                     if ($hash) {
                         $drop_info = DB::connection()->where('hash', $hash)->getOne('item_drop');
-                        if (!$drop_info) {
-                            return Response::api(0, '无效的HASH');
+
+                        if ($drop_info) {
+                            DB::connection()->where('hash', $hash)->delete('item_drop');
                         }
-                        DB::connection()->where('hash', $hash)->delete('item_drop');
                     }
+
                     // 新增
                     $ek = Input::post('ep');
                     $dk = Input::post('dif');
@@ -195,11 +196,9 @@ class Drop
                         ->where('type', 0)
                         ->where('ep', $ek)
                         ->where('dif', $dk)
-                        ->where('area', $ak)
                         ->where('sec', $sk)
                         ->orderBy('`order`', 'desc')
                         ->getValue('item_drop', '`order`', 1);
-
                     $order = $order > -1 ? $order + 1 : 0;
 
                     $data = [

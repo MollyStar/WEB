@@ -37,13 +37,27 @@ class User
             return Response::api(-1, $e->getMessage());
         }
 
+        $keep_auth = Input::post('keep_auth') ?? 0;
+
         if ($user['isgm']) {
-            $token = EncryptCookie::encrypt(time() . "\t" . $user['guildcard'] . "\t" . Config::get('auth.admin'));
-            setcookie('AUTH_TOKEN', $token, time() + 86400, '/', null, null, true);
+            $_SESSION['adminid'] = $user['guildcard'];
+            $keep_auth &&
+            setcookie('AUTH_TOKEN', EncryptCookie::encrypt(time() .
+                                                           "\t" .
+                                                           $user['guildcard'] .
+                                                           "\t" .
+                                                           Config::get('auth.admin')), time() +
+                                                                                       86400, '/', null, null, true);
             $jump = '/dsahboard';
         } else {
-            $token = EncryptCookie::encrypt(time() . "\t" . $user['guildcard'] . "\t" . Config::get('auth.user'));
-            setcookie('AUTH_USER', $token, null, '/', null, null, true);
+            $_SESSION['userid'] = $user['guildcard'];
+            $keep_auth &&
+            setcookie('AUTH_USER', EncryptCookie::encrypt(time() .
+                                                          "\t" .
+                                                          $user['guildcard'] .
+                                                          "\t" .
+                                                          Config::get('auth.user')), time() +
+                                                                                     86400, '/', null, null, true);
             $jump = '/topic';
         }
 
@@ -54,8 +68,10 @@ class User
 
     public function logout() {
         if (UserHelper::isLoggedAdmin()) {
+            $_SESSION['adminid'] = null;
             setcookie('AUTH_TOKEN', '', 0, '/', null, null, true);
         } elseif (UserHelper::isLoggedUser()) {
+            $_SESSION['userid'] = null;
             setcookie('AUTH_USER', '', 0, '/', null, null, true);
         }
 

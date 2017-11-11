@@ -116,18 +116,18 @@ class Item
 
         unset($data[0]);
 
-//        collect($data)->flatten(1)->each(function ($item) use (&$map_tech_boosts, &$map_tech) {
-//            echo '| ' . join(' | ', [
-//                    $item['hex'],
-//                    $item['name_zh'],
-//                    collect($map_tech_boosts[$item['tech_boosts']])->map(function ($item) use (&$map_tech) {
-//                        return $map_tech[$item[0]][1] .
-//                               ($item[1] > 0 ? '+' . ($item[1] * 100) . '%' : ($item[1] * 100) . '%');
-//                    })->implode(' '),
-//                ]) . ' |  |<br/>';
-//        });
-//
-//        return;
+        //        collect($data)->flatten(1)->each(function ($item) use (&$map_tech_boosts, &$map_tech) {
+        //            echo '| ' . join(' | ', [
+        //                    $item['hex'],
+        //                    $item['name_zh'],
+        //                    collect($map_tech_boosts[$item['tech_boosts']])->map(function ($item) use (&$map_tech) {
+        //                        return $map_tech[$item[0]][1] .
+        //                               ($item[1] > 0 ? '+' . ($item[1] * 100) . '%' : ($item[1] * 100) . '%');
+        //                    })->implode(' '),
+        //                ]) . ' |  |<br/>';
+        //        });
+        //
+        //        return;
 
         return Response::view('pages.item.tech_boosts', compact('data', 'map_tech', 'map_tech_boosts'));
     }

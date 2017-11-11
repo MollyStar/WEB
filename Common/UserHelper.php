@@ -37,31 +37,39 @@ class UserHelper
     }
 
     public static function initialize() {
-        if (isset($_COOKIE['AUTH_TOKEN'])) {
-            $t = EncryptCookie::decrypt($_COOKIE['AUTH_TOKEN']);
-            if ($t) {
-                $args = explode("\t", $t);
-                if (isset($args[2]) && $args[2] === Config::get('auth.admin') && isset($args[1])) {
-                    $user = DB::connection()->where('guildcard', $args[1])->getOne('account_data');
-                    if ($user) {
-                        self::$currentUser = $user;
-                        self::$type = self::USER_ADMIN;
-                    }
-                }
-            }
-        } elseif (isset($_COOKIE['AUTH_USER'])) {
-            $t = EncryptCookie::decrypt($_COOKIE['AUTH_USER']);
-            if ($t) {
-                $args = explode("\t", $t);
-                if (isset($args[2]) && $args[2] === Config::get('auth.user') && isset($args[1])) {
-                    $user = DB::connection()->where('guildcard', $args[1])->getOne('account_data');
-                    if ($user) {
-                        self::$currentUser = $user;
-                        self::$type = self::USER_NORMAL;
-                    }
-                }
-            }
+        if (($guildcard = self::getAuth()) &&
+            ($user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data'))
+        ) {
+            self::$currentUser = $user;
+            self::$type = $user['isgm'] == 1 ? self::USER_ADMIN : self::USER_NORMAL;
         }
+    }
+
+    private static function getAuth() {
+        switch (true) {
+            case isset($_SESSION['adminid']):
+                return $_SESSION['adminid'];
+            case isset($_COOKIE['AUTH_TOKEN']):
+                if ($t = EncryptCookie::decrypt($_COOKIE['AUTH_TOKEN'])) {
+                    $args = explode("\t", $t);
+                    if (isset($args[2]) && $args[2] === Config::get('auth.admin') && isset($args[1])) {
+                        return $_SESSION['adminid'] = $args[1];
+                    }
+                }
+                break;
+            case isset($_SESSION['userid']):
+                return $_SESSION['userid'];
+            case isset($_COOKIE['AUTH_USER']):
+                if ($t = EncryptCookie::decrypt($_COOKIE['AUTH_USER'])) {
+                    $args = explode("\t", $t);
+                    if (isset($args[2]) && $args[2] === Config::get('auth.user') && isset($args[1])) {
+                        return $_SESSION['userid'] = $args[1];
+                    }
+                }
+                break;
+        }
+
+        return null;
     }
 
     public static function currentUser() {

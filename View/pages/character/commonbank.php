@@ -5,12 +5,12 @@
     }
 </style>
 <div class="row m-lr-0">
-    <form id="form" class="form-horizontal" onsubmit="return false;" action="/character/bank/save">
+    <form id="form" class="form-horizontal" onsubmit="return false;" action="/account/common_bank/save">
         <input type="hidden" name="guildcard" value="<?php echo $user['guildcard']; ?>">
         <div class="col-sm-12">
             <section class="panel">
                 <div class="panel-heading">
-                    <a href="/character" class="btn btn-info pull-right">返回</a>
+                    <a href="/account" class="btn btn-info pull-right">返回</a>
                     <span style="font-size: 2em; line-height: 1"
                           class="btn btn-sm btn-<?php echo \Common\UserHelper::isOnline($user['guildcard']) ? 'success'
                               : 'danger'; ?> m-r-15 pull-left"><i

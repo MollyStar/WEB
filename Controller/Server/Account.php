@@ -16,7 +16,7 @@ use Kernel\Response;
 use Model\Bank;
 use Model\BankItem;
 
-class Character
+class Account
 {
 
     public function manage() {
@@ -66,7 +66,7 @@ class Character
     //        return Response::view('pages.character', compact('character_list'));
     //    }
 
-    public function bank() {
+    public function common_bank() {
         $guildcard = Input::get('guildcard');
         if ($guildcard > 0) {
 
@@ -93,7 +93,7 @@ class Character
         }
     }
 
-    public function bank_save() {
+    public function common_bank_save() {
         $data = Input::post('data');
         $guildcard = Input::post('guildcard') ?? 0;
         $mst = Input::post('mst') ?? 0;

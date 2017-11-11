@@ -22,6 +22,12 @@ class Topic
         return Response::view('pages.topic.index');
     }
 
+    public function notice() {
+        $item_changes = file_get_contents(ROOT . '/__SERVER/item/change.md');
+
+        return Response::view('pages.notice', compact('item_changes'));
+    }
+
     public function newest_package() {
         return Response::view('pages.topic.newest_package');
     }
