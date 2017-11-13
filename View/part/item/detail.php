@@ -2,6 +2,12 @@
     <?php if ($detail instanceof \Model\Disc): ?>
         <?php echo $detail->name_zh ?> lv.<?php echo $detail->level ?>
     <?php elseif ($detail instanceof \Model\Weapon): ?>
+        <?php if ($detail->special): ?>
+            <?php if ($detail->abnormal): ?>
+                <span class="btn btn-danger btn-xs">异常</span><br/>
+            <?php endif; ?>
+            EX&nbsp;<?php echo $detail->special; ?><br/>
+        <?php endif; ?>
         <?php if ($detail->strengthen): ?>
             打磨&nbsp;<?php echo $detail->strengthen; ?><br/>
         <?php endif; ?>

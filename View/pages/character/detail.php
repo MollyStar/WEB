@@ -71,6 +71,7 @@
                     <tr>
                         <th>物品编码/名称</th>
                         <th>详情</th>
+                        <th>装备</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -83,6 +84,11 @@
                             <td>
                                 <span class="label label-default"><?php echo join(',', str_split($item->code, 8)); ?></span><br/>
                                 <?php \Kernel\View::part('part.item.detail', ['detail' => $item->detail]); ?>
+                            </td>
+                            <td>
+                                <?php if ($item->isEquipped()): ?>
+                                    <span class="btn btn-success btn-sm"><i class="fa fa-check equipped"></i></span>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

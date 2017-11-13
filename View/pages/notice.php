@@ -2,13 +2,15 @@
     <style>
         @import "/asset/css/part/db-structure.min.css";
     </style>
-    <div class="row m-lr-0">
-        <div class="col-sm-12">
-            <section class="panel">
-                <div class="panel-body">
-                    <div id="render"></div>
-                </div>
-            </section>
+    <div class="container   ">
+        <div class="row m-lr-0">
+            <div class="col-sm-12">
+                <section class="panel">
+                    <div class="panel-body">
+                        <div id="render"></div>
+                    </div>
+                </section>
+            </div>
         </div>
     </div>
     <pre style="display: none" id="source"><?php echo $item_changes; ?></pre>

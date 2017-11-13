@@ -182,6 +182,7 @@ class Account
     }
 
     public function character_detail() {
+
         $guildcard = Input::get('guildcard') ?? 0;
         $slot = Input::get('slot');
 
