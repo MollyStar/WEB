@@ -8,6 +8,7 @@
     <link href="/asset/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/asset/css/bootstrap-theme-flatly.min.css" rel="stylesheet" type="text/css">
     <link href="/asset/css/part/common.min.css" rel="stylesheet" type="text/css">
+    <?php \Kernel\View::loadStyles($style ?? []); ?>
     <script src="/asset/js/jquery.min.js"></script>
     <script src="/asset/js/popper.min.js"></script>
     <script src="/asset/js/bootstrap.min.js"></script>
@@ -17,6 +18,6 @@
     <script src="/asset/js/respond.min.js"></script>
     <![endif]-->
 </head>
-<body class="<?php echo \Common\UserHelper::isLoggedAdmin() ? 'topbar' : ''; ?>">
+<body class="<?php echo \Common\UserHelper::isLogged() ? 'topbar' : ''; ?>">
 <?php \Kernel\View::part('common.topbar'); ?>
 <!-- /header -->

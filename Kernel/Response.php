@@ -28,6 +28,21 @@ class Response
             : []));
     }
 
+    public static function message($message, $options = []) {
+        if (is_string($options)) {
+            $options = ['url' => $options];
+        }
+
+        $options = collect([
+            'code' => null,
+            'url'  => 'javascript:window.history.go(-1);',
+            'wait' => -1,
+            'type' => 'default',
+        ])->merge(['message' => $message])->merge($options)->toArray();
+
+        return View::make('pages.message', $options);
+    }
+
     public static function view($name, $vars = [], $cacheName = null) {
         if ($cacheName) {
             return self::saveToCache($cacheName, View::make($name, $vars));

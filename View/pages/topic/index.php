@@ -1,4 +1,4 @@
-<?php Kernel\View::part('common.topic.header', ['title' => 'Topic']) ?>
+<?php Kernel\View::part('common.header', ['title' => 'Topic']) ?>
     <style>
 
         h3 {
@@ -79,6 +79,13 @@
                 </div>
             </a>
         </div>
+        <div class="col-sm-4">
+            <a id="newest_package" class="panel">
+                <div class="panel-body">
+                    <div class="tips">拉比的远行探险</div>
+                </div>
+            </a>
+        </div>
     </div>
 <?php if (\Common\UserHelper::isUserLogginedGame()): ?>
     <h3>高手进阶</h3>
@@ -107,4 +114,4 @@
     </div>
     </div>
 <?php endif; ?>
-<?php Kernel\View::part('common.topic.footer') ?>
+<?php Kernel\View::part('common.footer') ?>

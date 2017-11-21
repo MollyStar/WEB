@@ -15,10 +15,6 @@ Route('GET', '/verifiation.jpg', 'Controller\Common@verifiation');
 Route('GET', '/item_drop', 'Controller\Server\Drop@public');
 Route('GET', '/notice', 'Controller\Topic@notice');
 
-// 活动
-Route('GET', '/topic/newest_package', 'Controller\Topic@newest_package');
-Route('POST', '/topic/newest_package/get', 'Controller\Topic@newest_package_get');
-
 // 支付
 Route('GET', '/trade/initiate', 'Controller\Trade@initiate');
 Route('GET', '/trade/notify', 'Controller\Trade@notify');
@@ -27,6 +23,9 @@ Route('GET', '/trade/return', 'Controller\Trade@return');
 
 RouteGroup(function () {
     Route('GET', '/topic', 'Controller\Topic@index');
+    // 活动
+    Route('GET', '/topic/newest_package', 'Controller\Topic@newest_package');
+    Route('POST', '/topic/newest_package/get', 'Controller\Topic@newest_package_get');
 }, ['middleware' => 'user']);
 
 RouteGroup(function () {

@@ -78,7 +78,7 @@ class ItemHelper
         }
 
         if ($tobe) {
-            if ($bank) {
+            if ($bin) {
                 if (DB::connection()->where('guildcard', $guildcard)->update('bank_data', ['data' => $bank->toBin()])) {
                     return true;
                 }

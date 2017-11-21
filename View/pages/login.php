@@ -3,6 +3,7 @@
     <div class="container">
         <div class="form-signin">
             <form id="form" class="form-horizontal col-xs-12" action="/login/submit">
+                <input type="hidden" name="USER_FEATURE">
                 <input type="hidden" name="jump" value="<?php echo $jump ? base64_decode(urldecode($jump)) : ''; ?>">
                 <div class="form-group">
                     <div class="input-group col-xs-12">
@@ -39,8 +40,11 @@
             </form>
         </div>
     </div>
+    <script src="/asset/js/fingerprint2.min.js"></script>
     <script>
         (function ($) {
+
+            $('[name="USER_FEATURE"]').userFeature();
 
             $('#verify_code').verifycode();
 

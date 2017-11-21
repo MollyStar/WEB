@@ -6,6 +6,7 @@ require('../jquery/jquery.alert');
 require('../jquery/jquery.confirm');
 require('../jquery/jquery.editableSelect');
 require('../jquery/jquery.verifycode');
+require('../jquery/jquery.userFeature');
 
 $(document).ready(function () {
     $(window).scroll(function () {

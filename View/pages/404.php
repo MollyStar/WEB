@@ -1,4 +1,4 @@
-<?php Kernel\View::part('common.header', ['title' => 'Dashboard']) ?>
+<?php Kernel\View::part('common.header', ['title' => '404']) ?>
     <style>
         #sign {
             height: 500px;

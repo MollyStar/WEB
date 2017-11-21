@@ -12,5 +12,6 @@ return [
     ],
     'user'  => [
         \Middleware\Userauth::class,
+        \Middleware\UserViewInject::class,
     ],
 ];

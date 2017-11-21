@@ -13,6 +13,7 @@ use Common\ItemHelper;
 use Common\UserHelper;
 use Kernel\DB;
 use Kernel\Response;
+use Kernel\View;
 use Model\ItemSet;
 use \Exception;
 
@@ -29,18 +30,22 @@ class Topic
     }
 
     public function newest_package() {
+        $user = UserHelper::currentUser();
+        if (!$user['isgm'] &&
+            DB::connection()
+                ->where('guildcard', $user['guildcard'])
+                ->where('name', 'NEWEST_PACKAGE')
+                ->getOne('topic_record')
+        ) {
+            return Response::message('您已经领取过了');
+        }
+
         return Response::view('pages.topic.newest_package');
     }
 
     public function newest_package_get() {
 
-        // return Response::api(-1, '即将开放');
-
-        try {
-            $user = UserHelper::verifiedFormUser();
-        } catch (Exception $e) {
-            return Response::api(-1, $e->getMessage());
-        }
+        $user = UserHelper::currentUser();
 
         if (UserHelper::isOnline($user['guildcard'])) {
             return Response::api(-1, '请登出您的游戏帐号再尝试领取');

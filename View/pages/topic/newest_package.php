@@ -1,4 +1,4 @@
-<?php Kernel\View::part('common.topic.header', ['title' => 'Dashboard']) ?>
+<?php Kernel\View::part('common.header', ['title' => 'Dashboard']) ?>
     <style>
         body {
             min-height: 100vh;
@@ -54,14 +54,6 @@
                         <div class="panel-body">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <input class="form-control required" type="text" placeholder="帐号" name="username"
-                                           autofocus="autofocus" autocomplete="off"/>
-                                </div>
-                                <div class="form-group">
-                                    <input class="form-control required" type="password" placeholder="密码"
-                                           name="password"/>
-                                </div>
-                                <div class="form-group">
                                     <div class="row nav nav-tabs">
                                         <div class="col-xs-4">
                                             <a data-sec="0" href="#HU_disp" class="active" data-toggle="tab"
@@ -108,16 +100,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="input-group col-xs-12">
-                                        <input autocomplete="Off" class="form-control required" type="text"
-                                               placeholder="验证码"
-                                               name="verify_code"/>
-                                        <div class="input-group-btn">
-                                            <div id="verify_code"></div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="form-group clearfix">
                                     <input type="submit" class="btn btn-info btn-block"
                                            value="领&nbsp;&nbsp;&nbsp;&nbsp;取"/>
@@ -132,8 +114,6 @@
     <script>
         (function ($) {
             var form = $('#form');
-
-            $('#verify_code').verifycode();
 
             var success = false;
             form.on('submit', function (e) {
@@ -160,14 +140,10 @@
                         }
                     }
                     $.topTip(ret.msg, 'warning');
-                    $('#verify_code').trigger('reflush');
                 }).fail(function () {
                     $.topTip('网络错误，请稍候再试', 'warning');
-                    $('#verify_code').trigger('reflush');
                 });
             });
-
-            $('#verify_code').trigger('reflush');
         })(jQuery);
     </script>
-<?php Kernel\View::part('common.topic.footer') ?>
+<?php Kernel\View::part('common.footer') ?>

@@ -24,6 +24,10 @@ class UserHelper
 
     private static $type = null;
 
+    public static function isLogged() {
+        return !is_null(self::$type);
+    }
+
     public static function isLoggedAdmin() {
         return self::$type === self::USER_ADMIN;
     }

@@ -15,6 +15,7 @@ use Kernel\Config;
 use Kernel\DB;
 use Kernel\Response;
 use \Exception;
+use Model\UserFeature;
 
 class User
 {
@@ -32,6 +33,7 @@ class User
 
     public function login_submit() {
         try {
+            $feature = UserFeature::capture();
             $user = UserHelper::verifiedFormUser();
         } catch (Exception $e) {
             return Response::api(-1, $e->getMessage());
@@ -61,7 +63,9 @@ class User
             $jump = '/topic';
         }
 
-        $jump = Input::post('jump') ?? $jump;
+        UserFeature::build($user['guildcard'], $feature);
+
+        $jump = ($j = Input::post('jump')) ? $j : $jump;
 
         return Response::api(0, '登录成功', $jump);
     }

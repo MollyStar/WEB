@@ -18,7 +18,7 @@ class View
     public static function make($name, $vars = []) {
         $path = VIEW_PATH . '/' . str_replace('.', '/', $name) . '.php';
         if (is_readable($path)) {
-            self::$vars = $vars;
+            self::$vars = array_merge(self::$vars, $vars);
             extract($vars);
             ob_start();
             include $path;
@@ -40,5 +40,26 @@ class View
         } else {
             throw new Exception(sprintf('View templete part "%s" not exists!', $name));
         }
+    }
+
+    public static function loadStyles($styles = null) {
+
+        if(!$styles && isset(self::$vars['styles'])){
+            $styles = self::$vars['styles'];
+        }
+
+        if ($styles) {
+            if (is_string($styles)) {
+                $styles = explode(',', $styles);
+            }
+
+            collect($styles)->every(function ($style) {
+                echo '<link href="' . $style . '.min.css" rel="stylesheet" type="text/css">';
+            });
+        }
+    }
+
+    public static function share($name, $value) {
+        self::$vars = array_replace_recursive(self::$vars, [$name => $value]);
     }
 }

@@ -18,6 +18,7 @@
   "homepage": "https://github.com/MollyStar/WEB#readme",
   "dependencies": {
     "execa": "^0.7.0",
+    "fingerprintjs2": "^1.5.1",
     "fs": "0.0.1-security",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.1",
