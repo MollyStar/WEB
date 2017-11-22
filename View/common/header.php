@@ -18,6 +18,6 @@
     <script src="/asset/js/respond.min.js"></script>
     <![endif]-->
 </head>
-<body class="<?php echo \Common\UserHelper::isLogged() ? 'topbar' : ''; ?>">
+<body class="<?php echo \Common\UserHelper::isLoggedAdmin() ? 'topbar' : ''; ?>">
 <?php \Kernel\View::part('common.topbar'); ?>
 <!-- /header -->

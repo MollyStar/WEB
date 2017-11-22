@@ -1,117 +1,123 @@
 <?php Kernel\View::part('common.header', ['title' => 'Topic']) ?>
-    <style>
-
-        h3 {
-            color: #1a7f9c;
-            padding-top: 36px;
-            padding-bottom: 5px;
-            border-bottom: 2px dotted #1a7f9c;
-            margin-bottom: 20px;
-        }
-
-        .panel {
-            cursor: pointer;
-            display: block;
-            -webkit-box-shadow: 0 0 12px -5px black;
-            -moz-box-shadow: 0 0 12px -5px black;
-            box-shadow: 0 0 12px -5px black;
-            -webkit-transition: box-shadow .2s;
-            -moz-transition: box-shadow .2s;
-            -ms-transition: box-shadow .2s;
-            -o-transition: box-shadow .2s;
-            transition: box-shadow .2s;
-        }
-
-        .panel:hover {
-            text-decoration: none;
-            -webkit-box-shadow: 0 0 7px #1e8fe7;
-            -moz-box-shadow: 0 0 7px #1e8fe7;
-            box-shadow: 0 0 7px #1e8fe7;
-        }
-
-        .panel-body {
-            position: relative;
-        }
-
-        #newest_package .panel-body .tips {
-            background-color: rgba(255, 255, 255, .9);
-            color: #1e8fe7;
-            font-size: 1.6em;
-            line-height: 2em;
-            width: 100%;
-            text-align: center;
-        }
-
-        #newest_package .panel-body {
-            padding: 160px 5px 5px;
-            background: transparent url("/asset/image/topic/newest_package.jpg") no-repeat 50% 50%;
-            background-size: auto 100%;
-        }
-    </style>
+    <div class="topic-banner">
+        <div class="container">
+            <div class="col-sm-12">
+                <div class="row">
+                    <section class="panel panel-topic panel-characters">
+                        <section class="panel-heading"></section>
+                        <section class="panel-body">
+                            <div class="row">
+                                <?php for ($slot = 0; $slot < 4; $slot++): ?>
+                                    <div class="col-sm-3">
+                                        <section class="panel panel-topic panel-character">
+                                            <?php if ($character = $characters[$slot] ?? null): ?>
+                                                <section
+                                                        class="panel-body character-sec-<?php echo $character['data']['class'][0]; ?>">
+                                                    <p><?php echo $character['data']['name']; ?></p>
+                                                    <p>Lv.<?php echo $character['data']['level']; ?></p>
+                                                    <p><?php echo $character['data']['sec'][1]; ?></p>
+                                                    <p><?php echo $character['data']['class'][1]; ?></p>
+                                                    <p>在线 <?php echo $character['data']['playTime']; ?> 小时</p>
+                                                </section>
+                                            <?php else: ?>
+                                                <section class="panel-body character-sec-none">
+                                                </section>
+                                            <?php endif; ?>
+                                        </section>
+                                    </div>
+                                <?php endfor; ?>
+                            </div>
+                        </section>
+                        <section class="panel-footer"></section>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container">
-    <h3>玩家服务</h3>
-    <div class="row">
-        <div class="col-sm-4">
-            <a id="newest_package" class="panel" href="/topic/newest_package">
-                <div class="panel-body">
-                    <div class="tips">新手礼包</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-4">
-            <a id="newest_package" class="panel">
-                <div class="panel-body">
-                    <div class="tips">武器强化</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-4">
-            <a id="newest_package" class="panel">
-                <div class="panel-body">
-                    <div class="tips">道具换取</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-4">
-            <a id="newest_package" class="panel">
-                <div class="panel-body">
-                    <div class="tips">马古养成</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-4">
-            <a id="newest_package" class="panel">
-                <div class="panel-body">
-                    <div class="tips">拉比的远行探险</div>
-                </div>
-            </a>
+        <div class="row">
+            <div class="col-sm-7">
+                <section class="panel panel-topic">
+                    <section class="panel-body">
+                        <p class="text-info">通用货币</p>
+                        <?php if ($currency): ?>
+                            <p class="text-info">本帐户有效货币(公共银行)</p>
+                            <table class="table">
+                                <tbody>
+                                <?php foreach ($currency as $item): ?>
+                                    <tr>
+                                        <td>
+                                            <?php echo $item['name']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $item['num']; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
+                    </section>
+                </section>
+            </div>
+            <div class="col-sm-5">
+                <a class="topic-btn" href="/topic/newest_package">
+                    <div class="title">
+                        <b>新手礼包</b>
+                        <i>领取新手礼包，开始你的梦幻旅程</i>
+                    </div>
+                    <img src="/asset/image/topic/hg-btn-blue.png">
+                </a>
+                <a class="topic-btn" href="#">
+                    <div class="title">
+                        <b>武器强化</b>
+                        <i>打造更强的武器，增加属性和命中</i>
+                    </div>
+                    <img src="/asset/image/topic/hg-btn-blue.png">
+                </a>
+                <a class="topic-btn" href="#">
+                    <div class="title">
+                        <b>道具交换</b>
+                        <i>换取稀有装备、物品</i>
+                    </div>
+                    <img src="/asset/image/topic/hg-btn-blue.png">
+                </a>
+                <a class="topic-btn" href="#">
+                    <div class="title">
+                        <b>玛古养成</b>
+                        <i>省去喂养的烦恼，快速养成属于你玛古</i>
+                    </div>
+                    <img src="/asset/image/topic/hg-btn-blue.png">
+                </a>
+                <a class="topic-btn" href="#">
+                    <div class="title">
+                        <b>拉比的探险</b>
+                        <i>可爱的拉比们有可能带回意想不到的东西</i>
+                    </div>
+                    <img src="/asset/image/topic/hg-btn-blue.png">
+                </a>
+                <?php if (\Common\UserHelper::isUserLogginedGame()): ?>
+                <a class="topic-btn" href="#">
+                    <div class="title">
+                        <b>战士进阶套装</b>
+                    </div>
+                    <img src="/asset/image/topic/hg-btn-green.png">
+                </a>
+                <a class="topic-btn" href="#">
+                    <div class="title">
+                        <b>枪手进阶套装</b>
+                    </div>
+                    <img src="/asset/image/topic/hg-btn-green.png">
+                </a>
+                <a class="topic-btn" href="#">
+                    <div class="title">
+                        <b>法师进阶套装</b>
+                    </div>
+                    <img src="/asset/image/topic/hg-btn-green.png">
+                </a>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
-<?php if (\Common\UserHelper::isUserLogginedGame()): ?>
-    <h3>高手进阶</h3>
-    <div class="row">
-        <div class="col-sm-4">
-            <a id="newest_package" class="panel">
-                <div class="panel-body">
-                    <div class="tips">战士进阶套装</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-4">
-            <a id="newest_package" class="panel" href="/topic/newest_package">
-                <div class="panel-body">
-                    <div class="tips">枪手进阶套装</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-4">
-            <a id="newest_package" class="panel" href="/topic/newest_package">
-                <div class="panel-body">
-                    <div class="tips">法师进阶套装</div>
-                </div>
-            </a>
-        </div>
-    </div>
-    </div>
-<?php endif; ?>
+
 <?php Kernel\View::part('common.footer') ?>

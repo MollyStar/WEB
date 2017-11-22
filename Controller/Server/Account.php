@@ -10,6 +10,7 @@ namespace Controller\Server;
 
 use Carlosocarvalho\SimpleInput\Input\Input;
 use Codante\Binary\Binary;
+use Common\AccountHelper;
 use Common\CharacterHelper;
 use Common\ItemHelper;
 use Common\UserHelper;
@@ -72,28 +73,19 @@ class Account
 
     public function common_bank() {
         $guildcard = Input::get('guildcard');
-        if ($guildcard > 0) {
+        if ($guildcard > 0 && $user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data')) {
+            $bank = AccountHelper::common_bank($guildcard);
 
-            $user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data');
+            $bank_use = $bank->used();
+            $bank_meseta = $bank->getMST();
+            $items = $bank->items(true);
+            $codes = $bank->itemsHEX();
 
-            if ($user) {
+            $map_items = collect(DB::connection()->where('hex', $codes, 'IN')->get('map_items'))
+                ->keyBy('hex')
+                ->toArray();
 
-                $bin = DB::connection()->where('guildcard', $guildcard)->getValue('bank_data', 'data');
-
-                $bank = Bank::make($bin);
-
-                $bank_use = $bank->used();
-                $bank_meseta = $bank->getMST();
-                $items = $bank->items(true);
-
-                $codes = $bank->itemsHEX();
-
-                $map_items = collect(DB::connection()->where('hex', $codes, 'IN')->get('map_items'))
-                    ->keyBy('hex')
-                    ->toArray();
-
-                return Response::view('pages.character.commonbank', compact('items', 'map_items', 'bank_use', 'bank_meseta', 'user'));
-            }
+            return Response::view('pages.character.commonbank', compact('items', 'map_items', 'bank_use', 'bank_meseta', 'user'));
         }
     }
 

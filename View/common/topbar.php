@@ -47,4 +47,19 @@
             </ul>
         </div>
     </div>
+<?php elseif (\Common\UserHelper::isLoggedUser()): ?>
+    <div class="navbar navbar-topic">
+        <div class="container">
+            <div class="navbar-panel">
+                <button class="dropdown-toggle btn btn-info" data-toggle="dropdown" type="button" id="user"
+                        aria-expanded="false"><?php echo \Common\UserHelper::currentUser()['username'] ?></button>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="user">
+                    <li><a href="/logout">登出</a></li>
+                </ul>
+            </div>
+            <div class="navbar-header">
+                <a href="/topic" class="logo">用户中心</a>
+            </div>
+        </div>
+    </div>
 <?php endif; ?>

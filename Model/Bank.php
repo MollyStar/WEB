@@ -130,4 +130,17 @@ class Bank
     public function remaining() {
         return $this->SOCK - $this->USE;
     }
+
+    /**
+     * @param       $property
+     * @param       $values
+     *
+     * @return array
+     */
+    public function filter($property, $values) {
+        return collect($this->ITEMS)->filter(function ($item, $key) use ($property, $values) {
+            return isset($item->$property) &&
+                   (is_array($values) ? in_array($item->$property, $values) : $item->$property == $values);
+        })->toArray();
+    }
 }
