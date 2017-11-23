@@ -44,6 +44,9 @@
                         <li><a href="/tools/db">数据库结构</a></li>
                     </ul>
                 </li>
+                <li>
+                    <a class="dropdown-toggle" href="/topic">游戏主页</a>
+                </li>
             </ul>
         </div>
     </div>

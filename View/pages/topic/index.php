@@ -12,8 +12,8 @@
                                         <section class="panel panel-topic panel-character">
                                             <?php if ($character = $characters[$slot] ?? null): ?>
                                                 <section
-                                                        class="panel-body character-sec-<?php echo $character['data']['class'][0]; ?>">
-                                                    <p><?php echo $character['data']['name']; ?></p>
+                                                        class="panel-body character-class character-class-<?php echo $character['data']['class'][0]; ?>">
+                                                    <p class="character-name"><?php echo $character['data']['name']; ?></p>
                                                     <p>Lv.<?php echo $character['data']['level']; ?></p>
                                                     <p><?php echo $character['data']['sec'][1]; ?></p>
                                                     <p><?php echo $character['data']['class'][1]; ?></p>
@@ -38,19 +38,53 @@
         <div class="row">
             <div class="col-sm-7">
                 <section class="panel panel-topic">
+                    <section class="panel-heading text-info">
+                        我的游戏帐号
+                    </section>
                     <section class="panel-body">
-                        <p class="text-info">通用货币</p>
+                        <?php if ($pass_accounts): ?>
+                            <table class="table table-topic">
+                                <tbody>
+                                <?php foreach ($pass_accounts as $account): ?>
+                                    <tr>
+                                        <td class="text-warning">
+                                            <?php echo $account['username']; ?>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-xs btn-success"
+                                               href="/topic/switch_account?guildcard=<?php echo $account['guildcard']; ?>">切换</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a href="/topic/bind_passport" class="btn btn-sm btn-primary">绑定我的其他帐号</a>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <section class="panel panel-topic">
+                    <section class="panel-body">
+                        <p class="text-info">莫莉币</p>
+                        <h2 class="text-danger">
+                            <?php echo \Common\UserHelper::currentUser()['currency']
+                                       ??
+                                       0; ?>
+                        </h2>
                         <?php if ($currency): ?>
                             <p class="text-info">本帐户有效货币(公共银行)</p>
-                            <table class="table">
+                            <table class="table table-topic">
                                 <tbody>
                                 <?php foreach ($currency as $item): ?>
                                     <tr>
-                                        <td>
+                                        <td class="text-warning">
                                             <?php echo $item['name']; ?>
                                         </td>
                                         <td>
-                                            <?php echo $item['num']; ?>
+                                            <b><?php echo $item['num']; ?></b>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

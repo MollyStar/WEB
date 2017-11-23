@@ -26,6 +26,9 @@ RouteGroup(function () {
     // 活动
     Route('GET', '/topic/newest_package', 'Controller\Topic@newest_package');
     Route('POST', '/topic/newest_package/get', 'Controller\Topic@newest_package_get');
+    Route('GET', '/topic/bind_passport', 'Controller\Topic@bind_passport');
+    Route('POST', '/topic/bind_passport/submit', 'Controller\Topic@bind_passport_submit');
+    Route('GET', '/topic/switch_account', 'Controller\Topic@switch_account');
 }, ['middleware' => 'user']);
 
 RouteGroup(function () {

@@ -25,7 +25,7 @@
             }, 1000);
         }
     </script>
-    <div class="container">
+    <div class="container message">
         <div class="row">
             <div class="col-sm-12">
                 <section class="panel">

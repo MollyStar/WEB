@@ -40,9 +40,99 @@ class Topic
             return ['name' => $map_items[$item->hex]['name_zh'], 'num' => $item->num];
         })->toArray();
 
-//        dp($currency, $characters);
+        $pass_accounts = $user['pass_accounts'] ?? [];
 
-        return Response::view('pages.topic.index', compact('characters', 'currency', 'map_items'));
+        //        dp($currency, $characters);
+
+        return Response::view('pages.topic.index', compact('characters', 'currency', 'map_items', 'pass_accounts'));
+    }
+
+    public function bind_passport() {
+        return Response::view('pages.topic.bind_passport');
+    }
+
+    public function bind_passport_submit() {
+        try {
+            $user = UserHelper::verifiedFormUser();
+        } catch (Exception $e) {
+            return Response::api(-1, $e->getMessage());
+        }
+
+        $current_user = UserHelper::currentUser();
+
+        if ($user['guildcard'] === $current_user['guildcard']) {
+            return Response::api(-1, '不可以绑定自己');
+        }
+
+        if (!$current_user['passid']) {
+            DB::connection()->startTransaction();
+            try {
+                $passid = DB::connection()->insert('passport', []);
+                DB::connection()->insert('passport_account_relation', [
+                    'passid'    => $passid,
+                    'guildcard' => $current_user['guildcard'],
+                ]);
+                DB::connection()->commit();
+            } catch (\Exception $e) {
+                DB::connection()->rollback();
+
+                return Response::api(-1, $e->getMessage());
+            }
+        } else {
+            $passid = $current_user['passid'];
+        }
+
+        DB::connection()->startTransaction();
+        try {
+            if ($pass_info = UserHelper::getPassport($user['guildcard'])) {
+                // 钱全部转移到当前passport
+                DB::connection()->where('passid', $passid)->update('passport', [
+                    'currency' => $current_user['currency'] + $pass_info['currency'],
+                ]);
+                // 所有相关帐号重新绑定
+                DB::connection()->where('passid', $pass_info['passid'])->update('passport_account_relation', [
+                    'passid' => $passid,
+                ]);
+                // 删掉原主passport
+                DB::connection()->where('passid', $pass_info['passid'])->delete('passport');
+            } else {
+                DB::connection()->insert('passport_account_relation', [
+                    'passid'    => $passid,
+                    'guildcard' => $user['guildcard'],
+                ]);
+            }
+            DB::connection()->commit();
+
+            return Response::api(0, '绑定成功', '/topic');
+
+        } catch (\Exception $e) {
+            DB::connection()->rollback();
+
+            return Response::api(-1, $e->getMessage());
+        }
+
+        return Response::api(-1, '绑定中出现问题，请稍后重试');
+    }
+
+    public function switch_account() {
+        $guildcard = Input::get('guildcard');
+        if ($guildcard > 0 &&
+            ($pass_info = UserHelper::getPassport($guildcard)) &&
+            $pass_info['passid'] === UserHelper::currentUser()['passid']
+        ) {
+            // 验证通过，可以切换
+            if ($user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data', [
+                'username',
+                'guildcard',
+                'isgm',
+            ])
+            ) {
+                UserHelper::forget_identity();
+                UserHelper::remember_identity($user, Input::post('keep_auth') ?? 0);
+
+                return Response::message('您现在将以 ' . $user['username'] . ' 身份登录', ['url' => '/topic']);
+            }
+        }
     }
 
     public function notice() {

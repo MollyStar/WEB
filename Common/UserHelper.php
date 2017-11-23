@@ -40,10 +40,38 @@ class UserHelper
         return self::$currentUser['lastip'] && self::$currentUser['lasthwinfo'];
     }
 
+    public static function getPassport($guildcard) {
+        return DB::connection()
+            ->join('passport p', 'p.passid=par.passid')
+            ->where('par.guildcard', $guildcard)
+            ->getOne('passport_account_relation par', 'p.*');
+    }
+
+    public static function getPassportRelation($passid) {
+        return DB::connection()
+                   ->join('account_data a', 'a.guildcard=par.guildcard', 'LEFT')
+                   ->where('par.passid', $passid)
+                   ->get('passport_account_relation par', null, ['a.guildcard', 'a.username']) ?? [];
+    }
+
+    public static function mergePassportInfo(&$user) {
+        if ($pass_info = self::getPassport($user['guildcard'])) {
+            $user['currency'] = intval($pass_info['currency']);
+            $user['passid'] = $pass_info['passid'];
+            $user['pass_accounts'] = collect(self::getPassportRelation($pass_info['passid']))
+                ->keyBy('guildcard')
+                ->forget($user['guildcard'])
+                ->toArray();
+        } else {
+            $user['currency'] = $user['pass_accounts'] = $user['passid'] = null;
+        }
+    }
+
     public static function initialize() {
         if (($guildcard = self::getAuth()) &&
             ($user = DB::connection()->where('guildcard', $guildcard)->getOne('account_data'))
         ) {
+            self::mergePassportInfo($user);
             self::$currentUser = $user;
             self::$type = $user['isgm'] == 1 ? self::USER_ADMIN : self::USER_NORMAL;
         }
@@ -139,5 +167,46 @@ class UserHelper
             'isgm',
             'isbanned',
         ]);
+    }
+
+    /**
+     * 记住用户身份
+     *
+     * @param      $user
+     * @param bool $keep_auth
+     */
+    public static function remember_identity($user, $keep_auth = false) {
+        if ($user['isgm']) {
+            $_SESSION['adminid'] = $user['guildcard'];
+            $keep_auth &&
+            setcookie('AUTH_TOKEN', EncryptCookie::encrypt(time() .
+                                                           "\t" .
+                                                           $user['guildcard'] .
+                                                           "\t" .
+                                                           Config::get('auth.admin')), time() +
+                                                                                       86400, '/', null, null, true);
+        } else {
+            $_SESSION['userid'] = $user['guildcard'];
+            $keep_auth &&
+            setcookie('AUTH_USER', EncryptCookie::encrypt(time() .
+                                                          "\t" .
+                                                          $user['guildcard'] .
+                                                          "\t" .
+                                                          Config::get('auth.user')), time() +
+                                                                                     86400, '/', null, null, true);
+        }
+    }
+
+    /**
+     * 移除已经记录的身份
+     */
+    public static function forget_identity() {
+        if (UserHelper::isLoggedAdmin()) {
+            $_SESSION['adminid'] = null;
+            setcookie('AUTH_TOKEN', '', 0, '/', null, null, true);
+        } elseif (UserHelper::isLoggedUser()) {
+            $_SESSION['userid'] = null;
+            setcookie('AUTH_USER', '', 0, '/', null, null, true);
+        }
     }
 }
