@@ -13,6 +13,8 @@ use Codante\Binary\Binary;
 use Kernel\Config;
 use Kernel\DB;
 use Model\Bank;
+use Model\InventoryCollection;
+use Model\Weapon;
 
 class AccountHelper
 {
@@ -61,5 +63,54 @@ class AccountHelper
         }
 
         return $characters;
+    }
+
+    /**
+     * 检测账号是否异常
+     *
+     * @param $guildcard
+     *
+     * @return bool
+     */
+    public static function is_abnormal_account($guildcard) {
+
+        $res = collect([]);
+
+        $common_bank = AccountHelper::common_bank($guildcard);
+        $common_bankItems = collect($common_bank->items());
+        if ($common_bankItems->isNotEmpty()) {
+            $res = $res->merge($common_bankItems->filter(function ($item) {
+                return $item->detail && $item->detail instanceof Weapon && $item->detail->abnormal === true;
+            })->values());
+        }
+
+
+        $chardata_list = collect(DB::connection()->where('guildcard', $guildcard)->getValue('character_data', 'data'));
+        if ($chardata_list->isNotEmpty()) {
+            $chardata_list->each(function ($chardata) use (&$res) {
+                $chardata = collect(Binary::Parser(Config::get('DATA_STRUCTURE.CHARDATA'), Binary::Stream($chardata))
+                    ->data());
+
+                $bank = Bank::make();
+                $bank->fillInventory($chardata['bankInventory']);
+                $bankItems = collect($bank->items());
+                if ($bankItems->isNotEmpty()) {
+                    $res = $res->merge($bankItems->filter(function ($item) {
+                        return $item->detail && $item->detail instanceof Weapon && $item->detail->abnormal === true;
+                    })->values());
+                }
+
+                $inventory = InventoryCollection::make();
+                $inventory->fillInventory($chardata['inventory']);
+                $inventoryItems = collect($inventory->items());
+                if ($inventoryItems->isNotEmpty()) {
+                    $res = $res->merge($inventoryItems->filter(function ($item) {
+                        return $item->detail && $item->detail instanceof Weapon && $item->detail->abnormal === true;
+                    })->values());
+                }
+            });
+        }
+
+        return $res->isNotEmpty();
     }
 }

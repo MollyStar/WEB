@@ -1,8 +1,8 @@
 <?php Kernel\View::part('common.header', ['title' => '绑定我的游戏帐号']) ?>
     <div class="container">
         <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
                 <section class="panel panel-topic">
                     <section class="panel-body">
                         <form id="form" class="form-horizontal col-xs-12" action="/topic/bind_passport/submit">
@@ -37,7 +37,7 @@
                     </section>
                 </section>
             </div>
-            <div class="col-sm-2"></div>
+            <div class="col-sm-3"></div>
         </div>
     </div>
     <script>
@@ -45,18 +45,18 @@
 
             $('#verify_code').verifycode();
 
-            var success = false;
+            var pending = false;
             $('#form').on('submit', function (e) {
                 e.preventDefault();
 
-                if (success) {
+                if (pending) {
                     return;
                 }
+                pending = true;
                 var el = $(this);
                 $.post(el.attr('action'), el.serializeArray()).done(function (ret) {
                     if (ret) {
                         if (ret.code === 0) {
-                            success = true;
                             $.topTip(ret.msg, 'success');
                             setTimeout(function () {
                                 window.location.href = ret.response || '/';
@@ -66,9 +66,11 @@
                     }
                     $.topTip(ret.msg, 'warning');
                     $('#verify_code').trigger('reflush');
+                    pending = false;
                 }).fail(function () {
                     $.topTip('网络错误，请稍候再试', 'warning');
                     $('#verify_code').trigger('reflush');
+                    pending = false;
                 });
             });
 

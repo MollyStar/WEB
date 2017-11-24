@@ -1,4 +1,4 @@
-<?php Kernel\View::part('common.header', ['title' => 'Topic']) ?>
+<?php Kernel\View::part('common.header', ['title' => '用户中心']) ?>
     <div class="topic-banner">
         <div class="container">
             <div class="col-sm-12">
@@ -69,11 +69,11 @@
                 <section class="panel panel-topic">
                     <section class="panel-body">
                         <p class="text-info">莫莉币</p>
-                        <h2 class="text-danger">
+                        <h3>
                             <?php echo \Common\UserHelper::currentUser()['currency']
                                        ??
                                        0; ?>
-                        </h2>
+                        </h3>
                         <?php if ($currency): ?>
                             <p class="text-info">本帐户有效货币(公共银行)</p>
                             <table class="table table-topic">
@@ -81,10 +81,10 @@
                                 <?php foreach ($currency as $item): ?>
                                     <tr>
                                         <td class="text-warning">
-                                            <?php echo $item['name']; ?>
+                                            <?php echo $item->name_zh; ?>
                                         </td>
                                         <td>
-                                            <b><?php echo $item['num']; ?></b>
+                                            <b><?php echo $item->num; ?></b>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

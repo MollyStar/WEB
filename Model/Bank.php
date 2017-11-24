@@ -117,7 +117,7 @@ class Bank
         return Binary::Builder(Config::get('DATA_STRUCTURE.BANK'), [
             'bankUse'       => $this->used(),
             'bankMeseta'    => $this->getMST(),
-            'bankInventory' => collect($this->ITEMS)->map(function ($item) {
+            'bankInventory' => collect($this->ITEMS)->map(function (BankItem $item) {
                 return $item->data();
             })->toArray(),
         ])->stream()->all();
@@ -138,9 +138,48 @@ class Bank
      * @return array
      */
     public function filter($property, $values) {
-        return collect($this->ITEMS)->filter(function ($item, $key) use ($property, $values) {
-            return isset($item->$property) &&
-                   (is_array($values) ? in_array($item->$property, $values) : $item->$property == $values);
-        })->toArray();
+        $method = is_array($values) ? 'whereIn' : 'where';
+
+        return collect($this->ITEMS)->$method($property, $values)->toArray();
+    }
+
+    public function getItemByProp($property, $values) {
+        return $this->filter($property, $values)[0] ?? null;
+    }
+
+    public function drop() {
+
+    }
+
+    public function search(array $filter = null) {
+        return empty($filter)
+            ? false
+            : collect($this->ITEMS)->search(function ($item) use ($filter) {
+                $res = true;
+                foreach ($filter as $prop => $val) {
+                    $res &= isset($item->$prop) && $item->$prop === $val;
+                }
+                return boolval($res);
+            });
+    }
+
+    public function update($filter, BankItem $replace = null) {
+        if ($replace && $replace->isValid()) {
+            $key = $this->search($filter);
+            if ($key > -1) {
+                $this->ITEMS[$key] = $replace;
+            }
+        }
+
+        return $key;
+    }
+
+    public function subtract($filter, $num = 1) {
+        $key = $this->search($filter);
+        if ($key > -1) {
+            $this->ITEMS[$key]->num -= $num;
+        }
+
+        return $key;
     }
 }

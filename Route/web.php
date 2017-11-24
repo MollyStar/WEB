@@ -29,6 +29,8 @@ RouteGroup(function () {
     Route('GET', '/topic/bind_passport', 'Controller\Topic@bind_passport');
     Route('POST', '/topic/bind_passport/submit', 'Controller\Topic@bind_passport_submit');
     Route('GET', '/topic/switch_account', 'Controller\Topic@switch_account');
+    Route('GET', '/topic/recharge', 'Controller\Topic@recharge');
+    Route('POST', '/topic/recharge/submit', 'Controller\Topic@recharge_submit');
 }, ['middleware' => 'user']);
 
 RouteGroup(function () {

@@ -73,16 +73,16 @@
             ));
         }
 
-        var success = false;
+        var pending = false;
         $('#form').on('submit', function () {
-            if (success) {
+            if (pending) {
                 return;
             }
+            pending = true;
             var el = $(this);
             $.post(el.attr('action'), el.serializeArray()).done(function (ret) {
                 if (ret) {
                     if (ret.code === 0) {
-                        success = true;
                         tip(ret.msg, 'success');
                         setTimeout(function () {
                             window.location.reload();
@@ -92,9 +92,11 @@
                 }
                 tip(ret.msg);
                 $('#verify_code').trigger('reflush');
+                pending = false;
             }).fail(function () {
                 tip('网络错误，请稍候再试');
                 $('#verify_code').trigger('reflush');
+                pending = false;
             });
         });
 

@@ -48,18 +48,18 @@
 
             $('#verify_code').verifycode();
 
-            var success = false;
+            var pending = false;
             $('#form').on('submit', function (e) {
                 e.preventDefault();
 
-                if (success) {
+                if (pending) {
                     return;
                 }
+                pending = true;
                 var el = $(this);
                 $.post(el.attr('action'), el.serializeArray()).done(function (ret) {
                     if (ret) {
                         if (ret.code === 0) {
-                            success = true;
                             $.topTip(ret.msg, 'success');
                             setTimeout(function () {
                                 window.location.href = ret.response || '/';
@@ -69,9 +69,11 @@
                     }
                     $.topTip(ret.msg, 'warning');
                     $('#verify_code').trigger('reflush');
+                    pending = false;
                 }).fail(function () {
                     $.topTip('网络错误，请稍候再试', 'warning');
                     $('#verify_code').trigger('reflush');
+                    pending = false;
                 });
             });
 

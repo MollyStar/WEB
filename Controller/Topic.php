@@ -28,23 +28,13 @@ class Topic
         $user = UserHelper::currentUser();
 
         $characters = AccountHelper::characters($user['guildcard']);
-        $commonbank = AccountHelper::common_bank($user['guildcard']);
 
-        $currency_codes = ['031000', '031001', '031002', '031003'];
-        $currency_items = $commonbank->filter('hex', $currency_codes);
-        $map_items = collect(DB::connection()->where('hex', $currency_codes, 'IN')->get('map_items'))
-            ->keyBy('hex')
-            ->toArray();
-
-        $currency = collect($currency_items)->map(function ($item) use ($map_items) {
-            return ['name' => $map_items[$item->hex]['name_zh'], 'num' => $item->num];
-        })->toArray();
+        $currency = ItemHelper::named(AccountHelper::common_bank($user['guildcard'])
+            ->filter('hex', array_keys(Config::get('server.currency_items'))));
 
         $pass_accounts = $user['pass_accounts'] ?? [];
 
-        //        dp($currency, $characters);
-
-        return Response::view('pages.topic.index', compact('characters', 'currency', 'map_items', 'pass_accounts'));
+        return Response::view('pages.topic.index', compact('characters', 'currency', 'pass_accounts'));
     }
 
     public function bind_passport() {
@@ -130,9 +120,66 @@ class Topic
                 UserHelper::forget_identity();
                 UserHelper::remember_identity($user, Input::post('keep_auth') ?? 0);
 
-                return Response::message('您现在将以 ' . $user['username'] . ' 身份登录', ['url' => '/topic']);
+                return Response::message('您现在以 ' . $user['username'] . ' 的身份登录', ['url' => '/topic']);
             }
         }
+
+        return Response::message('无法切换', ['url' => '/topic']);
+    }
+
+    public function recharge() {
+        $map_currency = Config::get('server.currency_items');
+        $user = UserHelper::currentUser();
+        $currency = ItemHelper::named(AccountHelper::common_bank($user['guildcard'])
+            ->filter('hex', array_keys($map_currency)));
+
+        return Response::view('pages.topic.recharge', compact('user', 'currency', 'map_currency'));
+    }
+
+    public function recharge_submit() {
+
+        $currency = collect(Input::post('currency') ?? []);
+        $map_currency = Config::get('server.currency_items');
+
+        $moli_currency = 0;
+        $currency = $currency->filter(function ($num, $hex) use ($map_currency, &$moli_currency) {
+            $moli_currency += $map_currency[$hex][0] * intval($num);
+
+            return $num > 0 && array_key_exists($hex, $map_currency);
+        });
+
+        if ($moli_currency == 0) {
+            return Response::api(-1, '没有要充入的数量');
+        }
+
+        $user = UserHelper::currentUser();
+
+        if (UserHelper::isOnline($user['guildcard'])) {
+            return Response::api(-1, '请登出您的游戏帐号再尝试充值');
+        }
+
+        $bank = AccountHelper::common_bank($user['guildcard']);
+        $currency->each(function ($num, $hex) use (&$bank) {
+            $bank->subtract(['hex' => $hex], $num);
+        });
+
+        DB::connection()->startTransaction();
+        try {
+            DB::connection()->where('guildcard', $user['guildcard'])->update('bank_data', ['data' => $bank->toBin()]);
+            DB::connection()->where('passid', $user['passid'])->update('passport', [
+                'currency' => $user['currency'] + $moli_currency,
+            ]);
+            DB::connection()->commit();
+
+            return Response::api(0, '充值成功');
+
+        } catch (\Exception $e) {
+            DB::connection()->rollback();
+
+            return Response::api(-1, $e->getMessage());
+        }
+
+        return Response::api(-1, '充值失败，请稍后重试');
     }
 
     public function notice() {

@@ -12,6 +12,7 @@ namespace Common;
 use Kernel\DB;
 use Model\Bank;
 use Model\BankItem;
+use Model\Item;
 use Model\ItemSet;
 use \Exception;
 
@@ -94,5 +95,26 @@ class ItemHelper
         }
 
         return false;
+    }
+
+    public static function named($items = []) {
+        $items = collect($items);
+        if ($items->isNotEmpty()) {
+            $hex_list = $items->pluck('hex')->toArray();
+            $map_items = collect(DB::connection()->where('hex', $hex_list, 'IN')->get('map_items'))->keyBy('hex');
+
+            $items->transform(function ($item) use (&$map_items) {
+                if ($map_items->has($item->hex)) {
+                    $item->name = $map_items->get($item->hex)['name'];
+                    $item->name_zh = $map_items->get($item->hex)['name_zh'];
+                } else {
+                    $item->name = $item->name_zh = '';
+                }
+
+                return $item;
+            });
+        }
+
+        return $items->toArray();
     }
 }

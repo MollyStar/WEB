@@ -44,18 +44,24 @@ class View
 
     public static function loadStyles($styles = null) {
 
-        if(!$styles && isset(self::$vars['styles'])){
-            $styles = self::$vars['styles'];
+        if (isset(self::$vars['styles'])) {
+            if (is_string(self::$vars['styles'])) {
+                self::$vars['styles'] = explode(',', self::$vars['styles']);
+            }
         }
 
-        if ($styles) {
+        if ($styles || isset(self::$vars['styles'])) {
             if (is_string($styles)) {
                 $styles = explode(',', $styles);
             }
 
-            collect($styles)->every(function ($style) {
-                echo '<link href="' . $style . '.min.css" rel="stylesheet" type="text/css">';
-            });
+            $styles = array_merge(self::$vars['styles'] ?? [], $styles ?? []);
+
+            if ($styles) {
+                collect($styles)->each(function ($style) {
+                    echo '<link href="' . $style . '.min.css" rel="stylesheet" type="text/css">';
+                });
+            }
         }
     }
 

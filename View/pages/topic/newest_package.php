@@ -115,13 +115,14 @@
         (function ($) {
             var form = $('#form');
 
-            var success = false;
+            var pending = false;
             form.on('submit', function (e) {
                 e.preventDefault();
 
-                if (success) {
+                if (pending) {
                     return;
                 }
+                pending = true;
 
                 var el = $(this);
                 var data = el.serializeArray();
@@ -131,7 +132,6 @@
                 $.post(el.attr('action'), data).done(function (ret) {
                     if (ret) {
                         if (ret.code === 0) {
-                            success = true;
                             $.topTip(ret.msg, 'success');
                             setTimeout(function () {
                                 window.location.reload();
@@ -140,8 +140,10 @@
                         }
                     }
                     $.topTip(ret.msg, 'warning');
+                    pending = false;
                 }).fail(function () {
                     $.topTip('网络错误，请稍候再试', 'warning');
+                    pending = false;
                 });
             });
         })(jQuery);
