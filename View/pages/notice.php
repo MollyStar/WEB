@@ -1,7 +1,4 @@
-<?php Kernel\View::part('common.header', ['title' => '公告']) ?>
-    <style>
-        @import "/asset/css/part/db-structure.min.css";
-    </style>
+<?php Kernel\View::part('common.header', ['title' => '公告', 'style' => '/asset/css/part/md-table']) ?>
     <div class="container   ">
         <div class="row m-lr-0">
             <div class="col-sm-12">

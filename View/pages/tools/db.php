@@ -1,9 +1,4 @@
-<?php Kernel\View::part('common.header', ['title' => '数据库结构']) ?>
-
-<style>
-    @import "/asset/css/part/db-structure.min.css";
-</style>
-
+<?php Kernel\View::part('common.header', ['title' => '数据库结构', 'style' => '/asset/css/part/md-table']) ?>
 <div class="row m-lr-0">
     <div class="col-sm-12">
         <section class="panel">

@@ -1,5 +1,4 @@
-<?php Kernel\View::part('common.header', ['title' => '登录']) ?>
-    <style>@import "/asset/css/part/form-signin.min.css";</style>
+<?php Kernel\View::part('common.header', ['title' => '登录', 'style' => '/asset/css/part/form-signin']) ?>
     <div class="container">
         <div class="form-signin">
             <form id="form" class="form-horizontal col-xs-12" action="/login/submit">

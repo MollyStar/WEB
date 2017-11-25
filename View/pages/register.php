@@ -1,5 +1,4 @@
-<?php Kernel\View::part('common.header', ['title' => '注册']) ?>
-<style>@import "/asset/css/part/form-signin.min.css";</style>
+<?php Kernel\View::part('common.header', ['title' => '注册', 'style' => '/asset/css/part/form-signin']) ?>
 <style>
     body {
         background: #fff url(/asset/image/register_bg.jpg) no-repeat fixed 70% -10%;

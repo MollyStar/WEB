@@ -39,7 +39,7 @@ class User
             return Response::api(-1, $e->getMessage());
         }
 
-        UserHelper::remember_identity($user, Input::post('keep_auth') ?? 0);
+        UserHelper::rememberIdentity($user, Input::post('keep_auth') ?? 0);
 
         if ($user['isgm']) {
             $jump = '/dsahboard';
@@ -55,7 +55,7 @@ class User
     }
 
     public function logout() {
-        UserHelper::forget_identity();
+        UserHelper::forgetIdentity();
 
         return Response::redirect('/');
     }

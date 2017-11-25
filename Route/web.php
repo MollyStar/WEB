@@ -6,6 +6,7 @@
  * Time: 23:01
  */
 
+Route('GET', '/', 'Controller\Welcome@index');
 Route('GET', '/register', 'Controller\User@register');
 Route('POST', '/register/save', 'Controller\User@register_save');
 Route('GET', '/login', 'Controller\User@login');

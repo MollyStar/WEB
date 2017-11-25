@@ -57,6 +57,7 @@ class UserHelper
     public static function mergePassportInfo(&$user) {
         if ($pass_info = self::getPassport($user['guildcard'])) {
             $user['currency'] = intval($pass_info['currency']);
+            $user['is_abnormal'] = intval($pass_info['is_abnormal']);
             $user['passid'] = $pass_info['passid'];
             $user['pass_accounts'] = collect(self::getPassportRelation($pass_info['passid']))
                 ->keyBy('guildcard')
@@ -175,7 +176,7 @@ class UserHelper
      * @param      $user
      * @param bool $keep_auth
      */
-    public static function remember_identity($user, $keep_auth = false) {
+    public static function rememberIdentity($user, $keep_auth = false) {
         if ($user['isgm']) {
             $_SESSION['adminid'] = $user['guildcard'];
             $keep_auth &&
@@ -200,7 +201,7 @@ class UserHelper
     /**
      * 移除已经记录的身份
      */
-    public static function forget_identity() {
+    public static function forgetIdentity() {
         if (UserHelper::isLoggedAdmin()) {
             $_SESSION['adminid'] = null;
             setcookie('AUTH_TOKEN', '', 0, '/', null, null, true);

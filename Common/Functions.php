@@ -7,6 +7,7 @@ if (!function_exists('dd')) {
             var_export($arg);
         }
         echo '</pre>';
+        throw new Exception('');
         exit();
     }
 }

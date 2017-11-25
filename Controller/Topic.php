@@ -13,6 +13,7 @@ use Codante\Binary\Binary;
 use Common\AccountHelper;
 use Common\CharacterHelper;
 use Common\ItemHelper;
+use Common\PassportHelper;
 use Common\UserHelper;
 use Kernel\Config;
 use Kernel\DB;
@@ -54,51 +55,8 @@ class Topic
             return Response::api(-1, '不可以绑定自己');
         }
 
-        if (!$current_user['passid']) {
-            DB::connection()->startTransaction();
-            try {
-                $passid = DB::connection()->insert('passport', []);
-                DB::connection()->insert('passport_account_relation', [
-                    'passid'    => $passid,
-                    'guildcard' => $current_user['guildcard'],
-                ]);
-                DB::connection()->commit();
-            } catch (\Exception $e) {
-                DB::connection()->rollback();
-
-                return Response::api(-1, $e->getMessage());
-            }
-        } else {
-            $passid = $current_user['passid'];
-        }
-
-        DB::connection()->startTransaction();
-        try {
-            if ($pass_info = UserHelper::getPassport($user['guildcard'])) {
-                // 钱全部转移到当前passport
-                DB::connection()->where('passid', $passid)->update('passport', [
-                    'currency' => $current_user['currency'] + $pass_info['currency'],
-                ]);
-                // 所有相关帐号重新绑定
-                DB::connection()->where('passid', $pass_info['passid'])->update('passport_account_relation', [
-                    'passid' => $passid,
-                ]);
-                // 删掉原主passport
-                DB::connection()->where('passid', $pass_info['passid'])->delete('passport');
-            } else {
-                DB::connection()->insert('passport_account_relation', [
-                    'passid'    => $passid,
-                    'guildcard' => $user['guildcard'],
-                ]);
-            }
-            DB::connection()->commit();
-
+        if (PassportHelper::bindAccount($current_user, $user['guildcard'])) {
             return Response::api(0, '绑定成功', '/topic');
-
-        } catch (\Exception $e) {
-            DB::connection()->rollback();
-
-            return Response::api(-1, $e->getMessage());
         }
 
         return Response::api(-1, '绑定中出现问题，请稍后重试');
@@ -117,8 +75,8 @@ class Topic
                 'isgm',
             ])
             ) {
-                UserHelper::forget_identity();
-                UserHelper::remember_identity($user, Input::post('keep_auth') ?? 0);
+                UserHelper::forgetIdentity();
+                UserHelper::rememberIdentity($user, Input::post('keep_auth') ?? 0);
 
                 return Response::message('您现在以 ' . $user['username'] . ' 的身份登录', ['url' => '/topic']);
             }
@@ -163,20 +121,29 @@ class Topic
             $bank->subtract(['hex' => $hex], $num);
         });
 
-        DB::connection()->startTransaction();
-        try {
-            DB::connection()->where('guildcard', $user['guildcard'])->update('bank_data', ['data' => $bank->toBin()]);
-            DB::connection()->where('passid', $user['passid'])->update('passport', [
-                'currency' => $user['currency'] + $moli_currency,
-            ]);
-            DB::connection()->commit();
+        if ($passid = PassportHelper::getOrCreatePassid($user)) {
 
-            return Response::api(0, '充值成功');
+            // 作弊系数
+            $modulus = $user['is_abnormal'] == 0 ? 1 : 0;
 
-        } catch (\Exception $e) {
-            DB::connection()->rollback();
+            DB::connection()->startTransaction();
+            try {
+                DB::connection()
+                    ->where('guildcard', $user['guildcard'])
+                    ->update('bank_data', ['data' => $bank->toBin()]);
+                DB::connection()->where('passid', $passid)->update('passport', [
+                    'currency' => intval($user['currency']) + (intval($moli_currency) * $modulus), // 作弊账号充入为0，永远
+                ]);
+                DB::connection()->commit();
 
-            return Response::api(-1, $e->getMessage());
+                return Response::api(0, '充值成功');
+
+            } catch (\Exception $e) {
+                DB::connection()->rollback();
+
+                return Response::api(-1, $e->getMessage());
+            }
+
         }
 
         return Response::api(-1, '充值失败，请稍后重试');
