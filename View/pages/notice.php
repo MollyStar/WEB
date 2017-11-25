@@ -2,7 +2,7 @@
     'title' => '公告',
     'style' => ['/asset/css/part/topic', '/asset/css/part/md-table'],
 ]) ?>
-    <div class="container   ">
+    <div class="container">
         <div class="row m-lr-0">
             <div class="col-sm-12">
                 <section class="panel">
