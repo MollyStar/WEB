@@ -61,6 +61,12 @@ class User
     }
 
     public function register() {
+        if (UserHelper::isLoggedAdmin()) {
+            return Response::redirect('/dashboard');
+        } elseif (UserHelper::isLoggedUser()) {
+            return Response::redirect('/topic');
+        }
+        
         return Response::view('pages.register');
     }
 

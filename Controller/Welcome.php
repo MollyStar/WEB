@@ -13,6 +13,8 @@ use Kernel\Response;
 class Welcome
 {
     public function index() {
+
+
         return Response::view('pages.welcome');
     }
 }

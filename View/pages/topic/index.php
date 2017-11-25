@@ -1,6 +1,12 @@
 <?php Kernel\View::part('common.header', ['title' => '用户中心']) ?>
     <div class="topic-banner">
         <div class="container">
+            <section class="panel panel-topic">
+                <section class="panel-body">
+                    <a class="dropdown-toggle" href="/notice">公告</a>
+                    <a class="dropdown-toggle" href="/item_drop">掉落表</a>
+                </section>
+            </section>
             <div class="col-sm-12">
                 <div class="row">
                     <section class="panel panel-topic panel-characters">
