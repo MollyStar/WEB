@@ -42,7 +42,7 @@ class User
         UserHelper::rememberIdentity($user, Input::post('keep_auth') ?? 0);
 
         if ($user['isgm']) {
-            $jump = '/dsahboard';
+            $jump = '/dashboard';
         } else {
             $jump = '/topic';
         }
