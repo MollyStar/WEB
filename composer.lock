@@ -59,12 +59,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shinate/Binary.git",
-                "reference": "f658aedcba6de0ce19cfa56c8c387d09f9dbe51c"
+                "reference": "5da9bf35b60a4020222be71331105c7bd0dbb487"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shinate/Binary/zipball/f658aedcba6de0ce19cfa56c8c387d09f9dbe51c",
-                "reference": "f658aedcba6de0ce19cfa56c8c387d09f9dbe51c",
+                "url": "https://api.github.com/repos/shinate/Binary/zipball/5da9bf35b60a4020222be71331105c7bd0dbb487",
+                "reference": "5da9bf35b60a4020222be71331105c7bd0dbb487",
                 "shasum": ""
             },
             "require": {
@@ -87,7 +87,7 @@
                 }
             ],
             "description": "Binary stream parser & builder",
-            "time": "2017-11-02 16:53:16"
+            "time": "2017-11-11T18:59:31+00:00"
         },
         {
             "name": "grandt/binstring",
@@ -675,16 +675,16 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.8.28",
+            "version": "v2.8.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "7fe089232554357efb8d4af65ce209fc6e5a2186"
+                "reference": "b59aacf238fadda50d612c9de73b74751872a903"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/7fe089232554357efb8d4af65ce209fc6e5a2186",
-                "reference": "7fe089232554357efb8d4af65ce209fc6e5a2186",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/b59aacf238fadda50d612c9de73b74751872a903",
+                "reference": "b59aacf238fadda50d612c9de73b74751872a903",
                 "shasum": ""
             },
             "require": {
@@ -731,20 +731,20 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2017-10-01T21:00:16+00:00"
+            "time": "2017-11-05T15:25:56+00:00"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v3.3.10",
+            "version": "v3.3.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "22cf9c2b1d9f67cc8e75ae7f4eaa60e4c1eff1f8"
+                "reference": "5943f0f19817a7e05992d20a90729b0dc93faf36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/22cf9c2b1d9f67cc8e75ae7f4eaa60e4c1eff1f8",
-                "reference": "22cf9c2b1d9f67cc8e75ae7f4eaa60e4c1eff1f8",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/5943f0f19817a7e05992d20a90729b0dc93faf36",
+                "reference": "5943f0f19817a7e05992d20a90729b0dc93faf36",
                 "shasum": ""
             },
             "require": {
@@ -784,7 +784,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2017-10-05T23:10:23+00:00"
+            "time": "2017-11-13T18:13:16+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -847,16 +847,16 @@
         },
         {
             "name": "tightenco/collect",
-            "version": "v5.5.16",
+            "version": "v5.5.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tightenco/collect.git",
-                "reference": "b4f148060842eeebb08edb005978360767af3630"
+                "reference": "ea6c2f9df3786d0997f34ef4f12e66bba85774c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tightenco/collect/zipball/b4f148060842eeebb08edb005978360767af3630",
-                "reference": "b4f148060842eeebb08edb005978360767af3630",
+                "url": "https://api.github.com/repos/tightenco/collect/zipball/ea6c2f9df3786d0997f34ef4f12e66bba85774c3",
+                "reference": "ea6c2f9df3786d0997f34ef4f12e66bba85774c3",
                 "shasum": ""
             },
             "require": {
@@ -865,6 +865,9 @@
             "require-dev": {
                 "mockery/mockery": "~1.0",
                 "phpunit/phpunit": "~6.0"
+            },
+            "suggest": {
+                "symfony/var-dumper": "Required to prettify dd() and dump() (~3.3)."
             },
             "type": "library",
             "autoload": {
@@ -890,7 +893,7 @@
                 "collection",
                 "laravel"
             ],
-            "time": "2017-10-16T16:11:46+00:00"
+            "time": "2017-11-09T17:52:28+00:00"
         }
     ],
     "packages-dev": [],
